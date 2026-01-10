@@ -1,110 +1,14 @@
 const { useState, useRef, useEffect } = React;
 
-// Auth0 SPA client singleton
-let auth0Client = null;
-
-// Initialize Auth0 SPA client
-const initAuth0Client = async () => {
-  if (auth0Client) return auth0Client;
-  
-  if (window.auth0 && AUTH0_CONFIG) {
-    auth0Client = await window.auth0.createAuth0Client({
-      domain: AUTH0_CONFIG.domain,
-      clientId: AUTH0_CONFIG.clientId,
-      authorizationParams: {
-        redirect_uri: FRONTEND_ORIGIN,
-        audience: AUTH0_AUDIENCE
-      }
-    });
-  }
-  return auth0Client;
-};
-
-// Get access token for API
-const getAccessToken = async () => {
-  // First, try to get from hash (if just logged in)
-  const hash = window.location.hash;
-  if (hash) {
-    const params = new URLSearchParams(hash.substring(1));
-    const hashToken = params.get('access_token');
-    if (hashToken) {
-      return hashToken;
-    }
-  }
-  
-  // Try Auth0 SPA SDK
-  try {
-    const client = await initAuth0Client();
-    if (client) {
-      try {
-        const token = await client.getTokenSilently({
-          authorizationParams: {
-            audience: AUTH0_AUDIENCE
-          }
-        });
-
-        console.log("TOKEN starts:", token.slice(0, 20));
-        console.log("segments:", token.split(".").length);
-        
-        if (token) return token;
-      } catch (e) {
-        // If silent auth fails, try to get from cache or redirect
-        console.warn('Silent token fetch failed:', e);
-      }
-    }
-  } catch (error) {
-    console.error('Error getting access token from Auth0 SDK:', error);
-  }
-  
-  return null;
-};
-
-// API fetch helper
-const apiFetch = async (path, options = {}) => {
-  const token = await getAccessToken();
-  if (!token) {
-    throw new Error('Not authenticated. Please log in.');
-  }
-  
-  const fetchOptions = {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers
-    }
-  };
-  
-  if (options.body && typeof options.body === 'object') {
-    fetchOptions.body = JSON.stringify(options.body);
-  }
-  
-  const response = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
-  
-  console.log(`API Call: ${API_BASE_URL}${path}`);
-  if (token) {
-    console.log(`API Auth: Bearer ${token.substring(0, 10)}...`);
-  } else {
-    console.warn('API Call made without token.');
-  }
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
-    throw new Error(error.error?.message || `Request failed: ${response.statusText}`);
-  }
-  
-  return response.json();
-};
-
 // DataSourceCard Component for Customer Dashboard
-const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
+const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
   const fileInputRef = useRef(null);
 
   return (
-    <div className="data-source-card">
-      <div className="card-header">
-        <div className="card-info">
-          <div className={`card-icon ${isConnected ? 'connected' : 'not-connected'}`}>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start gap-4">
+          <div className={`p-3 rounded-xl ${isConnected ? 'bg-green-100' : 'bg-gray-100'}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -118,17 +22,17 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
               dangerouslySetInnerHTML={{ __html: source.iconPath }}
             />
           </div>
-          <div className="card-title-wrapper">
-            <h3>
+          <div>
+            <h3 className="text-lg font-semibold flex items-center gap-2 mb-1">
               {source.name}
-              <span className="card-emoji">{source.emoji}</span>
+              <span className="text-xl">{source.emoji}</span>
             </h3>
-            <p className="card-provider">{source.provider}</p>
+            <p className="text-sm text-gray-500">{source.provider}</p>
           </div>
         </div>
         {isConnected && (
           <svg
-            className="card-check"
+            className="w-6 h-6 text-green-500 flex-shrink-0"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -144,33 +48,36 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
           </svg>
         )}
       </div>
-      <p className="card-description">{source.description}</p>
+      <p className="text-sm text-gray-600 mb-4">{source.description}</p>
 
       {source.type === 'link' ? (
-            <button
-              onClick={onConnect}
-              disabled={isConnected || (source.id === 'plaid' && !user)}
-              className={`card-button ${isConnected ? 'connected' : 'connect'}`}
-              title={source.id === 'plaid' && !user ? 'Log in to connect your account' : ''}
-            >
-              {isConnected ? (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                  <span>Connected</span>
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                  <span>Connect Account</span>
-                </>
-              )}
-            </button>
+        <button
+          onClick={onConnect}
+          disabled={isConnected}
+          className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+            isConnected
+              ? 'bg-green-100 text-green-700 cursor-default'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+        >
+          {isConnected ? (
+            <>
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>Connected</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Connect Account</span>
+            </>
+          )}
+        </button>
       ) : (
         <>
           <input
@@ -183,11 +90,15 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className={`card-button ${isConnected ? 'connected' : 'upload'}`}
+            className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+              isConnected
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
           >
             {isConnected ? (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
@@ -195,7 +106,7 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
               </>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" x2="12" y1="3" y2="15"></line>
@@ -229,134 +140,136 @@ const BankerDashboard = ({ user, onLogout }) => {
   });
 
   return (
-    <div>
-      <header className="header">
-        <div className="header-container">
-          <div className="header-logo">
-            <div className="logo-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-              </svg>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
+                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
+                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900">OpenScore</span>
+              <span className="px-2 py-1 bg-indigo-600 text-white rounded text-xs font-semibold uppercase">BANKER</span>
             </div>
-            <span className="logo-text">OpenScore</span>
-            <span className="user-badge">BANKER</span>
-          </div>
-          <div className="header-right">
-            <div className="header-user">
-              {user.picture && (
-                <img src={user.picture} alt="User" className="header-user-avatar" />
-              )}
-              <span className="header-user-name">{user.name}</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg">
+                {user.picture && (
+                  <img src={user.picture} alt="User" className="w-8 h-8 rounded-full border-2 border-blue-500" />
+                )}
+                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+              </div>
+              <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                Logout
+              </button>
             </div>
-            <button onClick={onLogout} className="logout-btn">
-              Logout
-            </button>
           </div>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="container">
-          <div className="hero">
-            <h1 className="hero-title">Banker Dashboard</h1>
-            <p className="hero-description">
+      <main className="py-8">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center py-8 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Banker Dashboard</h1>
+            <p className="text-xl text-gray-600">
               Review customer applications and credit scores
             </p>
           </div>
 
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-label">Total Customers</span>
-                <svg className="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Total Customers</span>
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                   <circle cx="9" cy="7" r="4"></circle>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </div>
-              <div className="stat-value">{stats.totalCustomers}</div>
+              <div className="text-3xl font-bold text-gray-900">{stats.totalCustomers}</div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-label">Pending Reviews</span>
-                <svg className="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Pending Reviews</span>
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
               </div>
-              <div className="stat-value">{stats.pendingReviews}</div>
+              <div className="text-3xl font-bold text-gray-900">{stats.pendingReviews}</div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-label">Approved Today</span>
-                <svg className="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Approved Today</span>
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
               </div>
-              <div className="stat-value">{stats.approvedToday}</div>
+              <div className="text-3xl font-bold text-gray-900">{stats.approvedToday}</div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-header">
-                <span className="stat-label">Average Score</span>
-                <svg className="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Average Score</span>
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2">
                   <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
                   <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
                 </svg>
               </div>
-              <div className="stat-value">{stats.avgScore}</div>
+              <div className="text-3xl font-bold text-gray-900">{stats.avgScore}</div>
             </div>
           </div>
 
-          <div className="table-card">
-            <h2 className="table-title">Recent Customer Applications</h2>
-            <div className="table-container">
-              <table>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Customer Applications</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
                 <thead>
-                  <tr>
-                    <th>Customer</th>
-                    <th>Email</th>
-                    <th>Credit Score</th>
-                    <th>Status</th>
-                    <th>Applications</th>
-                    <th>Actions</th>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Customer</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Email</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Credit Score</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Applications</th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {customers.map((customer) => (
-                    <tr key={customer.id}>
-                      <td>
-                        <div className="customer-name">{customer.name}</div>
+                    <tr key={customer.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4">
+                        <div className="font-medium text-gray-900">{customer.name}</div>
                       </td>
-                      <td>
-                        <div className="customer-email">{customer.email}</div>
+                      <td className="py-4 px-4">
+                        <div className="text-sm text-gray-600">{customer.email}</div>
                       </td>
-                      <td>
-                        <div className="score-container">
-                          <span className="score-value">{customer.score}</span>
-                          <div className={`score-indicator ${
-                            customer.score >= 700 ? 'high' :
-                            customer.score >= 650 ? 'medium' : 'low'
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-900">{customer.score}</span>
+                          <div className={`w-2 h-2 rounded-full ${
+                            customer.score >= 700 ? 'bg-green-500' :
+                            customer.score >= 650 ? 'bg-yellow-500' : 'bg-red-500'
                           }`}></div>
                         </div>
                       </td>
-                      <td>
-                        <span className={`status-badge ${
-                          customer.status.toLowerCase() === 'approved' ? 'approved' :
-                          customer.status.toLowerCase() === 'pending' ? 'pending' :
-                          'review'
+                      <td className="py-4 px-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          customer.status.toLowerCase() === 'approved' ? 'bg-green-100 text-green-700' :
+                          customer.status.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-blue-100 text-blue-700'
                         }`}>
                           {customer.status}
                         </span>
                       </td>
-                      <td>{customer.applications}</td>
-                      <td>
-                        <button className="action-btn">View Details</button>
+                      <td className="py-4 px-4">{customer.applications}</td>
+                      <td className="py-4 px-4">
+                        <button className="text-blue-600 font-medium text-sm hover:text-blue-800 transition-colors">View Details</button>
                       </td>
                     </tr>
                   ))}
@@ -374,12 +287,6 @@ const BankerDashboard = ({ user, onLogout }) => {
 const CustomerDashboard = ({ user, onLogout }) => {
   const [connectedSources, setConnectedSources] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [balances, setBalances] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [income, setIncome] = useState(null);
-  const [score, setScore] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const dataSources = [
     {
@@ -411,136 +318,8 @@ const CustomerDashboard = ({ user, onLogout }) => {
     }
   ];
 
-  // Refresh data from backend
-  const refreshData = async () => {
-    if (!user) {
-      setError('Log in to connect your account');
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Sync data first
-      try {
-        await apiFetch('/api/plaid/transactions/sync', { method: 'POST' });
-      } catch (e) {
-        if (!e.message.includes('not connected')) throw e;
-      }
-      
-      try {
-        await apiFetch('/api/plaid/balances/sync', { method: 'POST' });
-      } catch (e) {
-        if (!e.message.includes('not connected')) throw e;
-      }
-      
-      try {
-        await apiFetch('/api/plaid/income/sync', { method: 'POST' });
-      } catch (e) {
-        // Income may not be available, ignore
-      }
-      
-      // Fetch stored data
-      const [balancesData, transactionsData, incomeData] = await Promise.all([
-        apiFetch('/api/balances').catch(() => []),
-        apiFetch('/api/transactions').catch(() => []),
-        apiFetch('/api/income').catch(() => null)
-      ]);
-      
-      setBalances(balancesData || []);
-      setTransactions((transactionsData || []).slice(0, 10));
-      setIncome(incomeData);
-      
-      // Calculate score
-      try {
-        const scoreData = await apiFetch('/api/score/calculate', { method: 'POST' });
-        setScore(scoreData);
-      } catch (e) {
-        console.warn('Score calculation failed:', e);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Connect Plaid account
-  const connectPlaid = async () => {
-    if (!user) {
-      setError('Log in to connect your account');
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Get link token
-      const { link_token } = await apiFetch('/api/plaid/link-token', { method: 'POST' });
-      
-      // Initialize Plaid Link
-      if (!window.Plaid) {
-        throw new Error('Plaid Link script not loaded');
-      }
-      
-      const handler = window.Plaid.create({
-        token: link_token,
-        onSuccess: async (public_token) => {
-          try {
-            // Exchange public token
-            await apiFetch('/api/plaid/exchange', {
-              method: 'POST',
-              body: JSON.stringify({ public_token })
-            });
-            
-            // Sync data
-            await apiFetch('/api/plaid/transactions/sync', { method: 'POST' });
-            await apiFetch('/api/plaid/balances/sync', { method: 'POST' });
-            
-            try {
-              await apiFetch('/api/plaid/income/sync', { method: 'POST' });
-            } catch (e) {
-              // Income may not be available
-            }
-            
-            // Calculate score
-            try {
-              const scoreData = await apiFetch('/api/score/calculate', { method: 'POST' });
-              setScore(scoreData);
-            } catch (e) {
-              console.warn('Score calculation failed:', e);
-            }
-            
-            // Refresh and display data
-            setConnectedSources([...connectedSources, 'plaid']);
-            await refreshData();
-          } catch (err) {
-            setError(err.message);
-          } finally {
-            setLoading(false);
-          }
-        },
-        onExit: (err) => {
-          if (err) {
-            setError(err.error_message || 'Plaid Link exited');
-          }
-          setLoading(false);
-        }
-      });
-      
-      handler.open();
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
   const connectSource = (sourceId) => {
-    if (sourceId === 'plaid') {
-      connectPlaid();
-    } else if (!connectedSources.includes(sourceId)) {
+    if (!connectedSources.includes(sourceId)) {
       setConnectedSources([...connectedSources, sourceId]);
     }
   };
@@ -565,66 +344,68 @@ const CustomerDashboard = ({ user, onLogout }) => {
   };
 
   return (
-    <div>
-      <header className="header">
-        <div className="header-container">
-          <div className="header-logo">
-            <div className="logo-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-              </svg>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
+                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
+                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900">OpenScore</span>
             </div>
-            <span className="logo-text">OpenScore</span>
-          </div>
-          <div className="header-right">
-            <div className="header-security">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span>Secure & FCRA Compliant</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Secure & FCRA Compliant</span>
+              </div>
+              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg">
+                {user.picture && (
+                  <img src={user.picture} alt="User" className="w-8 h-8 rounded-full border-2 border-blue-500" />
+                )}
+                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+              </div>
+              <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                Logout
+              </button>
             </div>
-            <div className="header-user">
-              {user.picture && (
-                <img src={user.picture} alt="User" className="header-user-avatar" />
-              )}
-              <span className="header-user-name">{user.name}</span>
-            </div>
-            <button onClick={onLogout} className="logout-btn">
-              Logout
-            </button>
           </div>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="container">
-          <div className="hero">
-            <div className="hero-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <main className="py-8">
+        <div className="max-w-6xl mx-auto px-6 space-y-6">
+          <div className="text-center space-y-4 py-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-700 text-sm font-medium">
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
                 <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
               </svg>
               <span>AI-Powered Credit Analysis</span>
             </div>
-            <h1 className="hero-title">Connect Your Financial Data</h1>
-            <p className="hero-description">
+            <h1 className="text-4xl font-bold text-gray-900">Connect Your Financial Data</h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Link your accounts or upload documents to get your comprehensive credit score
             </p>
           </div>
 
-          <div className="user-info-card">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center gap-4">
             {user.picture && (
-              <img src={user.picture} alt="User" className="user-avatar" />
+              <img src={user.picture} alt="User" className="w-14 h-14 rounded-full border-3 border-blue-500" />
             )}
-            <div className="user-details">
-              <h3>{user.name}</h3>
-              <p>{user.email}</p>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
+              <p className="text-sm text-gray-600">{user.email}</p>
             </div>
           </div>
 
-          <div className="cards-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {dataSources.map(source => (
               <DataSourceCard
                 key={source.id}
@@ -632,142 +413,50 @@ const CustomerDashboard = ({ user, onLogout }) => {
                 isConnected={connectedSources.includes(source.id)}
                 onConnect={() => connectSource(source.id)}
                 onUpload={(files) => handleFileUpload(source.id, files)}
-                user={user}
               />
             ))}
           </div>
 
-          <div className="progress-card">
-            <div className="progress-header">
-              <span className="progress-label">Data Sources Connected</span>
-              <span className="progress-count">{connectedSources.length}/3</span>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-gray-900">Data Sources Connected</span>
+              <span className="text-2xl font-bold text-blue-600">{connectedSources.length}/3</span>
             </div>
-            <div className="progress-bar-container">
+            <div className="w-full bg-gray-200 rounded-full h-3">
               <div
-                className="progress-bar"
+                className="bg-gradient-to-r from-blue-500 to-indigo-500 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${(connectedSources.length / 3) * 100}%` }}
               />
             </div>
-            <div className="progress-message">
+            <div className="text-sm text-gray-600">
               {getProgressMessage()}
             </div>
           </div>
 
-          {connectedSources.includes('plaid') && (
-            <div style={{ marginTop: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <button
-                onClick={refreshData}
-                disabled={loading || !user}
-                className="card-button connect"
-                style={{ margin: 0 }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-                <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
-              </button>
-            </div>
-          )}
-
-          {error && (
-            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '8px', fontSize: '14px' }}>
-              {error}
-            </div>
-          )}
-
-          {(balances.length > 0 || transactions.length > 0 || income || score) && (
-            <div style={{ marginTop: '32px' }}>
-              {score && (
-                <div className="progress-card" style={{ marginBottom: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>OpenScore</h3>
-                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#2563eb', marginBottom: '8px' }}>
-                    {score.score || score.value || 'N/A'}
-                  </div>
-                  {score.breakdown && (
-                    <div style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>
-                      {JSON.stringify(score.breakdown, null, 2)}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {balances.length > 0 && (
-                <div className="progress-card" style={{ marginBottom: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Balances</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {balances.map((account, idx) => (
-                      <div key={idx} style={{ padding: '12px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
-                        <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                          {account.name || account.account_id}
-                        </div>
-                        <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                          {account.type || account.subtype || ''} • 
-                          Balance: ${account.balances?.current || account.balance || 'N/A'}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {transactions.length > 0 && (
-                <div className="progress-card" style={{ marginBottom: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Recent Transactions</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {transactions.map((txn, idx) => (
-                      <div key={idx} style={{ padding: '12px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                          <span style={{ fontWeight: '600' }}>{txn.name || txn.merchant_name || 'Transaction'}</span>
-                          <span style={{ fontWeight: '600', color: txn.amount < 0 ? '#dc2626' : '#16a34a' }}>
-                            ${Math.abs(txn.amount || 0).toFixed(2)}
-                          </span>
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                          {txn.date || txn.authorized_date || ''} • {txn.category?.join(', ') || ''}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {income && (
-                <div className="progress-card" style={{ marginBottom: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Income</h3>
-                  <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                    {income.available !== false ? 'Income data available' : 'Income data not available'}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
           {uploadedFiles.length > 0 && (
-            <div className="files-card">
-              <h3 className="files-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
                 <span>Uploaded Documents</span>
               </h3>
-              <div className="files-list">
+              <div className="space-y-2">
                 {uploadedFiles.map((file, idx) => (
-                  <div key={idx} className="file-item">
-                    <div className="file-info">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" x2="12" y1="3" y2="15"></line>
                       </svg>
                       <div>
-                        <div className="file-name">{file.name}</div>
-                        <div className="file-size">{(file.size / 1024).toFixed(1)} KB</div>
+                        <div className="font-medium text-sm">{file.name}</div>
+                        <div className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</div>
                       </div>
                     </div>
-                    <svg className="file-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                       <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
@@ -780,14 +469,14 @@ const CustomerDashboard = ({ user, onLogout }) => {
           <button
             onClick={() => alert('Analysis feature would be implemented in full version')}
             disabled={connectedSources.length < 1}
-            className="analyze-button"
+            className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
               <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
             </svg>
             <span>Analyze with AI</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="5" x2="19" y1="12" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
@@ -801,7 +490,7 @@ const CustomerDashboard = ({ user, onLogout }) => {
 // Main App Component
 function App() {
   const [user, setUser] = useState(null);
-  const [userType, setUserType] = useState('customer'); // 'customer' or 'banker'
+  const [userType, setUserType] = useState('customer');
   const [loading, setLoading] = useState(true);
 
   const AUTH0_DOMAIN = AUTH0_CONFIG.domain;
@@ -851,7 +540,6 @@ function App() {
       `connection=google-oauth2&` +
       `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
       `scope=openid profile email&` +
-      `audience=${AUTH0_AUDIENCE}&` +
       `nonce=${Math.random().toString(36).substring(7)}`;
 
     window.location.href = authUrl;
@@ -871,56 +559,70 @@ function App() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-text">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-indigo-600 text-xl">Loading...</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-              <polyline points="10 17 15 12 10 7"></polyline>
-              <line x1="15" y1="12" x2="3" y2="12"></line>
-            </svg>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-indigo-600 rounded-full mx-auto flex items-center justify-center mb-4">
+              <svg className="w-10 h-10 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to OpenScore</h1>
+            <p className="text-gray-600">Sign in to access your dashboard</p>
           </div>
-          <h1 className="login-title">Welcome to OpenScore</h1>
-          <p className="login-subtitle">Sign in to access your dashboard</p>
 
-          <div className="user-type-selector">
+          <div className="flex gap-4 mb-6">
             <button
-              className={`user-type-btn ${userType === 'customer' ? 'active' : ''}`}
+              className={`flex-1 p-4 border-2 rounded-lg transition-all flex flex-col items-center gap-2 ${
+                userType === 'customer'
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+              }`}
               onClick={() => setUserType('customer')}
             >
-              <div className="user-type-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                userType === 'customer' ? 'bg-white bg-opacity-20' : 'bg-gray-100'
+              }`}>
+                <svg className={`w-6 h-6 ${userType === 'customer' ? 'text-white' : 'text-gray-600'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
               </div>
-              <span className="user-type-label">Customer</span>
+              <span className="font-semibold text-sm">Customer</span>
             </button>
 
             <button
-              className={`user-type-btn ${userType === 'banker' ? 'active' : ''}`}
+              className={`flex-1 p-4 border-2 rounded-lg transition-all flex flex-col items-center gap-2 ${
+                userType === 'banker'
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+              }`}
               onClick={() => setUserType('banker')}
             >
-              <div className="user-type-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                userType === 'banker' ? 'bg-white bg-opacity-20' : 'bg-gray-100'
+              }`}>
+                <svg className={`w-6 h-6 ${userType === 'banker' ? 'text-white' : 'text-gray-600'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect width="20" height="14" x="2" y="5" rx="2"></rect>
                   <line x1="2" x2="22" y1="10" y2="10"></line>
                 </svg>
               </div>
-              <span className="user-type-label">Banker</span>
+              <span className="font-semibold text-sm">Banker</span>
             </button>
           </div>
 
-          <button onClick={loginWithGoogle} className="google-login-button">
-            <svg className="google-icon" viewBox="0 0 24 24">
+          <button onClick={loginWithGoogle} className="w-full bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm">
+            <svg className="w-6 h-6" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
