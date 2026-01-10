@@ -1,0 +1,137 @@
+"""OpenScore Flask application."""
+import logging
+import os
+from datetime import datetime
+from flask import Flask, jsonify, g
+from config import Config
+from auth import require_auth
+from db import get_db
+
+# Import blueprints - plaid blueprint import is now safe (handled in plaid_service.py)
+try:
+    from routes.plaid import bp as plaid_bp
+    plaid_available = True
+except ImportError:
+    plaid_available = False
+    plaid_bp = None
+
+from routes.score import bp as score_bp
+from routes.lender import bp as lender_bp
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+# Create Flask app
+app = Flask(__name__)
+
+# Validate configuration
+try:
+    Config.validate()
+except ValueError as e:
+    logger.error(f"Configuration error: {e}")
+    raise
+
+# Register blueprints
+if plaid_available and plaid_bp:
+    app.register_blueprint(plaid_bp)
+else:
+    logger.warning("Plaid blueprint not registered - plaid-python not installed")
+app.register_blueprint(score_bp)
+app.register_blueprint(lender_bp)
+
+
+@app.route("/", methods=["GET"])
+def root():
+    """Root endpoint - API information."""
+    endpoints = {
+        "name": "OpenScore API",
+        "version": "1.0.0",
+        "endpoints": {
+            "GET /": "This endpoint - API information",
+            "GET /health": "Health check (no auth required)",
+            "GET /api/me": "Get current user info (auth required)",
+            "POST /api/plaid/link-token": "Create Plaid link token (auth required)",
+            "POST /api/score/calculate": "Calculate score (auth required)",
+            "GET /api/lender/list": "List lenders (auth required)"
+        },
+        "authentication": "Bearer token (Auth0 JWT) required for /api/* endpoints"
+    }
+    return jsonify(endpoints), 200
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint."""
+    return jsonify({"status": "healthy"}), 200
+
+
+@app.route("/api/me", methods=["GET"])
+@require_auth
+def get_me():
+    """Get current user information and update last seen timestamp.
+    
+    This endpoint demonstrates the full stack:
+    - Auth0 JWT verification
+    - MongoDB write/read operations
+    
+    Returns:
+        JSON with user information from database
+    """
+    try:
+        user_id = g.user.get("sub")
+        email = g.user.get("email")
+        
+        db = get_db()
+        users_collection = db.users
+        
+        # Update or create user record
+        now = datetime.utcnow().isoformat()
+        update_data = {
+            "lastSeenAt": now,
+        }
+        if email:
+            update_data["email"] = email
+        
+        users_collection.update_one(
+            {"_id": user_id},
+            {"$set": update_data},
+            upsert=True
+        )
+        
+        # Read back the user document
+        user_doc = users_collection.find_one({"_id": user_id})
+        
+        if not user_doc:
+            return jsonify({
+                "error": {
+                    "code": "user_not_found",
+                    "message": "User record not found after creation"
+                }
+            }), 500
+        
+        # Return user data (exclude MongoDB _id, use user_id instead)
+        return jsonify({
+            "user_id": user_doc.get("_id"),
+            "email": user_doc.get("email"),
+            "lastSeenAt": user_doc.get("lastSeenAt")
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in /api/me: {e}")
+        return jsonify({
+            "error": {
+                "code": "server_error",
+                "message": str(e)
+            }
+        }), 500
+
+
+if __name__ == "__main__":
+    import os
+    port = int(os.getenv("PORT", 5000))
+    app.run(debug=Config.FLASK_ENV == "development", host="0.0.0.0", port=port)
+
