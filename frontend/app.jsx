@@ -1,7 +1,103 @@
 const { useState, useRef, useEffect } = React;
 
+// Auth0 SPA client singleton
+let auth0Client = null;
+
+// Initialize Auth0 SPA client
+const initAuth0Client = async () => {
+  if (auth0Client) return auth0Client;
+  
+  if (window.auth0 && AUTH0_CONFIG) {
+    auth0Client = await window.auth0.createAuth0Client({
+      domain: AUTH0_CONFIG.domain,
+      clientId: AUTH0_CONFIG.clientId,
+      authorizationParams: {
+        redirect_uri: FRONTEND_ORIGIN,
+        audience: AUTH0_AUDIENCE
+      }
+    });
+  }
+  return auth0Client;
+};
+
+// Get access token for API
+const getAccessToken = async () => {
+  // First, try to get from hash (if just logged in)
+  const hash = window.location.hash;
+  if (hash) {
+    const params = new URLSearchParams(hash.substring(1));
+    const hashToken = params.get('access_token');
+    if (hashToken) {
+      return hashToken;
+    }
+  }
+  
+  // Try Auth0 SPA SDK
+  try {
+    const client = await initAuth0Client();
+    if (client) {
+      try {
+        const token = await client.getTokenSilently({
+          authorizationParams: {
+            audience: AUTH0_AUDIENCE
+          }
+        });
+
+        console.log("TOKEN starts:", token.slice(0, 20));
+        console.log("segments:", token.split(".").length);
+        
+        if (token) return token;
+      } catch (e) {
+        // If silent auth fails, try to get from cache or redirect
+        console.warn('Silent token fetch failed:', e);
+      }
+    }
+  } catch (error) {
+    console.error('Error getting access token from Auth0 SDK:', error);
+  }
+  
+  return null;
+};
+
+// API fetch helper
+const apiFetch = async (path, options = {}) => {
+  const token = await getAccessToken();
+  if (!token) {
+    throw new Error('Not authenticated. Please log in.');
+  }
+  
+  const fetchOptions = {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers
+    }
+  };
+  
+  if (options.body && typeof options.body === 'object') {
+    fetchOptions.body = JSON.stringify(options.body);
+  }
+  
+  const response = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
+  
+  console.log(`API Call: ${API_BASE_URL}${path}`);
+  if (token) {
+    console.log(`API Auth: Bearer ${token.substring(0, 10)}...`);
+  } else {
+    console.warn('API Call made without token.');
+  }
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+    throw new Error(error.error?.message || `Request failed: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
 // DataSourceCard Component for Customer Dashboard
-const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
+const DataSourceCard = ({ source, isConnected, onConnect, onUpload, user }) => {
   const fileInputRef = useRef(null);
 
   return (
@@ -51,29 +147,30 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
       <p className="card-description">{source.description}</p>
 
       {source.type === 'link' ? (
-        <button
-          onClick={onConnect}
-          disabled={isConnected}
-          className={`card-button ${isConnected ? 'connected' : 'connect'}`}
-        >
-          {isConnected ? (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <span>Connected</span>
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span>Connect Account</span>
-            </>
-          )}
-        </button>
+            <button
+              onClick={onConnect}
+              disabled={isConnected || (source.id === 'plaid' && !user)}
+              className={`card-button ${isConnected ? 'connected' : 'connect'}`}
+              title={source.id === 'plaid' && !user ? 'Log in to connect your account' : ''}
+            >
+              {isConnected ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <span>Connected</span>
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <span>Connect Account</span>
+                </>
+              )}
+            </button>
       ) : (
         <>
           <input
@@ -277,6 +374,12 @@ const BankerDashboard = ({ user, onLogout }) => {
 const CustomerDashboard = ({ user, onLogout }) => {
   const [connectedSources, setConnectedSources] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [balances, setBalances] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [income, setIncome] = useState(null);
+  const [score, setScore] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const dataSources = [
     {
@@ -308,8 +411,136 @@ const CustomerDashboard = ({ user, onLogout }) => {
     }
   ];
 
+  // Refresh data from backend
+  const refreshData = async () => {
+    if (!user) {
+      setError('Log in to connect your account');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Sync data first
+      try {
+        await apiFetch('/api/plaid/transactions/sync', { method: 'POST' });
+      } catch (e) {
+        if (!e.message.includes('not connected')) throw e;
+      }
+      
+      try {
+        await apiFetch('/api/plaid/balances/sync', { method: 'POST' });
+      } catch (e) {
+        if (!e.message.includes('not connected')) throw e;
+      }
+      
+      try {
+        await apiFetch('/api/plaid/income/sync', { method: 'POST' });
+      } catch (e) {
+        // Income may not be available, ignore
+      }
+      
+      // Fetch stored data
+      const [balancesData, transactionsData, incomeData] = await Promise.all([
+        apiFetch('/api/balances').catch(() => []),
+        apiFetch('/api/transactions').catch(() => []),
+        apiFetch('/api/income').catch(() => null)
+      ]);
+      
+      setBalances(balancesData || []);
+      setTransactions((transactionsData || []).slice(0, 10));
+      setIncome(incomeData);
+      
+      // Calculate score
+      try {
+        const scoreData = await apiFetch('/api/score/calculate', { method: 'POST' });
+        setScore(scoreData);
+      } catch (e) {
+        console.warn('Score calculation failed:', e);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Connect Plaid account
+  const connectPlaid = async () => {
+    if (!user) {
+      setError('Log in to connect your account');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Get link token
+      const { link_token } = await apiFetch('/api/plaid/link-token', { method: 'POST' });
+      
+      // Initialize Plaid Link
+      if (!window.Plaid) {
+        throw new Error('Plaid Link script not loaded');
+      }
+      
+      const handler = window.Plaid.create({
+        token: link_token,
+        onSuccess: async (public_token) => {
+          try {
+            // Exchange public token
+            await apiFetch('/api/plaid/exchange', {
+              method: 'POST',
+              body: JSON.stringify({ public_token })
+            });
+            
+            // Sync data
+            await apiFetch('/api/plaid/transactions/sync', { method: 'POST' });
+            await apiFetch('/api/plaid/balances/sync', { method: 'POST' });
+            
+            try {
+              await apiFetch('/api/plaid/income/sync', { method: 'POST' });
+            } catch (e) {
+              // Income may not be available
+            }
+            
+            // Calculate score
+            try {
+              const scoreData = await apiFetch('/api/score/calculate', { method: 'POST' });
+              setScore(scoreData);
+            } catch (e) {
+              console.warn('Score calculation failed:', e);
+            }
+            
+            // Refresh and display data
+            setConnectedSources([...connectedSources, 'plaid']);
+            await refreshData();
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        },
+        onExit: (err) => {
+          if (err) {
+            setError(err.error_message || 'Plaid Link exited');
+          }
+          setLoading(false);
+        }
+      });
+      
+      handler.open();
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
   const connectSource = (sourceId) => {
-    if (!connectedSources.includes(sourceId)) {
+    if (sourceId === 'plaid') {
+      connectPlaid();
+    } else if (!connectedSources.includes(sourceId)) {
       setConnectedSources([...connectedSources, sourceId]);
     }
   };
@@ -401,6 +632,7 @@ const CustomerDashboard = ({ user, onLogout }) => {
                 isConnected={connectedSources.includes(source.id)}
                 onConnect={() => connectSource(source.id)}
                 onUpload={(files) => handleFileUpload(source.id, files)}
+                user={user}
               />
             ))}
           </div>
@@ -420,6 +652,97 @@ const CustomerDashboard = ({ user, onLogout }) => {
               {getProgressMessage()}
             </div>
           </div>
+
+          {connectedSources.includes('plaid') && (
+            <div style={{ marginTop: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <button
+                onClick={refreshData}
+                disabled={loading || !user}
+                className="card-button connect"
+                style={{ margin: 0 }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>{loading ? 'Refreshing...' : 'Refresh Data'}</span>
+              </button>
+            </div>
+          )}
+
+          {error && (
+            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '8px', fontSize: '14px' }}>
+              {error}
+            </div>
+          )}
+
+          {(balances.length > 0 || transactions.length > 0 || income || score) && (
+            <div style={{ marginTop: '32px' }}>
+              {score && (
+                <div className="progress-card" style={{ marginBottom: '24px' }}>
+                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>OpenScore</h3>
+                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#2563eb', marginBottom: '8px' }}>
+                    {score.score || score.value || 'N/A'}
+                  </div>
+                  {score.breakdown && (
+                    <div style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>
+                      {JSON.stringify(score.breakdown, null, 2)}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {balances.length > 0 && (
+                <div className="progress-card" style={{ marginBottom: '24px' }}>
+                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Balances</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {balances.map((account, idx) => (
+                      <div key={idx} style={{ padding: '12px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+                        <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                          {account.name || account.account_id}
+                        </div>
+                        <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                          {account.type || account.subtype || ''} • 
+                          Balance: ${account.balances?.current || account.balance || 'N/A'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {transactions.length > 0 && (
+                <div className="progress-card" style={{ marginBottom: '24px' }}>
+                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Recent Transactions</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {transactions.map((txn, idx) => (
+                      <div key={idx} style={{ padding: '12px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                          <span style={{ fontWeight: '600' }}>{txn.name || txn.merchant_name || 'Transaction'}</span>
+                          <span style={{ fontWeight: '600', color: txn.amount < 0 ? '#dc2626' : '#16a34a' }}>
+                            ${Math.abs(txn.amount || 0).toFixed(2)}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                          {txn.date || txn.authorized_date || ''} • {txn.category?.join(', ') || ''}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {income && (
+                <div className="progress-card" style={{ marginBottom: '24px' }}>
+                  <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600' }}>Income</h3>
+                  <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                    {income.available !== false ? 'Income data available' : 'Income data not available'}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {uploadedFiles.length > 0 && (
             <div className="files-card">
@@ -528,6 +851,7 @@ function App() {
       `connection=google-oauth2&` +
       `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
       `scope=openid profile email&` +
+      `audience=${AUTH0_AUDIENCE}&` +
       `nonce=${Math.random().toString(36).substring(7)}`;
 
     window.location.href = authUrl;

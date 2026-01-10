@@ -22,7 +22,18 @@
             domain: 'dev-10rq6pvfm662krqd.us.auth0.com',
             clientId: 'AbCcNTcFAkLasTpreduJs4wjtBuA7YKb'
         };
+        
+        // API Configuration
+        const API_BASE_URL = "http://localhost:5000";
+        const FRONTEND_ORIGIN = "http://localhost:8000";
+        const AUTH0_AUDIENCE = "https://openscore.api";
     </script>
+
+    <!-- Auth0 SPA JS SDK -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+    
+    <!-- Plaid Link -->
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 
     <!-- Your React Component -->
     <script type="text/babel" src="app.jsx"></script>
