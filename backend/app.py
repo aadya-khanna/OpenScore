@@ -31,7 +31,13 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Configure CORS for localhost frontend ports
-CORS(app, origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:8000"])
+CORS(
+    app,
+    origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:8000"],
+    supports_credentials=True,
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
+
 
 # Validate configuration
 try:
