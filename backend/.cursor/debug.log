@@ -1,5 +1,0 @@
-{"sessionId": "debug-session", "runId": "post-fix", "hypothesisId": "A", "location": "app.py:12", "message": "App starting - checking imports", "data": {"pythonVersion": "3.13.5", "executable": "/opt/anaconda3/bin/python"}, "timestamp": 1768064743943}
-{"sessionId": "debug-session", "runId": "post-fix", "hypothesisId": "A", "location": "plaid_service.py:14", "message": "Checking plaid module availability", "data": {"specFound": false, "origin": null}, "timestamp": 1768064743946}
-{"sessionId": "debug-session", "runId": "post-fix", "hypothesisId": "A", "location": "plaid_service.py:31", "message": "Plaid SDK not available", "data": {"error": "No module named 'plaid'", "message": "Install plaid-python: pip install plaid-python"}, "timestamp": 1768064743946}
-{"sessionId": "debug-session", "runId": "post-fix", "hypothesisId": "A", "location": "app.py:19", "message": "Plaid blueprint imported", "data": {}, "timestamp": 1768064743946}
-{"sessionId": "debug-session", "runId": "post-fix", "hypothesisId": "A", "location": "app.py:35", "message": "Plaid blueprint registered", "data": {}, "timestamp": 1768064743947}
