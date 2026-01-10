@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenScore Platform - Connect Data</title>
-
-    <!-- Your custom styles -->
+    <title>OpenScore Platform - Dual Login</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +16,13 @@
     <!-- Babel for JSX transformation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <script src="config.js"></script>
+    <!-- Auth0 Configuration -->
+    <script>
+        const AUTH0_CONFIG = {
+            domain: 'dev-10rq6pvfm662krqd.us.auth0.com',
+            clientId: 'AbCcNTcFAkLasTpreduJs4wjtBuA7YKb'
+        };
+    </script>
 
     <!-- Your React Component -->
     <script type="text/babel" src="app.jsx"></script>
