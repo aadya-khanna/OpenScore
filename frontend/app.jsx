@@ -42,10 +42,6 @@ const getAccessToken = async () => {
             audience: AUTH0_AUDIENCE
           }
         });
-
-        console.log("TOKEN starts:", token.slice(0, 20));
-        console.log("segments:", token.split(".").length);
-        
         if (token) return token;
       } catch (e) {
         // If silent auth fails, try to get from cache or redirect
@@ -81,13 +77,6 @@ const apiFetch = async (path, options = {}) => {
   
   const response = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
   
-  console.log(`API Call: ${API_BASE_URL}${path}`);
-  if (token) {
-    console.log(`API Auth: Bearer ${token.substring(0, 10)}...`);
-  } else {
-    console.warn('API Call made without token.');
-  }
-
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
     throw new Error(error.error?.message || `Request failed: ${response.statusText}`);
