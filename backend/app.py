@@ -3,6 +3,7 @@ import logging
 import os
 from datetime import datetime
 from flask import Flask, jsonify, g
+from flask_cors import CORS
 from config import Config
 from auth import require_auth
 from db import get_db
@@ -17,6 +18,7 @@ except ImportError:
 
 from routes.score import bp as score_bp
 from routes.lender import bp as lender_bp
+from routes.data import bp as data_bp
 
 # Configure logging
 logging.basicConfig(
@@ -28,12 +30,43 @@ logger = logging.getLogger(__name__)
 # Create Flask app
 app = Flask(__name__)
 
+# Configure CORS for localhost frontend ports
+CORS(app, origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:8000"])
+
 # Validate configuration
 try:
     Config.validate()
 except ValueError as e:
     logger.error(f"Configuration error: {e}")
     raise
+
+# Create MongoDB indexes on startup
+def ensure_indexes():
+    """Create MongoDB indexes for optimal query performance."""
+    try:
+        db = get_db()
+        
+        # Transactions: unique index on (userId, transaction_id)
+        db.transactions.create_index([("userId", 1), ("transaction_id", 1)], unique=True)
+        logger.info("Created index on transactions (userId, transaction_id)")
+        
+        # Balances: unique index on (userId, account_id)
+        db.balances.create_index([("userId", 1), ("account_id", 1)], unique=True)
+        logger.info("Created index on balances (userId, account_id)")
+        
+        # Plaid items: unique index on userId
+        db.plaid_items.create_index([("userId", 1)], unique=True)
+        logger.info("Created index on plaid_items (userId)")
+        
+        # Income: index on userId
+        db.income.create_index([("userId", 1)])
+        logger.info("Created index on income (userId)")
+        
+    except Exception as e:
+        logger.warning(f"Failed to create MongoDB indexes (non-fatal): {e}")
+
+# Create indexes
+ensure_indexes()
 
 # Register blueprints
 if plaid_available and plaid_bp:
@@ -42,6 +75,7 @@ else:
     logger.warning("Plaid blueprint not registered - plaid-python not installed")
 app.register_blueprint(score_bp)
 app.register_blueprint(lender_bp)
+app.register_blueprint(data_bp)
 
 
 @app.route("/", methods=["GET"])
@@ -55,6 +89,13 @@ def root():
             "GET /health": "Health check (no auth required)",
             "GET /api/me": "Get current user info (auth required)",
             "POST /api/plaid/link-token": "Create Plaid link token (auth required)",
+            "POST /api/plaid/exchange": "Exchange Plaid public token (auth required)",
+            "POST /api/plaid/transactions/sync": "Sync transactions from Plaid (auth required)",
+            "POST /api/plaid/balances/sync": "Sync balances from Plaid (auth required)",
+            "POST /api/plaid/income/sync": "Sync income from Plaid (auth required)",
+            "GET /api/transactions": "Get stored transactions (auth required)",
+            "GET /api/balances": "Get stored balances (auth required)",
+            "GET /api/income": "Get stored income (auth required)",
             "POST /api/score/calculate": "Calculate score (auth required)",
             "GET /api/lender/list": "List lenders (auth required)"
         },

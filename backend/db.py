@@ -38,3 +38,16 @@ def get_db() -> Database:
     client = get_client()
     return client[Config.MONGODB_DBNAME]
 
+
+def get_collection(name: str):
+    """Get a MongoDB collection by name.
+    
+    Args:
+        name: Collection name
+        
+    Returns:
+        Collection instance
+    """
+    db = get_db()
+    return db[name]
+
