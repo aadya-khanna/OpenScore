@@ -1,5 +1,7 @@
 """Plaid service for financial data integration."""
 import logging
+from datetime import date, timedelta
+from typing import Optional, List, Dict, Any, Tuple
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -17,14 +19,6 @@ try:
     from plaid.model.transactions_get_request import TransactionsGetRequest
     from plaid.model.transactions_get_request_options import TransactionsGetRequestOptions
     from plaid.model.accounts_balance_get_request import AccountsBalanceGetRequest
-    from datetime import datetime, timedelta
-    # Income verification may not be available in all Plaid products
-    try:
-        from plaid.model.income_verification_paystubs_get_request import IncomeVerificationPaystubsGetRequest
-        INCOME_VERIFICATION_AVAILABLE = True
-    except ImportError:
-        IncomeVerificationPaystubsGetRequest = None
-        INCOME_VERIFICATION_AVAILABLE = False
     PLAID_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"Plaid SDK not available. Install with: pip install plaid-python. Error: {e}")
@@ -87,24 +81,64 @@ def create_link_token(user_id: str) -> str:
     
     try:
         # Create request using Plaid SDK models
+        # Products and CountryCode can be accessed as enums or instantiated
+        try:
+            # Try enum access first (Products.transactions, CountryCode.US)
+            if hasattr(Products, "transactions"):
+                products_list = [Products.transactions]
+            elif hasattr(Products, "TRANSACTIONS"):
+                products_list = [Products.TRANSACTIONS]
+            else:
+                products_list = [Products("transactions")]
+        except:
+            products_list = ["transactions"]
+        
+        try:
+            if hasattr(CountryCode, "us"):
+                country_codes_list = [CountryCode.us]
+            elif hasattr(CountryCode, "US"):
+                country_codes_list = [CountryCode.US]
+            else:
+                country_codes_list = [CountryCode("US")]
+        except:
+            country_codes_list = ["US"]
+        
         request = LinkTokenCreateRequest(
             user=LinkTokenCreateRequestUser(client_user_id=user_id),
             client_name="OpenScore",
-            products=[Products("transactions")],
-            country_codes=[CountryCode("US")],
+            products=products_list,
+            country_codes=country_codes_list,
             language="en",
         )
         
         response = client.link_token_create(request)
-        # Access link_token from response (may be attribute or dict depending on SDK version)
-        return getattr(response, "link_token", response.get("link_token", ""))
+        
+        # Extract link_token - handle different response formats
+        link_token = None
+        if hasattr(response, "link_token"):
+            link_token = response.link_token
+        elif isinstance(response, dict):
+            link_token = response.get("link_token")
+        else:
+            # Try to_dict() method
+            try:
+                response_dict = _convert_to_dict(response)
+                if isinstance(response_dict, dict):
+                    link_token = response_dict.get("link_token")
+            except:
+                pass
+        
+        if not link_token:
+            raise ValueError(f"Failed to extract link_token from Plaid response. Response type: {type(response)}")
+        
+        return str(link_token)
     except Exception as e:
         logger.error(f"Failed to create Plaid link token: {e}")
         raise
 
 
-def exchange_public_token(public_token: str):
-    """Exchange a Plaid public token for an access token.
+def exchange_public_token(public_token: str) -> Tuple[str, str]:
+    """Exchange a public token for an access token.
     
     Args:
         public_token: Public token from Plaid Link
@@ -115,62 +149,63 @@ def exchange_public_token(public_token: str):
     Raises:
         Exception: If exchange fails
     """
-    if not PLAID_AVAILABLE:
-        raise ImportError("plaid-python is not installed")
-    
     client = get_plaid_client()
     
     try:
         request = ItemPublicTokenExchangeRequest(public_token=public_token)
         response = client.item_public_token_exchange(request)
         
-        # Extract access_token and item_id from response
-        access_token = getattr(response, "access_token", response.get("access_token", ""))
-        item_id = getattr(response, "item_id", response.get("item_id", ""))
+        # Extract access_token and item_id from response - handle different formats
+        access_token = None
+        item_id = None
         
-        logger.info(f"Successfully exchanged public token for item_id: {item_id}")
-        return access_token, item_id
+        if hasattr(response, "access_token"):
+            access_token = response.access_token
+        if hasattr(response, "item_id"):
+            item_id = response.item_id
+        
+        if access_token is None or item_id is None:
+            # Try converting to dict
+            response_dict = _convert_to_dict(response)
+            if isinstance(response_dict, dict):
+                access_token = access_token or response_dict.get("access_token")
+                item_id = item_id or response_dict.get("item_id")
+        
+        if not access_token or not item_id:
+            raise ValueError(f"Invalid response from Plaid: missing access_token or item_id. Response: {type(response)}")
+        
+        return str(access_token), str(item_id)
     except Exception as e:
         logger.error(f"Failed to exchange public token: {e}")
         raise
 
 
-def _plaid_obj_to_dict(obj):
-    """Convert a Plaid SDK object to a dictionary.
-    
-    Handles nested objects, dates, and common Plaid SDK types.
-    """
-    if obj is None:
-        return None
-    if isinstance(obj, (str, int, float, bool)):
-        return obj
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    if hasattr(obj, "isoformat"):  # date objects
-        return obj.isoformat()
-    if isinstance(obj, list):
-        return [_plaid_obj_to_dict(item) for item in obj]
+def _convert_to_dict(obj: Any) -> Any:
+    """Convert Plaid SDK objects to dictionaries recursively."""
     if isinstance(obj, dict):
-        return {k: _plaid_obj_to_dict(v) for k, v in obj.items()}
-    
-    # Try to access as object attributes
-    result = {}
-    if hasattr(obj, "__dict__"):
+        return {k: _convert_to_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_convert_to_dict(item) for item in obj]
+    elif hasattr(obj, "__dict__"):
+        # Try to_dict first if available
+        if hasattr(obj, "to_dict"):
+            try:
+                return obj.to_dict()
+            except:
+                pass
+        # Otherwise convert __dict__
+        result = {}
         for key, value in obj.__dict__.items():
+            # Skip private attributes
             if not key.startswith("_"):
-                result[key] = _plaid_obj_to_dict(value)
+                result[key] = _convert_to_dict(value)
+        return result
     else:
-        # Try common attribute access patterns
-        for attr in ["transaction_id", "account_id", "amount", "date", "name", "category", 
-                     "account_id", "balances", "name", "type", "subtype", "mask"]:
-            if hasattr(obj, attr):
-                result[attr] = _plaid_obj_to_dict(getattr(obj, attr))
-    
-    return result
+        return obj
 
 
-def fetch_transactions(access_token: str, days: int = 90):
-    """Fetch transactions for the given access token.
+def fetch_transactions(access_token: str, days: int = 90) -> List[Dict[str, Any]]:
+    """Fetch transactions for an access token.
     
     Args:
         access_token: Plaid access token
@@ -182,21 +217,20 @@ def fetch_transactions(access_token: str, days: int = 90):
     Raises:
         Exception: If fetch fails
     """
-    if not PLAID_AVAILABLE:
-        raise ImportError("plaid-python is not installed")
-    
     client = get_plaid_client()
     
     try:
-        # Calculate start date
-        start_date = (datetime.now() - timedelta(days=days)).date()
-        end_date = datetime.now().date()
+        # Calculate date range
+        end_date = date.today()
+        start_date = end_date - timedelta(days=days)
         
         # Create request
+        options = TransactionsGetRequestOptions(count=500)
         request = TransactionsGetRequest(
             access_token=access_token,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            options=options
         )
         
         response = client.transactions_get(request)
@@ -204,20 +238,31 @@ def fetch_transactions(access_token: str, days: int = 90):
         # Extract transactions from response
         transactions = getattr(response, "transactions", None)
         if transactions is None:
-            transactions = response.get("transactions", []) if isinstance(response, dict) else []
+            # Try accessing as dict
+            if isinstance(response, dict):
+                transactions = response.get("transactions", [])
+            else:
+                transactions = []
         
         # Convert to list of dicts
-        result = [_plaid_obj_to_dict(txn) for txn in transactions]
+        result = []
+        for txn in transactions:
+            txn_dict = _convert_to_dict(txn)
+            # Ensure we have the key fields
+            if isinstance(txn_dict, dict):
+                # Ensure transaction_id exists (might be 'id' in some versions)
+                if "transaction_id" not in txn_dict and "id" in txn_dict:
+                    txn_dict["transaction_id"] = txn_dict["id"]
+                result.append(txn_dict)
         
-        logger.info(f"Fetched {len(result)} transactions")
         return result
     except Exception as e:
         logger.error(f"Failed to fetch transactions: {e}")
         raise
 
 
-def fetch_balances(access_token: str):
-    """Fetch account balances for the given access token.
+def fetch_balances(access_token: str) -> List[Dict[str, Any]]:
+    """Fetch account balances for an access token.
     
     Args:
         access_token: Plaid access token
@@ -228,9 +273,6 @@ def fetch_balances(access_token: str):
     Raises:
         Exception: If fetch fails
     """
-    if not PLAID_AVAILABLE:
-        raise ImportError("plaid-python is not installed")
-    
     client = get_plaid_client()
     
     try:
@@ -240,84 +282,49 @@ def fetch_balances(access_token: str):
         # Extract accounts from response
         accounts = getattr(response, "accounts", None)
         if accounts is None:
-            accounts = response.get("accounts", []) if isinstance(response, dict) else []
+            # Try accessing as dict
+            if isinstance(response, dict):
+                accounts = response.get("accounts", [])
+            else:
+                accounts = []
         
         # Convert to list of dicts
-        result = [_plaid_obj_to_dict(account) for account in accounts]
+        result = []
+        for account in accounts:
+            account_dict = _convert_to_dict(account)
+            if isinstance(account_dict, dict):
+                # Ensure account_id exists (might be 'id' in some versions)
+                if "account_id" not in account_dict and "id" in account_dict:
+                    account_dict["account_id"] = account_dict["id"]
+                result.append(account_dict)
         
-        logger.info(f"Fetched {len(result)} accounts with balances")
         return result
     except Exception as e:
         logger.error(f"Failed to fetch balances: {e}")
         raise
 
 
-def fetch_income(access_token: str):
-    """Attempt to fetch income data for the given access token.
+def fetch_income(access_token: str) -> Optional[Dict[str, Any]]:
+    """Attempt to fetch income data for an access token.
     
-    Note: Income verification may not be available in all Plaid environments/products.
-    This function returns None if income data is not available.
+    Note: Income data may not be available in all environments or for all items.
+    Income verification requires specific product setup and configuration.
     
     Args:
         access_token: Plaid access token
         
     Returns:
-        Income data dictionary or None if not available
+        Income data dictionary, or None if not available
         
     Raises:
-        Exception: If fetch fails (other than unsupported feature)
+        Exception: If fetch fails (other than not available)
     """
-    if not PLAID_AVAILABLE:
-        raise ImportError("plaid-python is not installed")
+    # Note: Income verification endpoints require:
+    # 1. Income verification product enabled in Plaid
+    # 2. Link token created with income_verification product
+    # 3. Additional SDK models that may vary by version
     
-    client = get_plaid_client()
-    
-    try:
-        # Note: Income verification endpoints may vary by Plaid product
-        # This is a simplified implementation - adjust based on your Plaid product
-        # For sandbox/development, income may not be available
-        
-        # Check if income verification is available
-        if not INCOME_VERIFICATION_AVAILABLE or IncomeVerificationPaystubsGetRequest is None:
-            logger.info("Income verification models not available in this Plaid SDK version")
-            return None
-        
-        # Check if income verification endpoint exists
-        if not hasattr(client, "income_verification_paystubs_get"):
-            logger.info("Income verification endpoint not available in this Plaid product")
-            return None
-        
-        # Try to get income data - this may fail if not supported
-        # Using a generic approach that may need adjustment based on Plaid API version
-        request = IncomeVerificationPaystubsGetRequest(access_token=access_token)
-        response = client.income_verification_paystubs_get(request)
-        
-        # Extract income data
-        paystubs = getattr(response, "paystubs", None)
-        if paystubs is None:
-            paystubs = response.get("paystubs", []) if isinstance(response, dict) else []
-        
-        if not paystubs:
-            return None
-        
-        # Convert to dict
-        result = {
-            "paystubs": [_plaid_obj_to_dict(paystub) for paystub in paystubs]
-        }
-        
-        logger.info(f"Fetched income data with {len(result['paystubs'])} paystubs")
-        return result
-        
-    except (AttributeError, ImportError) as e:
-        # Endpoint or model not available
-        logger.info(f"Income verification not available: {e}")
-        return None
-    except Exception as e:
-        # Check if it's an unsupported feature error
-        error_str = str(e).lower()
-        if any(phrase in error_str for phrase in ["not supported", "not available", "income", "not found", "invalid", "unauthorized"]):
-            logger.info(f"Income data not available: {e}")
-            return None
-        logger.error(f"Failed to fetch income: {e}")
-        raise
-
+    # For now, return None to indicate income data is not available
+    # This can be enhanced later when income verification is properly configured
+    logger.info("Income data fetch attempted - income verification requires additional product setup")
+    return None

@@ -1,0 +1,3817 @@
+{
+  "create_sandbox_public_token": {
+    "public_token": "public-sandbox-b9d9850c-d573-4b4f-bf40-ce4820b23a57"
+  },
+  "exchange_public_token": {
+    "access_token": "access-sandbox-c519d34d-7256-4bde-a1d5-71fbe0de01ed"
+  },
+  "get_accounts": {
+    "accounts": [
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "name": "Plaid Checking",
+        "type": "depository",
+        "subtype": "checking",
+        "balances": {
+          "available": 100,
+          "current": 110,
+          "iso_currency_code": "USD"
+        },
+        "mask": "0000",
+        "official_name": "Plaid Gold Standard 0% Interest Checking"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "name": "Plaid Saving",
+        "type": "depository",
+        "subtype": "savings",
+        "balances": {
+          "available": 200,
+          "current": 210,
+          "iso_currency_code": "USD"
+        },
+        "mask": "1111",
+        "official_name": "Plaid Silver Standard 0.1% Interest Saving"
+      },
+      {
+        "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+        "name": "Plaid CD",
+        "type": "depository",
+        "subtype": "cd",
+        "balances": {
+          "current": 1000,
+          "iso_currency_code": "USD"
+        },
+        "mask": "2222",
+        "official_name": "Plaid Bronze Standard 0.2% Interest CD"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "name": "Plaid Credit Card",
+        "type": "credit",
+        "subtype": "credit card",
+        "balances": {
+          "current": 410,
+          "iso_currency_code": "USD",
+          "limit": 2000
+        },
+        "mask": "3333",
+        "official_name": "Plaid Diamond 12.5% APR Interest Credit Card"
+      },
+      {
+        "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+        "name": "Plaid Money Market",
+        "type": "depository",
+        "subtype": "money market",
+        "balances": {
+          "available": 43200,
+          "current": 43200,
+          "iso_currency_code": "USD"
+        },
+        "mask": "4444",
+        "official_name": "Plaid Platinum Standard 1.85% Interest Money Market"
+      },
+      {
+        "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+        "name": "Plaid IRA",
+        "type": "investment",
+        "subtype": "ira",
+        "balances": {
+          "current": 320.76,
+          "iso_currency_code": "USD"
+        },
+        "mask": "5555"
+      },
+      {
+        "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+        "name": "Plaid 401k",
+        "type": "investment",
+        "subtype": "401k",
+        "balances": {
+          "current": 23631.9805,
+          "iso_currency_code": "USD"
+        },
+        "mask": "6666"
+      },
+      {
+        "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+        "name": "Plaid Student Loan",
+        "type": "loan",
+        "subtype": "student",
+        "balances": {
+          "current": 65262,
+          "iso_currency_code": "USD"
+        },
+        "mask": "7777"
+      },
+      {
+        "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+        "name": "Plaid Mortgage",
+        "type": "loan",
+        "subtype": "mortgage",
+        "balances": {
+          "current": 56302.06,
+          "iso_currency_code": "USD"
+        },
+        "mask": "8888"
+      },
+      {
+        "account_id": "PMD6ddk7oQfe1epjR4XbCkA4LaBP4dIolWxa4",
+        "name": "Plaid HSA",
+        "type": "depository",
+        "subtype": "hsa",
+        "balances": {
+          "available": 6009,
+          "current": 6009,
+          "iso_currency_code": "USD"
+        },
+        "mask": "9001",
+        "official_name": "Plaid Cares Health Savings Account"
+      },
+      {
+        "account_id": "p8nZddMA9Pfb1bgl574ETMPD4m7L3GHpMV7G1",
+        "name": "Plaid Cash Management",
+        "type": "depository",
+        "subtype": "cash management",
+        "balances": {
+          "available": 12060,
+          "current": 12060,
+          "iso_currency_code": "USD"
+        },
+        "mask": "9002",
+        "official_name": "Plaid Growth Cash Management"
+      },
+      {
+        "account_id": "ognQkk1y9JfLyL9xNz4GTeRwl1DZ73Hoe7JDa",
+        "name": "Plaid Business Credit Card",
+        "type": "credit",
+        "subtype": "credit card",
+        "balances": {
+          "available": 4980,
+          "current": 5020,
+          "iso_currency_code": "USD",
+          "limit": 10000
+        },
+        "mask": "9999",
+        "official_name": "Plaid Platinum Small Business Credit Card"
+      }
+    ]
+  },
+  "get_transactions": {
+    "transactions": [
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 89.4,
+        "authorized_date": "2026-01-09",
+        "counterparties": [
+          {
+            "confidence_level": "LOW",
+            "name": "FUN",
+            "type": "merchant"
+          }
+        ],
+        "date": "2026-01-10",
+        "iso_currency_code": "USD",
+        "merchant_name": "FUN",
+        "name": "SparkFun",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "ENTERTAINMENT_SPORTING_EVENTS_AMUSEMENT_PARKS_AND_MUSEUMS",
+          "primary": "ENTERTAINMENT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_ENTERTAINMENT.png",
+        "transaction_id": "L7D6zzpPo4fZaZXV7JwbTQw3reyw5dtkn48J6",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": -4.22,
+        "authorized_date": "2026-01-09",
+        "date": "2026-01-09",
+        "iso_currency_code": "USD",
+        "name": "INTRST PYMNT",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "INCOME_SALARY",
+          "primary": "INCOME",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_INCOME.png",
+        "transaction_id": "WEDVeeXkzLfJnJ8Ppgbks9xmEPMxZ1H6zNMGm",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "NKDjqyAdQQzpyeD8qpLnX0D6yvLe2KYKYYzQ4",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/united_airlines_1065.png",
+            "name": "United Airlines",
+            "type": "merchant",
+            "website": "united.com"
+          }
+        ],
+        "date": "2025-12-30",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/united_airlines_1065.png",
+        "merchant_entity_id": "NKDjqyAdQQzpyeD8qpLnX0D6yvLe2KYKYYzQ4",
+        "merchant_name": "United Airlines",
+        "name": "United Airlines",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "none33RAwMIWjWXMpoQGtq5kmXK5wpIAq7kB5",
+        "transaction_type": "special",
+        "website": "united.com"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 6.33,
+        "authorized_date": "2025-12-27",
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "eyg8o776k0QmNgVpAmaQj4WgzW9Qzo6O51gdd",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+            "name": "Uber",
+            "type": "merchant",
+            "website": "uber.com"
+          }
+        ],
+        "date": "2025-12-28",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+        "merchant_entity_id": "eyg8o776k0QmNgVpAmaQj4WgzW9Qzo6O51gdd",
+        "merchant_name": "Uber",
+        "name": "Uber 072515 SF**POOL**",
+        "payment_channel": "online",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "TRANSPORTATION_TAXIS_AND_RIDE_SHARES",
+          "primary": "TRANSPORTATION",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRANSPORTATION.png",
+        "transaction_id": "p8nZddMA9Pfb1bgl574ETMPvpqEPW5ipM6gxj",
+        "transaction_type": "special",
+        "website": "uber.com"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-12-25",
+        "iso_currency_code": "USD",
+        "name": "Tectra Inc",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "ENTERTAINMENT_SPORTING_EVENTS_AMUSEMENT_PARKS_AND_MUSEUMS",
+          "primary": "ENTERTAINMENT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_ENTERTAINMENT.png",
+        "transaction_id": "b4Wr99Dyg6tW9WZLqRrGtbadnoNapzCmp9Lwx",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 2078.5,
+        "date": "2025-12-24",
+        "iso_currency_code": "USD",
+        "name": "AUTOMATIC PAYMENT - THANK",
+        "payment_channel": "online",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRANSFER_OUT_ACCOUNT_TRANSFER",
+          "primary": "TRANSFER_OUT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRANSFER_OUT.png",
+        "transaction_id": "MeD6BBgPojFkdkz18EZ9clPbA4KPraiLgAxor",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "3LmdknrdwVy9vm0dqj417rLKeJXW7veV7eb2e",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/kfc_546.png",
+            "name": "KFC",
+            "type": "merchant",
+            "website": "kfc.com"
+          }
+        ],
+        "date": "2025-12-24",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/kfc_546.png",
+        "merchant_entity_id": "3LmdknrdwVy9vm0dqj417rLKeJXW7veV7eb2e",
+        "merchant_name": "KFC",
+        "name": "KFC",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "yxnyZZkr5MtWLW7JKaD9tw4vlJb41Kh4R1dQm",
+        "transaction_type": "place",
+        "website": "kfc.com"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-12-24",
+        "iso_currency_code": "USD",
+        "name": "Madison Bicycle Shop",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "HIGH",
+          "detailed": "GENERAL_MERCHANDISE_SPORTING_GOODS",
+          "primary": "GENERAL_MERCHANDISE",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_GENERAL_MERCHANDISE.png",
+        "transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrz9lMreWfgZKj5j",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": 25,
+        "authorized_date": "2025-12-14",
+        "date": "2025-12-15",
+        "iso_currency_code": "USD",
+        "name": "CREDIT CARD 3333 PAYMENT *//",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "LOAN_PAYMENTS_OTHER_PAYMENT",
+          "primary": "LOAN_PAYMENTS",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_LOAN_PAYMENTS.png",
+        "transaction_id": "ArE6vvwKpxiEvE5GBVmKFno9BXNomyi9NVwv7",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 5.4,
+        "authorized_date": "2025-12-14",
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "eyg8o776k0QmNgVpAmaQj4WgzW9Qzo6O51gdd",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+            "name": "Uber",
+            "type": "merchant",
+            "website": "uber.com"
+          }
+        ],
+        "date": "2025-12-15",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/uber_1060.png",
+        "merchant_entity_id": "eyg8o776k0QmNgVpAmaQj4WgzW9Qzo6O51gdd",
+        "merchant_name": "Uber",
+        "name": "Uber 063015 SF**POOL**",
+        "payment_channel": "online",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "TRANSPORTATION_TAXIS_AND_RIDE_SHARES",
+          "primary": "TRANSPORTATION",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRANSPORTATION.png",
+        "transaction_id": "ognQkk1y9JfLyL9xNz4GTeRvXPkRENCoeB93q",
+        "transaction_type": "special",
+        "website": "uber.com"
+      },
+      {
+        "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+        "amount": 5850,
+        "date": "2025-12-14",
+        "iso_currency_code": "USD",
+        "name": "ACH Electronic CreditGUSTO PAY 123456",
+        "payment_channel": "online",
+        "payment_meta": {
+          "payment_method": "ACH"
+        },
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "RENT_AND_UTILITIES_WATER",
+          "primary": "RENT_AND_UTILITIES",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_RENT_AND_UTILITIES.png",
+        "transaction_id": "L7D6zzpPo4fZaZXV7JwbTQw3reyw5dtkn48J4",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+        "amount": 1000,
+        "date": "2025-12-14",
+        "iso_currency_code": "USD",
+        "name": "CD DEPOSIT .INITIAL.",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "ENTERTAINMENT_SPORTING_EVENTS_AMUSEMENT_PARKS_AND_MUSEUMS",
+          "primary": "ENTERTAINMENT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_ENTERTAINMENT.png",
+        "transaction_id": "GaDAEEndoyhaGazgAm8KFBERgG5Edrf6gN94a",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 78.5,
+        "authorized_date": "2025-12-12",
+        "date": "2025-12-13",
+        "iso_currency_code": "USD",
+        "name": "Touchstone Climbing",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "PERSONAL_CARE_GYMS_AND_FITNESS_CENTERS",
+          "primary": "PERSONAL_CARE",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_PERSONAL_CARE.png",
+        "transaction_id": "1jE5DD6Wm4Cl3l61xGv7CJbl36dbLrupdy7wa",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": -500,
+        "authorized_date": "2025-12-13",
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "NKDjqyAdQQzpyeD8qpLnX0D6yvLe2KYKYYzQ4",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/united_airlines_1065.png",
+            "name": "United Airlines",
+            "type": "merchant",
+            "website": "united.com"
+          }
+        ],
+        "date": "2025-12-13",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/united_airlines_1065.png",
+        "merchant_entity_id": "NKDjqyAdQQzpyeD8qpLnX0D6yvLe2KYKYYzQ4",
+        "merchant_name": "United Airlines",
+        "name": "United Airlines",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "geWdLLM7kPFGzGyWo3dEtxajA34apmiEpZDXp",
+        "transaction_type": "special",
+        "website": "united.com"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 12,
+        "authorized_date": "2025-12-12",
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "vzWXDWBjB06j5BJoD3Jo84OJZg7JJzmqOZA22",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/mcdonalds_619.png",
+            "name": "McDonald's",
+            "type": "merchant",
+            "website": "mcdonalds.com"
+          }
+        ],
+        "date": "2025-12-12",
+        "iso_currency_code": "USD",
+        "location": {
+          "store_number": "3322"
+        },
+        "logo_url": "https://plaid-merchant-logos.plaid.com/mcdonalds_619.png",
+        "merchant_entity_id": "vzWXDWBjB06j5BJoD3Jo84OJZg7JJzmqOZA22",
+        "merchant_name": "McDonald's",
+        "name": "McDonald's",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "8LEA88JZqDCZBZLgDpMwTL7Zr8q7BvFWoQayb",
+        "transaction_type": "place",
+        "website": "mcdonalds.com"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 4.33,
+        "authorized_date": "2025-12-12",
+        "counterparties": [
+          {
+            "confidence_level": "VERY_HIGH",
+            "entity_id": "NZAJQ5wYdo1W1p39X5q5gpb15OMe39pj4pJBb",
+            "logo_url": "https://plaid-merchant-logos.plaid.com/starbucks_956.png",
+            "name": "Starbucks",
+            "type": "merchant",
+            "website": "starbucks.com"
+          }
+        ],
+        "date": "2025-12-12",
+        "iso_currency_code": "USD",
+        "logo_url": "https://plaid-merchant-logos.plaid.com/starbucks_956.png",
+        "merchant_entity_id": "NZAJQ5wYdo1W1p39X5q5gpb15OMe39pj4pJBb",
+        "merchant_name": "Starbucks",
+        "name": "Starbucks",
+        "payment_channel": "in store",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "VERY_HIGH",
+          "detailed": "FOOD_AND_DRINK_COFFEE",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "ExDbggV3vwtJEJ7X6lLksR37Jlx3Nqi4nAQLL",
+        "transaction_type": "place",
+        "website": "starbucks.com"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 89.4,
+        "date": "2025-12-11",
+        "iso_currency_code": "USD",
+        "name": "SparkFun",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "5ZmR11n564iJ6JmjGzXRsknzRErgZWUGzm9Xm",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": -4.22,
+        "date": "2025-12-10",
+        "iso_currency_code": "USD",
+        "name": "INTRST PYMNT",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "L7D6zzpPo4fZaZXV7JwbTQwlrLRV6Nieg5wn9",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-11-30",
+        "iso_currency_code": "USD",
+        "name": "United Airlines",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "aabKLL679BhlPlpbGXoKCMeRVKagqNSkpMr94",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 6.33,
+        "date": "2025-11-28",
+        "iso_currency_code": "USD",
+        "name": "Uber 072515 SF**POOL**",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "JPD6KKwV94t8j8maJL1DT4nzdeRaXqCQpPmXG",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-11-25",
+        "iso_currency_code": "USD",
+        "name": "Tectra Inc",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "4Q5DggnZGaUGeGdmvV75t5ZVqpyolMFl8PBxz",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 2078.5,
+        "date": "2025-11-24",
+        "iso_currency_code": "USD",
+        "name": "AUTOMATIC PAYMENT - THANK",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "LOAN_PAYMENTS_CREDIT_CARD_PAYMENT",
+          "primary": "LOAN_PAYMENTS",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_LOAN_PAYMENTS.png",
+        "transaction_id": "jMnNKKL7PJfdrd1ZWEN9trlJea814wtvoeD3k",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-11-24",
+        "iso_currency_code": "USD",
+        "name": "KFC",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "PMD6ddk7oQfe1epjR4XbCkALa6rMDNUXERg4n",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-11-24",
+        "iso_currency_code": "USD",
+        "name": "Madison Bicycle Shop",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "NQD6338Pg7UnGnE7dQVwuj8VaBgWJyCXLw91w",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": 25,
+        "date": "2025-11-15",
+        "iso_currency_code": "USD",
+        "name": "CREDIT CARD 3333 PAYMENT *//",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "LOAN_PAYMENTS_CREDIT_CARD_PAYMENT",
+          "primary": "LOAN_PAYMENTS",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_LOAN_PAYMENTS.png",
+        "transaction_id": "p8nZddMA9Pfb1bgl574ETMPgp4B1JKSJ9daMk",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 5.4,
+        "date": "2025-11-15",
+        "iso_currency_code": "USD",
+        "name": "Uber 063015 SF**POOL**",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "k1WPrrMAkxfGDGdjaBL6t5XgBpkMmLFJrvk7G",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+        "amount": 5850,
+        "date": "2025-11-14",
+        "iso_currency_code": "USD",
+        "name": "ACH Electronic CreditGUSTO PAY 123456",
+        "payment_channel": "other",
+        "payment_meta": {
+          "payment_method": "ACH"
+        },
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "b4Wr99Dyg6tW9WZLqRrGtbaJnPMyR9foge8lV",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+        "amount": 1000,
+        "date": "2025-11-14",
+        "iso_currency_code": "USD",
+        "name": "CD DEPOSIT .INITIAL.",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRANSFER_OUT_SAVINGS",
+          "primary": "TRANSFER_OUT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRANSFER_OUT.png",
+        "transaction_id": "8LEA88JZqDCZBZLgDpMwTL7prENQzKfZvBqb5",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 78.5,
+        "date": "2025-11-13",
+        "iso_currency_code": "USD",
+        "name": "Touchstone Climbing",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "71DmWWRXlaf5z5o1J3Rvilg3AqkEZ7F84qeG4",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": -500,
+        "date": "2025-11-13",
+        "iso_currency_code": "USD",
+        "name": "United Airlines",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "lLnjzzmAd9CxwxgZ16RGT3WeXLJ7qzfa1xlB1",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 12,
+        "date": "2025-11-12",
+        "iso_currency_code": "USD",
+        "name": "McDonald's",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "qEyMaaJA9bfXDXAlmBjWcK9Q437LbvI683nlJ",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 4.33,
+        "date": "2025-11-12",
+        "iso_currency_code": "USD",
+        "name": "Starbucks",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_COFFEE",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "KjD6rrAPZ4Cvbv69KX7pFZgNKqnXoltEgQMoV",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 89.4,
+        "date": "2025-11-11",
+        "iso_currency_code": "USD",
+        "name": "SparkFun",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "rln1447w9gFybyDWgkXGiRKAmdDBxWtdLzEb7",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": -4.22,
+        "date": "2025-11-10",
+        "iso_currency_code": "USD",
+        "name": "INTRST PYMNT",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "ognQkk1y9JfLyL9xNz4GTeRgXlVazBUp4mEe1",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-10-31",
+        "iso_currency_code": "USD",
+        "name": "United Airlines",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "ejW388Mw1PCn6nlLEeAGugyVbJ6eRKIayGpwM",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 6.33,
+        "date": "2025-10-29",
+        "iso_currency_code": "USD",
+        "name": "Uber 072515 SF**POOL**",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "zdXVEElz9atzjz7G6agMTG4MB6yDqZs3Dnpd3",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-10-26",
+        "iso_currency_code": "USD",
+        "name": "Tectra Inc",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "Q1D6aapZmXfgbgrzVKJecMq6lg4LpPSGrVvdp",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 2078.5,
+        "date": "2025-10-25",
+        "iso_currency_code": "USD",
+        "name": "AUTOMATIC PAYMENT - THANK",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "LOAN_PAYMENTS_CREDIT_CARD_PAYMENT",
+          "primary": "LOAN_PAYMENTS",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_LOAN_PAYMENTS.png",
+        "transaction_id": "1jE5DD6Wm4Cl3l61xGv7CJbR3NEqVptqb1BwZ",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-10-25",
+        "iso_currency_code": "USD",
+        "name": "KFC",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "MeD6BBgPojFkdkz18EZ9clPQA7jBXqF4brqo4",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 500,
+        "date": "2025-10-25",
+        "iso_currency_code": "USD",
+        "name": "Madison Bicycle Shop",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "ZKW6GGEBe8tErEpLB8XkF74w561QeKHJnB4je",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+        "amount": 25,
+        "date": "2025-10-16",
+        "iso_currency_code": "USD",
+        "name": "CREDIT CARD 3333 PAYMENT *//",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "LOAN_PAYMENTS_CREDIT_CARD_PAYMENT",
+          "primary": "LOAN_PAYMENTS",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_LOAN_PAYMENTS.png",
+        "transaction_id": "geWdLLM7kPFGzGyWo3dEtxazA1QD5ZuLjJWpy",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 5.4,
+        "date": "2025-10-16",
+        "iso_currency_code": "USD",
+        "name": "Uber 063015 SF**POOL**",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "BzbAggLk9DtAvAdXgo1Lf87oq5WQdatzqlrvA",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+        "amount": 5850,
+        "date": "2025-10-15",
+        "iso_currency_code": "USD",
+        "name": "ACH Electronic CreditGUSTO PAY 123456",
+        "payment_channel": "other",
+        "payment_meta": {
+          "payment_method": "ACH"
+        },
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrx93J4LKt4Ra6Eg",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+        "amount": 1000,
+        "date": "2025-10-15",
+        "iso_currency_code": "USD",
+        "name": "CD DEPOSIT .INITIAL.",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRANSFER_OUT_SAVINGS",
+          "primary": "TRANSFER_OUT",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRANSFER_OUT.png",
+        "transaction_id": "ExDbggV3vwtJEJ7X6lLksR3EJLQ6ogtgZNbq3",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+        "amount": 78.5,
+        "date": "2025-10-14",
+        "iso_currency_code": "USD",
+        "name": "Touchstone Climbing",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "L7D6zzpPo4fZaZXV7JwbTQwlrLRV6Nieg5wJ9",
+        "transaction_type": "unresolved"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": -500,
+        "date": "2025-10-14",
+        "iso_currency_code": "USD",
+        "name": "United Airlines",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "TRAVEL_FLIGHTS",
+          "primary": "TRAVEL",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_TRAVEL.png",
+        "transaction_id": "3eAoDDnJdGFGzGDpVgnNt1XD7pyRjnFmGxzg8",
+        "transaction_type": "special"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 12,
+        "date": "2025-10-13",
+        "iso_currency_code": "USD",
+        "name": "McDonald's",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_FAST_FOOD",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "x3nyZZDK5guxnxGkDr5XT49GAopvdXCymb8MN",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 4.33,
+        "date": "2025-10-13",
+        "iso_currency_code": "USD",
+        "name": "Starbucks",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "FOOD_AND_DRINK_COFFEE",
+          "primary": "FOOD_AND_DRINK",
+          "version": "v2"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_FOOD_AND_DRINK.png",
+        "transaction_id": "dP6BAAMZ8DtENEKLBAbkFQ8zXdp7RgiBop7yl",
+        "transaction_type": "place"
+      },
+      {
+        "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+        "amount": 89.4,
+        "date": "2025-10-12",
+        "iso_currency_code": "USD",
+        "name": "SparkFun",
+        "payment_channel": "other",
+        "pending": false,
+        "personal_finance_category": {
+          "confidence_level": "LOW",
+          "detailed": "OTHER",
+          "primary": "OTHER",
+          "version": "v1"
+        },
+        "personal_finance_category_icon_url": "https://plaid-category-icons.plaid.com/PFC_OTHER.png",
+        "transaction_id": "aabKLL679BhlPlpbGXoKCMeRVKagqNSkpMr6X",
+        "transaction_type": "unresolved"
+      }
+    ]
+  },
+  "get_balance": {
+    "balance_data": {
+      "accounts": [
+        {
+          "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+          "balances": {
+            "available": 100,
+            "current": 110,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "0000",
+          "name": "Plaid Checking",
+          "official_name": "Plaid Gold Standard 0% Interest Checking",
+          "subtype": "checking",
+          "type": "depository"
+        },
+        {
+          "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+          "balances": {
+            "available": 200,
+            "current": 210,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "1111",
+          "name": "Plaid Saving",
+          "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+          "subtype": "savings",
+          "type": "depository"
+        },
+        {
+          "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+          "balances": {
+            "current": 1000,
+            "iso_currency_code": "USD"
+          },
+          "mask": "2222",
+          "name": "Plaid CD",
+          "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+          "subtype": "cd",
+          "type": "depository"
+        },
+        {
+          "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+          "balances": {
+            "current": 410,
+            "iso_currency_code": "USD",
+            "limit": 2000
+          },
+          "mask": "3333",
+          "name": "Plaid Credit Card",
+          "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        },
+        {
+          "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+          "balances": {
+            "available": 43200,
+            "current": 43200,
+            "iso_currency_code": "USD"
+          },
+          "mask": "4444",
+          "name": "Plaid Money Market",
+          "official_name": "Plaid Platinum Standard 1.85% Interest Money Market",
+          "subtype": "money market",
+          "type": "depository"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "balances": {
+            "current": 320.76,
+            "iso_currency_code": "USD"
+          },
+          "mask": "5555",
+          "name": "Plaid IRA",
+          "subtype": "ira",
+          "type": "investment"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "balances": {
+            "current": 23631.9805,
+            "iso_currency_code": "USD"
+          },
+          "mask": "6666",
+          "name": "Plaid 401k",
+          "subtype": "401k",
+          "type": "investment"
+        },
+        {
+          "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+          "balances": {
+            "current": 65262,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "7777",
+          "name": "Plaid Student Loan",
+          "subtype": "student",
+          "type": "loan"
+        },
+        {
+          "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+          "balances": {
+            "current": 56302.06,
+            "iso_currency_code": "USD"
+          },
+          "mask": "8888",
+          "name": "Plaid Mortgage",
+          "subtype": "mortgage",
+          "type": "loan"
+        },
+        {
+          "account_id": "PMD6ddk7oQfe1epjR4XbCkA4LaBP4dIolWxa4",
+          "balances": {
+            "available": 6009,
+            "current": 6009,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9001",
+          "name": "Plaid HSA",
+          "official_name": "Plaid Cares Health Savings Account",
+          "subtype": "hsa",
+          "type": "depository"
+        },
+        {
+          "account_id": "p8nZddMA9Pfb1bgl574ETMPD4m7L3GHpMV7G1",
+          "balances": {
+            "available": 12060,
+            "current": 12060,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9002",
+          "name": "Plaid Cash Management",
+          "official_name": "Plaid Growth Cash Management",
+          "subtype": "cash management",
+          "type": "depository"
+        },
+        {
+          "account_id": "ognQkk1y9JfLyL9xNz4GTeRwl1DZ73Hoe7JDa",
+          "balances": {
+            "available": 4980,
+            "current": 5020,
+            "iso_currency_code": "USD",
+            "limit": 10000
+          },
+          "holder_category": "business",
+          "mask": "9999",
+          "name": "Plaid Business Credit Card",
+          "official_name": "Plaid Platinum Small Business Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        }
+      ],
+      "item": {
+        "auth_method": "INSTANT_AUTH",
+        "available_products": [
+          "assets",
+          "balance",
+          "identity",
+          "identity_match",
+          "income_verification",
+          "investments_auth",
+          "recurring_transactions",
+          "signal",
+          "statements",
+          "transfer"
+        ],
+        "billed_products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "institution_id": "ins_109508",
+        "institution_name": "First Platypus Bank",
+        "item_id": "ognQkk1y9JfLyL9xNz4GTeRwAJKQLBuRKw6bR",
+        "products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "update_type": "background",
+        "webhook": ""
+      },
+      "request_id": "RfvZlpKyqqe4i1v"
+    }
+  },
+  "get_liabilities": {
+    "liabilities_data": {
+      "accounts": [
+        {
+          "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+          "balances": {
+            "available": 100,
+            "current": 110,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "0000",
+          "name": "Plaid Checking",
+          "official_name": "Plaid Gold Standard 0% Interest Checking",
+          "subtype": "checking",
+          "type": "depository"
+        },
+        {
+          "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+          "balances": {
+            "available": 200,
+            "current": 210,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "1111",
+          "name": "Plaid Saving",
+          "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+          "subtype": "savings",
+          "type": "depository"
+        },
+        {
+          "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+          "balances": {
+            "current": 1000,
+            "iso_currency_code": "USD"
+          },
+          "mask": "2222",
+          "name": "Plaid CD",
+          "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+          "subtype": "cd",
+          "type": "depository"
+        },
+        {
+          "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+          "balances": {
+            "current": 410,
+            "iso_currency_code": "USD",
+            "limit": 2000
+          },
+          "mask": "3333",
+          "name": "Plaid Credit Card",
+          "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        },
+        {
+          "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+          "balances": {
+            "available": 43200,
+            "current": 43200,
+            "iso_currency_code": "USD"
+          },
+          "mask": "4444",
+          "name": "Plaid Money Market",
+          "official_name": "Plaid Platinum Standard 1.85% Interest Money Market",
+          "subtype": "money market",
+          "type": "depository"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "balances": {
+            "current": 320.76,
+            "iso_currency_code": "USD"
+          },
+          "mask": "5555",
+          "name": "Plaid IRA",
+          "subtype": "ira",
+          "type": "investment"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "balances": {
+            "current": 23631.9805,
+            "iso_currency_code": "USD"
+          },
+          "mask": "6666",
+          "name": "Plaid 401k",
+          "subtype": "401k",
+          "type": "investment"
+        },
+        {
+          "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+          "balances": {
+            "current": 65262,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "7777",
+          "name": "Plaid Student Loan",
+          "subtype": "student",
+          "type": "loan"
+        },
+        {
+          "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+          "balances": {
+            "current": 56302.06,
+            "iso_currency_code": "USD"
+          },
+          "mask": "8888",
+          "name": "Plaid Mortgage",
+          "subtype": "mortgage",
+          "type": "loan"
+        },
+        {
+          "account_id": "PMD6ddk7oQfe1epjR4XbCkA4LaBP4dIolWxa4",
+          "balances": {
+            "available": 6009,
+            "current": 6009,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9001",
+          "name": "Plaid HSA",
+          "official_name": "Plaid Cares Health Savings Account",
+          "subtype": "hsa",
+          "type": "depository"
+        },
+        {
+          "account_id": "p8nZddMA9Pfb1bgl574ETMPD4m7L3GHpMV7G1",
+          "balances": {
+            "available": 12060,
+            "current": 12060,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9002",
+          "name": "Plaid Cash Management",
+          "official_name": "Plaid Growth Cash Management",
+          "subtype": "cash management",
+          "type": "depository"
+        },
+        {
+          "account_id": "ognQkk1y9JfLyL9xNz4GTeRwl1DZ73Hoe7JDa",
+          "balances": {
+            "available": 4980,
+            "current": 5020,
+            "iso_currency_code": "USD",
+            "limit": 10000
+          },
+          "holder_category": "business",
+          "mask": "9999",
+          "name": "Plaid Business Credit Card",
+          "official_name": "Plaid Platinum Small Business Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        }
+      ],
+      "item": {
+        "auth_method": "INSTANT_AUTH",
+        "available_products": [
+          "assets",
+          "balance",
+          "identity",
+          "identity_match",
+          "income_verification",
+          "investments_auth",
+          "recurring_transactions",
+          "signal",
+          "statements",
+          "transfer"
+        ],
+        "billed_products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "institution_id": "ins_109508",
+        "institution_name": "First Platypus Bank",
+        "item_id": "ognQkk1y9JfLyL9xNz4GTeRwAJKQLBuRKw6bR",
+        "products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "update_type": "background",
+        "webhook": ""
+      },
+      "liabilities": {
+        "credit": [
+          {
+            "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+            "aprs": [
+              {
+                "apr_percentage": 15.24,
+                "apr_type": "balance_transfer_apr",
+                "balance_subject_to_apr": 1562.32,
+                "interest_charge_amount": 130.22
+              },
+              {
+                "apr_percentage": 27.95,
+                "apr_type": "cash_apr",
+                "balance_subject_to_apr": 56.22,
+                "interest_charge_amount": 14.81
+              },
+              {
+                "apr_percentage": 12.5,
+                "apr_type": "purchase_apr",
+                "balance_subject_to_apr": 157.01,
+                "interest_charge_amount": 25.66
+              },
+              {
+                "apr_percentage": 0,
+                "apr_type": "special",
+                "balance_subject_to_apr": 1000,
+                "interest_charge_amount": 0
+              }
+            ],
+            "is_overdue": false,
+            "last_payment_amount": 168.25,
+            "last_payment_date": "2019-05-22",
+            "last_statement_balance": 1708.77,
+            "last_statement_issue_date": "2019-05-28",
+            "minimum_payment_amount": 20,
+            "next_payment_due_date": "2020-05-28"
+          }
+        ],
+        "mortgage": [
+          {
+            "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+            "current_late_fee": 25,
+            "escrow_balance": 1200,
+            "has_pmi": true,
+            "has_prepayment_penalty": true,
+            "interest_rate": {
+              "percentage": 3.99,
+              "type": "fixed"
+            },
+            "last_payment_amount": 3141.54,
+            "last_payment_date": "2019-08-01",
+            "loan_term": "30 year",
+            "loan_type_description": "conventional",
+            "maturity_date": "2045-07-31",
+            "next_monthly_payment": 3141.54,
+            "next_payment_due_date": "2019-11-15",
+            "origination_date": "2015-08-01",
+            "origination_principal_amount": 425000,
+            "past_due_amount": 2304,
+            "property_address": {
+              "city": "Malakoff",
+              "country": "US",
+              "postal_code": "14236",
+              "region": "NY",
+              "street": "2992 Cameron Road"
+            },
+            "ytd_interest_paid": 12300.4,
+            "ytd_principal_paid": 12340.5
+          }
+        ],
+        "student": [
+          {
+            "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+            "disbursement_dates": [
+              "2002-08-28"
+            ],
+            "expected_payoff_date": "2032-07-28",
+            "guarantor": "DEPT OF ED",
+            "interest_rate_percentage": 5.25,
+            "is_overdue": false,
+            "last_payment_amount": 138.05,
+            "last_payment_date": "2019-04-22",
+            "last_statement_balance": 138.05,
+            "last_statement_issue_date": "2019-04-28",
+            "loan_name": "Consolidation",
+            "loan_status": {
+              "end_date": "2032-07-28",
+              "type": "repayment"
+            },
+            "minimum_payment_amount": 25,
+            "next_payment_due_date": "2019-05-28",
+            "origination_date": "2002-08-28",
+            "origination_principal_amount": 25000,
+            "outstanding_interest_amount": 6227.36,
+            "pslf_status": {
+              "estimated_eligibility_date": "2021-01-01",
+              "payments_made": 78,
+              "payments_remaining": 42
+            },
+            "repayment_plan": {
+              "description": "Standard Repayment",
+              "type": "standard"
+            },
+            "sequence_number": "1",
+            "servicer_address": {
+              "city": "San Matias",
+              "country": "US",
+              "postal_code": "99415",
+              "region": "CA",
+              "street": "123 Relaxation Road"
+            },
+            "ytd_interest_paid": 280.55,
+            "ytd_principal_paid": 271.65
+          }
+        ]
+      },
+      "request_id": "2JeawvFqE8CC8Oi"
+    }
+  },
+  "get_investments_holdings": {
+    "investments_holdings": {
+      "accounts": [
+        {
+          "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+          "balances": {
+            "available": 100,
+            "current": 110,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "0000",
+          "name": "Plaid Checking",
+          "official_name": "Plaid Gold Standard 0% Interest Checking",
+          "subtype": "checking",
+          "type": "depository"
+        },
+        {
+          "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+          "balances": {
+            "available": 200,
+            "current": 210,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "1111",
+          "name": "Plaid Saving",
+          "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+          "subtype": "savings",
+          "type": "depository"
+        },
+        {
+          "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+          "balances": {
+            "current": 1000,
+            "iso_currency_code": "USD"
+          },
+          "mask": "2222",
+          "name": "Plaid CD",
+          "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+          "subtype": "cd",
+          "type": "depository"
+        },
+        {
+          "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+          "balances": {
+            "current": 410,
+            "iso_currency_code": "USD",
+            "limit": 2000
+          },
+          "mask": "3333",
+          "name": "Plaid Credit Card",
+          "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        },
+        {
+          "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+          "balances": {
+            "available": 43200,
+            "current": 43200,
+            "iso_currency_code": "USD"
+          },
+          "mask": "4444",
+          "name": "Plaid Money Market",
+          "official_name": "Plaid Platinum Standard 1.85% Interest Money Market",
+          "subtype": "money market",
+          "type": "depository"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "balances": {
+            "current": 320.76,
+            "iso_currency_code": "USD"
+          },
+          "mask": "5555",
+          "name": "Plaid IRA",
+          "subtype": "ira",
+          "type": "investment"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "balances": {
+            "current": 23631.9805,
+            "iso_currency_code": "USD"
+          },
+          "mask": "6666",
+          "name": "Plaid 401k",
+          "subtype": "401k",
+          "type": "investment"
+        },
+        {
+          "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+          "balances": {
+            "current": 65262,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "7777",
+          "name": "Plaid Student Loan",
+          "subtype": "student",
+          "type": "loan"
+        },
+        {
+          "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+          "balances": {
+            "current": 56302.06,
+            "iso_currency_code": "USD"
+          },
+          "mask": "8888",
+          "name": "Plaid Mortgage",
+          "subtype": "mortgage",
+          "type": "loan"
+        },
+        {
+          "account_id": "PMD6ddk7oQfe1epjR4XbCkA4LaBP4dIolWxa4",
+          "balances": {
+            "available": 6009,
+            "current": 6009,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9001",
+          "name": "Plaid HSA",
+          "official_name": "Plaid Cares Health Savings Account",
+          "subtype": "hsa",
+          "type": "depository"
+        },
+        {
+          "account_id": "p8nZddMA9Pfb1bgl574ETMPD4m7L3GHpMV7G1",
+          "balances": {
+            "available": 12060,
+            "current": 12060,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9002",
+          "name": "Plaid Cash Management",
+          "official_name": "Plaid Growth Cash Management",
+          "subtype": "cash management",
+          "type": "depository"
+        },
+        {
+          "account_id": "ognQkk1y9JfLyL9xNz4GTeRwl1DZ73Hoe7JDa",
+          "balances": {
+            "available": 4980,
+            "current": 5020,
+            "iso_currency_code": "USD",
+            "limit": 10000
+          },
+          "holder_category": "business",
+          "mask": "9999",
+          "name": "Plaid Business Credit Card",
+          "official_name": "Plaid Platinum Small Business Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        }
+      ],
+      "holdings": [
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "cost_basis": 1,
+          "institution_price": 1,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 0.01,
+          "iso_currency_code": "USD",
+          "quantity": 0.01,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "vested_quantity": 1,
+          "vested_value": 1
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 1.5,
+          "institution_price": 2.11,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 2.11,
+          "iso_currency_code": "USD",
+          "quantity": 1,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 10,
+          "institution_price": 10.42,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 20.84,
+          "iso_currency_code": "USD",
+          "quantity": 2,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "cost_basis": 0.01,
+          "institution_price": 0.011,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 110,
+          "iso_currency_code": "USD",
+          "quantity": 10000,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 120.03,
+          "institution_price": 39358.09375,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 115.57268,
+          "iso_currency_code": "USD",
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "cost_basis": 40,
+          "institution_price": 42.15,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 210.75,
+          "iso_currency_code": "USD",
+          "quantity": 5,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "vested_quantity": 7,
+          "vested_value": 66
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 16,
+          "institution_price": 20,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 430,
+          "iso_currency_code": "USD",
+          "quantity": 21.5,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 23,
+          "institution_price": 27,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 636.309,
+          "iso_currency_code": "USD",
+          "quantity": 23.567,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 948.08,
+          "institution_price": 94.808,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 948.08,
+          "iso_currency_code": "USD",
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 15,
+          "institution_price": 13.73,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 1373.6865,
+          "iso_currency_code": "USD",
+          "quantity": 100.05,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 22,
+          "institution_price": 24.5,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 1855.875,
+          "iso_currency_code": "USD",
+          "quantity": 75.75,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 30,
+          "institution_price": 34.73,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 7397.49,
+          "iso_currency_code": "USD",
+          "quantity": 213,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "cost_basis": 1,
+          "institution_price": 1,
+          "institution_price_as_of": "2021-05-25",
+          "institution_value": 12345.67,
+          "iso_currency_code": "USD",
+          "quantity": 12345.67,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are"
+        }
+      ],
+      "item": {
+        "auth_method": "INSTANT_AUTH",
+        "available_products": [
+          "assets",
+          "balance",
+          "identity",
+          "identity_match",
+          "income_verification",
+          "investments_auth",
+          "recurring_transactions",
+          "signal",
+          "statements",
+          "transfer"
+        ],
+        "billed_products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "institution_id": "ins_109508",
+        "institution_name": "First Platypus Bank",
+        "item_id": "ognQkk1y9JfLyL9xNz4GTeRwAJKQLBuRKw6bR",
+        "products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "update_type": "background",
+        "webhook": ""
+      },
+      "request_id": "XF0qRavNhqZ0HQS",
+      "securities": [
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Nflx Feb 01'18 $355 Call",
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "ticker_symbol": "NFLX180201C00355000",
+          "type": "derivative"
+        },
+        {
+          "is_cash_equivalent": true,
+          "iso_currency_code": "USD",
+          "name": "Bitcoin",
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "ticker_symbol": "BTC",
+          "type": "cryptocurrency"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Matthews Pacific Tiger Fund Insti Class",
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "ticker_symbol": "MIPTX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Achillion Pharmaceuticals Inc.",
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "ticker_symbol": "ACHN",
+          "type": "equity"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Cambiar International Equity Institutional",
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "ticker_symbol": "CAMYX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "DoubleLine Total Return Bond Fund",
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "ticker_symbol": "DBLTX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "T. Rowe Price Equity Income",
+          "security_id": "PDRMBVM8r3t5BA9NmJdKfPolGqlg8dtEGB37n",
+          "ticker_symbol": "PRFDX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "type": "fixed income"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "iShares Inc MSCI Brazil",
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "ticker_symbol": "EWZ",
+          "type": "etf"
+        },
+        {
+          "is_cash_equivalent": true,
+          "iso_currency_code": "USD",
+          "name": "U S Dollar",
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "type": "cash"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Southside Bancshares Inc.",
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "ticker_symbol": "SBSI",
+          "type": "equity"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Trp Equity Income",
+          "proxy_security_id": "PDRMBVM8r3t5BA9NmJdKfPolGqlg8dtEGB37n",
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "type": "mutual fund"
+        },
+        {
+          "institution_id": "ins_109508",
+          "institution_security_id": "NHX105509",
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "NH PORTFOLIO 1055 (FIDELITY INDEX)",
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "ticker_symbol": "NHX105509",
+          "type": "etf"
+        }
+      ]
+    }
+  },
+  "get_investments_transactions": {
+    "investments_transactions": {
+      "accounts": [
+        {
+          "account_id": "rln1447w9gFybyDWgkXGiRK3AmPg3ef7R6r46",
+          "balances": {
+            "available": 100,
+            "current": 110,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "0000",
+          "name": "Plaid Checking",
+          "official_name": "Plaid Gold Standard 0% Interest Checking",
+          "subtype": "checking",
+          "type": "depository"
+        },
+        {
+          "account_id": "zdXVEElz9atzjz7G6agMTG4RMBPnR5flbLArm",
+          "balances": {
+            "available": 200,
+            "current": 210,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "1111",
+          "name": "Plaid Saving",
+          "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+          "subtype": "savings",
+          "type": "depository"
+        },
+        {
+          "account_id": "BzbAggLk9DtAvAdXgo1Lf87koqXMkJf4o89Eg",
+          "balances": {
+            "current": 1000,
+            "iso_currency_code": "USD"
+          },
+          "mask": "2222",
+          "name": "Plaid CD",
+          "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+          "subtype": "cd",
+          "type": "depository"
+        },
+        {
+          "account_id": "3eAoDDnJdGFGzGDpVgnNt1X9D7lE94uZyn76V",
+          "balances": {
+            "current": 410,
+            "iso_currency_code": "USD",
+            "limit": 2000
+          },
+          "mask": "3333",
+          "name": "Plaid Credit Card",
+          "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        },
+        {
+          "account_id": "x3nyZZDK5guxnxGkDr5XT498GA7D83u6aV5jM",
+          "balances": {
+            "available": 43200,
+            "current": 43200,
+            "iso_currency_code": "USD"
+          },
+          "mask": "4444",
+          "name": "Plaid Money Market",
+          "official_name": "Plaid Platinum Standard 1.85% Interest Money Market",
+          "subtype": "money market",
+          "type": "depository"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "balances": {
+            "current": 320.76,
+            "iso_currency_code": "USD"
+          },
+          "mask": "5555",
+          "name": "Plaid IRA",
+          "subtype": "ira",
+          "type": "investment"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "balances": {
+            "current": 23631.9805,
+            "iso_currency_code": "USD"
+          },
+          "mask": "6666",
+          "name": "Plaid 401k",
+          "subtype": "401k",
+          "type": "investment"
+        },
+        {
+          "account_id": "4Q5DggnZGaUGeGdmvV75t5Z6Vqbz6RiJyA6zy",
+          "balances": {
+            "current": 65262,
+            "iso_currency_code": "USD"
+          },
+          "holder_category": "personal",
+          "mask": "7777",
+          "name": "Plaid Student Loan",
+          "subtype": "student",
+          "type": "loan"
+        },
+        {
+          "account_id": "NQD6338Pg7UnGnE7dQVwuj8bVaM4bZiyJ5ld4",
+          "balances": {
+            "current": 56302.06,
+            "iso_currency_code": "USD"
+          },
+          "mask": "8888",
+          "name": "Plaid Mortgage",
+          "subtype": "mortgage",
+          "type": "loan"
+        },
+        {
+          "account_id": "PMD6ddk7oQfe1epjR4XbCkA4LaBP4dIolWxa4",
+          "balances": {
+            "available": 6009,
+            "current": 6009,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9001",
+          "name": "Plaid HSA",
+          "official_name": "Plaid Cares Health Savings Account",
+          "subtype": "hsa",
+          "type": "depository"
+        },
+        {
+          "account_id": "p8nZddMA9Pfb1bgl574ETMPD4m7L3GHpMV7G1",
+          "balances": {
+            "available": 12060,
+            "current": 12060,
+            "iso_currency_code": "USD"
+          },
+          "mask": "9002",
+          "name": "Plaid Cash Management",
+          "official_name": "Plaid Growth Cash Management",
+          "subtype": "cash management",
+          "type": "depository"
+        },
+        {
+          "account_id": "ognQkk1y9JfLyL9xNz4GTeRwl1DZ73Hoe7JDa",
+          "balances": {
+            "available": 4980,
+            "current": 5020,
+            "iso_currency_code": "USD",
+            "limit": 10000
+          },
+          "holder_category": "business",
+          "mask": "9999",
+          "name": "Plaid Business Credit Card",
+          "official_name": "Plaid Platinum Small Business Credit Card",
+          "subtype": "credit card",
+          "type": "credit"
+        }
+      ],
+      "investment_transactions": [
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2026-01-09",
+          "fees": 0,
+          "investment_transaction_id": "x3nyZZDK5guxnxGkDr5XT49NPM84Ewf6EJGMA",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2026-01-08",
+          "fees": 0,
+          "investment_transaction_id": "rln1447w9gFybyDWgkXGiRKp1b3RljF7va5bl",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2026-01-08",
+          "fees": 0,
+          "investment_transaction_id": "3eAoDDnJdGFGzGDpVgnNt1Xqe391o5uZaM1gM",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2026-01-07",
+          "fees": 7.99,
+          "investment_transaction_id": "qEyMaaJA9bfXDXAlmBjWcK9DoegKjmFgqNDl8",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2026-01-07",
+          "fees": 3.99,
+          "investment_transaction_id": "KjD6rrAPZ4Cvbv69KX7pFZgL7yVZG1CRvGBo6",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2026-01-06",
+          "fees": 7.99,
+          "investment_transaction_id": "lLnjzzmAd9CxwxgZ16RGT3WPAly3BvFpvEXBz",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2026-01-05",
+          "fees": 5,
+          "investment_transaction_id": "k1WPrrMAkxfGDGdjaBL6t5XWqQv57eCLbzV73",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2026-01-04",
+          "fees": 7.99,
+          "investment_transaction_id": "JPD6KKwV94t8j8maJL1DT4nmrAE4kDfBLorXP",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2026-01-03",
+          "fees": 5,
+          "investment_transaction_id": "rln1447w9gFybyDWgkXGiRKp1b3RljF7vavZG",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2026-01-03",
+          "fees": 0,
+          "investment_transaction_id": "zdXVEElz9atzjz7G6agMTG4LreRG8JhlGwGxj",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2026-01-03",
+          "fees": 0,
+          "investment_transaction_id": "5ZmR11n564iJ6JmjGzXRsknveq4kboC5D3PXl",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2026-01-02",
+          "fees": 0,
+          "investment_transaction_id": "KjD6rrAPZ4Cvbv69KX7pFZgL7yVZG1CRvGvzK",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2026-01-02",
+          "fees": 0,
+          "investment_transaction_id": "wBmweeRqJbixdxZ8q9bGT5dMxKA5v4CP6q7z9",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2026-01-01",
+          "fees": 1.95,
+          "investment_transaction_id": "V8D677Zqrafw4wgzr16ytm5PnXvmWQU9Jp8Qm",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-31T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2026-01-01",
+          "fees": 0,
+          "investment_transaction_id": "zdXVEElz9atzjz7G6agMTG4LreRG8JhlGwvdl",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2026-01-01",
+          "fees": 0,
+          "investment_transaction_id": "BzbAggLk9DtAvAdXgo1Lf87mvBk84Pu4GAKvz",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2026-01-01T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-12-30",
+          "fees": 0,
+          "investment_transaction_id": "D3D699nBV1uXpXVgG97EcwkE6vRwXgt38EPNo",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-12-29",
+          "fees": 0,
+          "investment_transaction_id": "vzny77glAMtAoAy6W5rEfQg9XbZQdxFqDn3bD",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-12-29",
+          "fees": 0,
+          "investment_transaction_id": "XlW6DDbrBgFV6V85ozPbiWRb46EWL8cbRPWkQ",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-12-28",
+          "fees": 7.99,
+          "investment_transaction_id": "yxnyZZkr5MtWLW7JKaD9tw4eRPDwodt4QWqPR",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2025-12-28",
+          "fees": 3.99,
+          "investment_transaction_id": "9pEDggR6KdfR3ReXKvGNi8reDAE8qLu4mVWop",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2025-12-27",
+          "fees": 7.99,
+          "investment_transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrX76vZ8NCg5Mvey",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2025-12-26",
+          "fees": 5,
+          "investment_transaction_id": "b4Wr99Dyg6tW9WZLqRrGtbaQBxrbWKcmwN4nK",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2025-12-25",
+          "fees": 7.99,
+          "investment_transaction_id": "none33RAwMIWjWXMpoQGtq53AGxq9EiABKy99",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2025-12-24",
+          "fees": 5,
+          "investment_transaction_id": "lLnjzzmAd9CxwxgZ16RGT3WPAly3BvFpvEvbr",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2025-12-24",
+          "fees": 0,
+          "investment_transaction_id": "qEyMaaJA9bfXDXAlmBjWcK9DoegKjmFgqNqwo",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2025-12-24",
+          "fees": 0,
+          "investment_transaction_id": "GaDAEEndoyhaGazgAm8KFBEJl8bBXPf64AeK7",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2025-12-23",
+          "fees": 0,
+          "investment_transaction_id": "k1WPrrMAkxfGDGdjaBL6t5XWqQv57eCLbzbZz",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2025-12-23",
+          "fees": 0,
+          "investment_transaction_id": "ArE6vvwKpxiEvE5GBVmKFno3J8vng7F9v6XL5",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2025-12-22",
+          "fees": 1.95,
+          "investment_transaction_id": "WEDVeeXkzLfJnJ8Ppgbks9xvLBk9X3i6Gwm3E",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-21T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2025-12-22",
+          "fees": 0,
+          "investment_transaction_id": "RLD644wGoQC8m8pyXveQTlKxz5olbNCaQXvNv",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2025-12-22",
+          "fees": 0,
+          "investment_transaction_id": "6ME511nvdefXwXl7gmRBc51Gxbd5kWC8RboQW",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-22T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-12-20",
+          "fees": 0,
+          "investment_transaction_id": "ExDbggV3vwtJEJ7X6lLksR3Dny8RjrF4L9K8k",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-12-19",
+          "fees": 0,
+          "investment_transaction_id": "p8nZddMA9Pfb1bgl574ETMPRexDMX6CpxE1la",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-12-19",
+          "fees": 0,
+          "investment_transaction_id": "8LEA88JZqDCZBZLgDpMwTL7P6d4LXAFWyKl7j",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-12-18",
+          "fees": 7.99,
+          "investment_transaction_id": "1jE5DD6Wm4Cl3l61xGv7CJbknXzJaxipwZJ9M",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2025-12-18",
+          "fees": 3.99,
+          "investment_transaction_id": "L7D6zzpPo4fZaZXV7JwbTQwnBkqQE1FkJlr61",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2025-12-17",
+          "fees": 7.99,
+          "investment_transaction_id": "MeD6BBgPojFkdkz18EZ9clPdowMlmzCLoeMRn",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2025-12-16",
+          "fees": 5,
+          "investment_transaction_id": "ZKW6GGEBe8tErEpLB8XkF74vnRm7WaiejrK1Z",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2025-12-15",
+          "fees": 7.99,
+          "investment_transaction_id": "Q1D6aapZmXfgbgrzVKJecMq8w9XMJVCwd38lq",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2025-12-14",
+          "fees": 5,
+          "investment_transaction_id": "5ZmR11n564iJ6JmjGzXRsknveq4kboC5D3DN5",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2025-12-14",
+          "fees": 0,
+          "investment_transaction_id": "JPD6KKwV94t8j8maJL1DT4nmrAE4kDfBLoLRQ",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2025-12-14",
+          "fees": 0,
+          "investment_transaction_id": "ejW388Mw1PCn6nlLEeAGugypAdxgWmFrw7j3q",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2025-12-13",
+          "fees": 0,
+          "investment_transaction_id": "wBmweeRqJbixdxZ8q9bGT5dMxKA5v4CP6q6Wr",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2025-12-13",
+          "fees": 0,
+          "investment_transaction_id": "71DmWWRXlaf5z5o1J3RvilgnN9dleWCdGM9BA",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2025-12-12",
+          "fees": 1.95,
+          "investment_transaction_id": "jMnNKKL7PJfdrd1ZWEN9trl7Xyvrz9C63ZXRb",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-11T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2025-12-12",
+          "fees": 0,
+          "investment_transaction_id": "ognQkk1y9JfLyL9xNz4GTeRmWbwe95io3klQz",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2025-12-12",
+          "fees": 0,
+          "investment_transaction_id": "geWdLLM7kPFGzGyWo3dEtxaNLVgxePcEX4mNQ",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-12T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-12-10",
+          "fees": 0,
+          "investment_transaction_id": "PMD6ddk7oQfe1epjR4XbCkA8Jl4kWZCo4QMyV",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-12-09",
+          "fees": 0,
+          "investment_transaction_id": "dP6BAAMZ8DtENEKLBAbkFQ8vZ9NQ6LFJ3DWnG",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-12-09",
+          "fees": 0,
+          "investment_transaction_id": "NQD6338Pg7UnGnE7dQVwuj8vd7bjL3fy1nDAa",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-12-08",
+          "fees": 7.99,
+          "investment_transaction_id": "3eAoDDnJdGFGzGDpVgnNt1Xqe391o5uZaM1VM",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2025-12-08",
+          "fees": 3.99,
+          "investment_transaction_id": "x3nyZZDK5guxnxGkDr5XT49NPM84Ewf6EJGKA",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2025-12-07",
+          "fees": 7.99,
+          "investment_transaction_id": "BzbAggLk9DtAvAdXgo1Lf87mvBk84Pu4GAKxz",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2025-12-06",
+          "fees": 5,
+          "investment_transaction_id": "zdXVEElz9atzjz7G6agMTG4LreRG8JhlGwvXl",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2025-12-05",
+          "fees": 7.99,
+          "investment_transaction_id": "rln1447w9gFybyDWgkXGiRKp1b3RljF7va5kl",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2025-12-04",
+          "fees": 5,
+          "investment_transaction_id": "D3D699nBV1uXpXVgG97EcwkE6vRwXgt38E86m",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2025-12-04",
+          "fees": 0,
+          "investment_transaction_id": "V8D677Zqrafw4wgzr16ytm5PnXvmWQU9JpJK6",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2025-12-04",
+          "fees": 0,
+          "investment_transaction_id": "KjD6rrAPZ4Cvbv69KX7pFZgL7yVZG1CRvGBD6",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2025-12-03",
+          "fees": 0,
+          "investment_transaction_id": "XlW6DDbrBgFV6V85ozPbiWRb46EWL8cbRPReM",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2025-12-03",
+          "fees": 0,
+          "investment_transaction_id": "qEyMaaJA9bfXDXAlmBjWcK9DoegKjmFgqNDy8",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2025-12-02",
+          "fees": 1.95,
+          "investment_transaction_id": "lLnjzzmAd9CxwxgZ16RGT3WPAly3BvFpvEXmz",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-01T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2025-12-02",
+          "fees": 0,
+          "investment_transaction_id": "aabKLL679BhlPlpbGXoKCMep4oQMvzCZ91WKo",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2025-12-02",
+          "fees": 0,
+          "investment_transaction_id": "4Q5DggnZGaUGeGdmvV75t5ZAJm658eCJxn1Rm",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2025-12-02T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-11-30",
+          "fees": 0,
+          "investment_transaction_id": "k1WPrrMAkxfGDGdjaBL6t5XWqQv57eCLbzV13",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-11-29",
+          "fees": 0,
+          "investment_transaction_id": "V8D677Zqrafw4wgzr16ytm5PnXvmWQU9Jp8Zm",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-11-29",
+          "fees": 0,
+          "investment_transaction_id": "JPD6KKwV94t8j8maJL1DT4nmrAE4kDfBLoreP",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-11-28",
+          "fees": 7.99,
+          "investment_transaction_id": "XlW6DDbrBgFV6V85ozPbiWRb46EWL8cbRPWvQ",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2025-11-28",
+          "fees": 3.99,
+          "investment_transaction_id": "D3D699nBV1uXpXVgG97EcwkE6vRwXgt38EPLo",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2025-11-27",
+          "fees": 7.99,
+          "investment_transaction_id": "6ME511nvdefXwXl7gmRBc51Gxbd5kWC8RboPW",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2025-11-26",
+          "fees": 5,
+          "investment_transaction_id": "RLD644wGoQC8m8pyXveQTlKxz5olbNCaQXvov",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2025-11-25",
+          "fees": 7.99,
+          "investment_transaction_id": "vzny77glAMtAoAy6W5rEfQg9XbZQdxFqDn3ZD",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2025-11-24",
+          "fees": 5,
+          "investment_transaction_id": "RLD644wGoQC8m8pyXveQTlKxz5olbNCaQXQnE",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2025-11-24",
+          "fees": 0,
+          "investment_transaction_id": "6ME511nvdefXwXl7gmRBc51Gxbd5kWC8RbRdq",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2025-11-24",
+          "fees": 0,
+          "investment_transaction_id": "9pEDggR6KdfR3ReXKvGNi8reDAE8qLu4mVW9p",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2025-11-23",
+          "fees": 0,
+          "investment_transaction_id": "vzny77glAMtAoAy6W5rEfQg9XbZQdxFqDnD8m",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2025-11-23",
+          "fees": 0,
+          "investment_transaction_id": "yxnyZZkr5MtWLW7JKaD9tw4eRPDwodt4QWq8R",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2025-11-22",
+          "fees": 1.95,
+          "investment_transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrX76vZ8NCg5MvQy",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-11-21T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2025-11-22",
+          "fees": 0,
+          "investment_transaction_id": "wBmweeRqJbixdxZ8q9bGT5dMxKA5v4CP6q719",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2025-11-22",
+          "fees": 0,
+          "investment_transaction_id": "5ZmR11n564iJ6JmjGzXRsknveq4kboC5D3PQl",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2025-11-22T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-11-20",
+          "fees": 0,
+          "investment_transaction_id": "b4Wr99Dyg6tW9WZLqRrGtbaQBxrbWKcmwN46K",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-11-19",
+          "fees": 0,
+          "investment_transaction_id": "WEDVeeXkzLfJnJ8Ppgbks9xvLBk9X3i6GwmQE",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-11-19",
+          "fees": 0,
+          "investment_transaction_id": "none33RAwMIWjWXMpoQGtq53AGxq9EiABKyM9",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-11-18",
+          "fees": 7.99,
+          "investment_transaction_id": "8LEA88JZqDCZBZLgDpMwTL7P6d4LXAFWyKlJj",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -203,
+          "date": "2025-11-18",
+          "fees": 3.99,
+          "investment_transaction_id": "ExDbggV3vwtJEJ7X6lLksR3Dny8RjrF4L9K5k",
+          "iso_currency_code": "USD",
+          "name": "SELL Trp Equity Income",
+          "price": 20.3,
+          "quantity": -10,
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 7.7,
+          "date": "2025-11-17",
+          "fees": 7.99,
+          "investment_transaction_id": "geWdLLM7kPFGzGyWo3dEtxaNLVgxePcEX4m7Q",
+          "iso_currency_code": "USD",
+          "name": "BUY DoubleLine Total Return Bond Fund",
+          "price": 10.42,
+          "quantity": 0.7388014749727547,
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.22,
+          "date": "2025-11-16",
+          "fees": 5,
+          "investment_transaction_id": "ognQkk1y9JfLyL9xNz4GTeRmWbwe95io3klVz",
+          "iso_currency_code": "USD",
+          "name": "SELL Cambiar International Equity Institutional",
+          "price": 25,
+          "quantity": -0.008902867462305952,
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 1.1,
+          "date": "2025-11-15",
+          "fees": 7.99,
+          "investment_transaction_id": "6ME511nvdefXwXl7gmRBc51Gxbd5kWC8RboP4",
+          "iso_currency_code": "USD",
+          "name": "BUY Achillion Pharmaceuticals Inc.",
+          "price": 2.16,
+          "quantity": 0.520877874205698,
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": 46.32,
+          "date": "2025-11-14",
+          "fees": 5,
+          "investment_transaction_id": "yxnyZZkr5MtWLW7JKaD9tw4eRPDwodt4QWQE3",
+          "iso_currency_code": "USD",
+          "name": "BUY NFLX DERIVATIVE",
+          "price": 0.01,
+          "quantity": 4211.152345617756,
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -1200,
+          "date": "2025-11-14",
+          "fees": 0,
+          "investment_transaction_id": "9pEDggR6KdfR3ReXKvGNi8reDAE8qLu4mVmZ8",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP CO CONTRIB CURRENT YR EMPLOYER CU CO CONTR CURRENT YR EMPLOYER CUR YR",
+          "price": 1,
+          "quantity": -1200,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1500,
+          "date": "2025-11-14",
+          "fees": 0,
+          "investment_transaction_id": "RLD644wGoQC8m8pyXveQTlKxz5olbNCaQXvoD",
+          "iso_currency_code": "USD",
+          "name": "EMPLOYER PAYROLL CONTRIBUTION",
+          "price": 1,
+          "quantity": -1500,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "contribution",
+          "type": "cash"
+        },
+        {
+          "account_id": "dP6BAAMZ8DtENEKLBAbkFQ8NzXlPNMHJ1Q8Kz",
+          "amount": -2066.58,
+          "date": "2025-11-13",
+          "fees": 0,
+          "investment_transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrX76vZ8NCg5M51o",
+          "iso_currency_code": "USD",
+          "name": "SELL iShares Inc MSCI Brazil",
+          "price": 41.62,
+          "quantity": -49.02909689729298,
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -14961.99,
+          "date": "2025-11-13",
+          "fees": 0,
+          "investment_transaction_id": "vzny77glAMtAoAy6W5rEfQg9XbZQdxFqDn3Z8",
+          "iso_currency_code": "USD",
+          "name": "SELL Southside Bancshares Inc.",
+          "price": 34.12,
+          "quantity": -430.80867509953123,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "sell",
+          "type": "sell"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 466.71,
+          "date": "2025-11-12",
+          "fees": 1.95,
+          "investment_transaction_id": "9pEDggR6KdfR3ReXKvGNi8reDAE8qLu4mVWgP",
+          "iso_currency_code": "USD",
+          "name": "BUY FIDELITY INDEX 1055",
+          "price": 13.57,
+          "quantity": 33.99208384602773,
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "subtype": "buy",
+          "transaction_datetime": "2025-11-11T14:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -0.1,
+          "date": "2025-11-12",
+          "fees": 0,
+          "investment_transaction_id": "ArE6vvwKpxiEvE5GBVmKFno3J8vng7F9v6Xx5",
+          "iso_currency_code": "USD",
+          "name": "INVBANKTRAN DEP INTEREST EARNED INTEREST EARNED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "interest",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 120.03,
+          "date": "2025-11-12",
+          "fees": 0,
+          "investment_transaction_id": "GaDAEEndoyhaGazgAm8KFBEJl8bBXPf64Ae77",
+          "iso_currency_code": "USD",
+          "name": "BUY BTC",
+          "price": 40876.02675,
+          "quantity": 0.00293644,
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "subtype": "buy",
+          "transaction_datetime": "2025-11-12T05:00:00Z",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 3,
+          "date": "2025-11-10",
+          "fees": 0,
+          "investment_transaction_id": "yxnyZZkr5MtWLW7JKaD9tw4eRPDwodt4QWqwV",
+          "iso_currency_code": "USD",
+          "name": "ACCOUNT FEE",
+          "price": 1,
+          "quantity": 3,
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "subtype": "account fee",
+          "type": "fee"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -8.72,
+          "date": "2025-11-09",
+          "fees": 0,
+          "investment_transaction_id": "GaDAEEndoyhaGazgAm8KFBEJl8bBXPf64Aeoj",
+          "iso_currency_code": "USD",
+          "name": "INCOME DIV DIVIDEND RECEIVED",
+          "price": 0,
+          "quantity": 0,
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "subtype": "dividend",
+          "type": "cash"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": 948.08,
+          "date": "2025-11-09",
+          "fees": 0,
+          "investment_transaction_id": "mpn7BBMAbgfVnVZeWG4EiZrX76vZ8NCg5MvXV",
+          "iso_currency_code": "USD",
+          "name": "BUY United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "price": 94.808,
+          "quantity": 10,
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "subtype": "buy",
+          "type": "buy"
+        },
+        {
+          "account_id": "aabKLL679BhlPlpbGXoKCMeQRVAWQ5UZmQjw5",
+          "amount": -1289.01,
+          "date": "2025-11-08",
+          "fees": 7.99,
+          "investment_transaction_id": "WEDVeeXkzLfJnJ8Ppgbks9xvLBk9X3i6Gwmjx",
+          "iso_currency_code": "USD",
+          "name": "SELL Matthews Pacific Tiger Fund Insti Class",
+          "price": 27.53,
+          "quantity": -47.74104242992852,
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "subtype": "sell",
+          "type": "sell"
+        }
+      ],
+      "item": {
+        "auth_method": "INSTANT_AUTH",
+        "available_products": [
+          "assets",
+          "balance",
+          "identity",
+          "identity_match",
+          "income_verification",
+          "investments_auth",
+          "recurring_transactions",
+          "signal",
+          "statements",
+          "transfer"
+        ],
+        "billed_products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "institution_id": "ins_109508",
+        "institution_name": "First Platypus Bank",
+        "item_id": "ognQkk1y9JfLyL9xNz4GTeRwAJKQLBuRKw6bR",
+        "products": [
+          "auth",
+          "investments",
+          "liabilities",
+          "transactions"
+        ],
+        "update_type": "background",
+        "webhook": ""
+      },
+      "request_id": "5Xg5kc8m1TJm227",
+      "securities": [
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Nflx Feb 01'18 $355 Call",
+          "security_id": "8E4L9XLl6MudjEpwPAAgivmdZRdBPJuvMPlPb",
+          "ticker_symbol": "NFLX180201C00355000",
+          "type": "derivative"
+        },
+        {
+          "is_cash_equivalent": true,
+          "iso_currency_code": "USD",
+          "name": "Bitcoin",
+          "security_id": "9EWp9Xpqk1ua6DyXQb89ikMARWA6eyUzAbPMg",
+          "ticker_symbol": "BTC",
+          "type": "cryptocurrency"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Matthews Pacific Tiger Fund Insti Class",
+          "security_id": "JDdP7XPMklt5vwPmDN45t3KAoWAPmjtpaW7DP",
+          "ticker_symbol": "MIPTX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Achillion Pharmaceuticals Inc.",
+          "security_id": "KDwjlXj1Rqt58dVvmzRguxJybmyQL8FgeWWAy",
+          "ticker_symbol": "ACHN",
+          "type": "equity"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Cambiar International Equity Institutional",
+          "security_id": "MD9eKXeplrt5yKRlzLqXiavwb6wrdxUb3wdnM",
+          "ticker_symbol": "CAMYX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "DoubleLine Total Return Bond Fund",
+          "security_id": "NDVQrXQoqzt5v3bAe8qRt4A7mK7wvZCLEBBJk",
+          "ticker_symbol": "DBLTX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "T. Rowe Price Equity Income",
+          "security_id": "PDRMBVM8r3t5BA9NmJdKfPolGqlg8dtEGB37n",
+          "ticker_symbol": "PRFDX",
+          "type": "mutual fund"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "United States Treas Bills 0.000% 10/31/24 B/E Dtd 11/02/23 N/C",
+          "security_id": "QDQ13y1Ezxt51QbDb6A8cjk9EK978our9NaAM",
+          "type": "fixed income"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "iShares Inc MSCI Brazil",
+          "security_id": "abJamDazkgfvBkVGgnnLUWXoxnomp5up8llg4",
+          "ticker_symbol": "EWZ",
+          "type": "etf"
+        },
+        {
+          "is_cash_equivalent": true,
+          "iso_currency_code": "USD",
+          "name": "U S Dollar",
+          "security_id": "d6ePmbPxgWCWmMVv66q9iPV94n91vMtov5Are",
+          "type": "cash"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Southside Bancshares Inc.",
+          "security_id": "eW4jmnjd6AtjxXVrjmj6SX1dNEdZp3Cy8RnRQ",
+          "ticker_symbol": "SBSI",
+          "type": "equity"
+        },
+        {
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "Trp Equity Income",
+          "proxy_security_id": "PDRMBVM8r3t5BA9NmJdKfPolGqlg8dtEGB37n",
+          "security_id": "lngLy3Le7vflLnAzKqwZs19l6bl8P5H1jG9Zz",
+          "type": "mutual fund"
+        },
+        {
+          "institution_id": "ins_109508",
+          "institution_security_id": "NHX105509",
+          "is_cash_equivalent": false,
+          "iso_currency_code": "USD",
+          "name": "NH PORTFOLIO 1055 (FIDELITY INDEX)",
+          "security_id": "nnmo8doZ4lfKNEDe3mPJipLGkaGw3jfPrpxoN",
+          "ticker_symbol": "NHX105509",
+          "type": "etf"
+        }
+      ],
+      "total_investment_transactions": 144
+    }
+  }
+}

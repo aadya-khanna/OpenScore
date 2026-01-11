@@ -8,14 +8,8 @@ from config import Config
 from auth import require_auth
 from db import get_db
 
-# Import blueprints - plaid blueprint import is now safe (handled in plaid_service.py)
-try:
-    from routes.plaid import bp as plaid_bp
-    plaid_available = True
-except ImportError:
-    plaid_available = False
-    plaid_bp = None
-
+# Import blueprints
+from routes.plaid import bp as plaid_bp
 from routes.score import bp as score_bp
 from routes.lender import bp as lender_bp
 from routes.data import bp as data_bp
@@ -75,10 +69,7 @@ def ensure_indexes():
 ensure_indexes()
 
 # Register blueprints
-if plaid_available and plaid_bp:
-    app.register_blueprint(plaid_bp)
-else:
-    logger.warning("Plaid blueprint not registered - plaid-python not installed")
+app.register_blueprint(plaid_bp)
 app.register_blueprint(score_bp)
 app.register_blueprint(lender_bp)
 app.register_blueprint(data_bp)
@@ -87,25 +78,29 @@ app.register_blueprint(data_bp)
 @app.route("/", methods=["GET"])
 def root():
     """Root endpoint - API information."""
+    # Build list of available endpoints
+    endpoints_dict = {
+        "GET /": "This endpoint - API information",
+        "GET /health": "Health check (no auth required)",
+        "GET /api/me": "Get current user info (auth required)",
+        "POST /api/plaid/link-token": "Create Plaid link token (auth required) - Uses REST API",
+        "POST /api/plaid/exchange": "Exchange Plaid public token (auth required) - Uses REST API",
+        "POST /api/plaid/transactions/sync": "Sync transactions from Plaid (auth required) - Uses REST API",
+        "POST /api/plaid/balances/sync": "Sync balances from Plaid (auth required) - Uses REST API",
+        "POST /api/plaid/income/sync": "Sync income from Plaid (auth required) - May not be available",
+        "GET /api/transactions": "Get stored transactions (auth required)",
+        "GET /api/balances": "Get stored balances (auth required)",
+        "GET /api/income": "Get stored income (auth required)",
+        "POST /api/score/calculate": "Calculate score (auth required) - Placeholder",
+        "GET /api/lender/list": "List lenders (auth required) - Placeholder"
+    }
+    
     endpoints = {
         "name": "OpenScore API",
         "version": "1.0.0",
-        "endpoints": {
-            "GET /": "This endpoint - API information",
-            "GET /health": "Health check (no auth required)",
-            "GET /api/me": "Get current user info (auth required)",
-            "POST /api/plaid/link-token": "Create Plaid link token (auth required)",
-            "POST /api/plaid/exchange": "Exchange Plaid public token (auth required)",
-            "POST /api/plaid/transactions/sync": "Sync transactions from Plaid (auth required)",
-            "POST /api/plaid/balances/sync": "Sync balances from Plaid (auth required)",
-            "POST /api/plaid/income/sync": "Sync income from Plaid (auth required)",
-            "GET /api/transactions": "Get stored transactions (auth required)",
-            "GET /api/balances": "Get stored balances (auth required)",
-            "GET /api/income": "Get stored income (auth required)",
-            "POST /api/score/calculate": "Calculate score (auth required)",
-            "GET /api/lender/list": "List lenders (auth required)"
-        },
-        "authentication": "Bearer token (Auth0 JWT) required for /api/* endpoints"
+        "endpoints": endpoints_dict,
+        "authentication": "Bearer token (Auth0 JWT) required for /api/* endpoints",
+        "note": "All Plaid endpoints now use REST API with configuration from .env file"
     }
     return jsonify(endpoints), 200
 

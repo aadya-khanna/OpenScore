@@ -289,7 +289,12 @@ def require_auth(f):
                 "error": {
                     "code": "authentication_failed",
                     "message": str(e),
-                    "help": "This endpoint requires authentication. Provide an Auth0 JWT token in the Authorization header: Authorization: Bearer <your-token>. See GET / for API documentation."
+                    "help": "This endpoint requires authentication. Provide an Auth0 JWT token in the Authorization header: Authorization: Bearer <your-token>",
+                    "public_endpoints": [
+                        "GET / - API documentation",
+                        "GET /health - Health check"
+                    ],
+                    "documentation": "See GET / for full API documentation"
                 }
             }), 401
         except Exception as e:
@@ -298,7 +303,12 @@ def require_auth(f):
                 "error": {
                     "code": "authentication_error",
                     "message": "Authentication failed",
-                    "help": "This endpoint requires authentication. Provide an Auth0 JWT token in the Authorization header: Authorization: Bearer <your-token>. See GET / for API documentation."
+                    "help": "This endpoint requires authentication. Provide an Auth0 JWT token in the Authorization header: Authorization: Bearer <your-token>",
+                    "public_endpoints": [
+                        "GET / - API documentation",
+                        "GET /health - Health check"
+                    ],
+                    "documentation": "See GET / for full API documentation"
                 }
             }), 401
     
