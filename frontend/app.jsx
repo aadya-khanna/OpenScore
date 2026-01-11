@@ -48,152 +48,7 @@ const apiCall = async (endpoint, method = 'GET', token, body = null) => {
 };
 
 // DataSourceCard Component for Customer Dashboard
-const DataSourceCard = ({ source, isConnected, onConnect, onUpload, onModalOpen }) => {
-  const fileInputRef = useRef(null);
 
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-xl ${isConnected ? 'bg-green-100' : 'bg-gray-100'}`}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              dangerouslySetInnerHTML={{ __html: source.iconPath }}
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold flex items-center gap-2 mb-1">
-              {source.name}
-              <span className="text-xl">{source.emoji}</span>
-            </h3>
-            <p className="text-sm text-gray-500">{source.provider}</p>
-          </div>
-        </div>
-        {isConnected && (
-          <svg
-            className="w-6 h-6 text-green-500 flex-shrink-0"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-        )}
-      </div>
-      <p className="text-sm text-gray-600 mb-4">{source.description}</p>
-
-      {source.type === 'link' ? (
-        <button
-          onClick={onConnect}
-          disabled={isConnected}
-          className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-            isConnected
-              ? 'bg-green-100 text-green-700 cursor-default'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          {isConnected ? (
-            <>
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <span>Connected</span>
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-              <span>Connect Account</span>
-            </>
-          )}
-        </button>
-      ) : source.type === 'modal' ? (
-        <button
-          onClick={onModalOpen}
-          className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-            isConnected
-              ? 'bg-green-100 text-green-700'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          {isConnected ? (
-            <>
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <span>Added</span>
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-              </svg>
-              <span>Add Credentials</span>
-            </>
-          )}
-        </button>
-      ) : (
-        <>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            onChange={(e) => onUpload(e.target.files)}
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-              isConnected
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {isConnected ? (
-              <>
-                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <span>Uploaded</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" x2="12" y1="3" y2="15"></line>
-                </svg>
-                <span>Upload Documents</span>
-              </>
-            )}
-          </button>
-        </>
-      )}
-    </div>
-  );
-};
 
 // Lender Mock Data
 const lenderApplications = [
@@ -201,7 +56,7 @@ const lenderApplications = [
     id: '1',
     name: 'Sarah Chen',
     email: 'sarah.chen@email.com',
-    openScore: 782,
+    openScore: 78.2,
     riskLevel: 'Low',
     monthlyIncome: 8500,
     monthlySpend: 4200,
@@ -262,7 +117,7 @@ const lenderApplications = [
     id: '2',
     name: 'Marcus Williams',
     email: 'marcus.w@email.com',
-    openScore: 623,
+    openScore: 62.3,
     riskLevel: 'Medium',
     monthlyIncome: 5200,
     monthlySpend: 4800,
@@ -319,7 +174,7 @@ const lenderApplications = [
     id: '3',
     name: 'Emily Rodriguez',
     email: 'emily.r@email.com',
-    openScore: 845,
+    openScore: 84.5,
     riskLevel: 'Low',
     monthlyIncome: 12000,
     monthlySpend: 5100,
@@ -379,7 +234,7 @@ const lenderApplications = [
     id: '4',
     name: 'James Thompson',
     email: 'j.thompson@email.com',
-    openScore: 456,
+    openScore: 45.6,
     riskLevel: 'High',
     monthlyIncome: 3800,
     monthlySpend: 4100,
@@ -436,7 +291,7 @@ const lenderApplications = [
     id: '5',
     name: 'Priya Patel',
     email: 'priya.patel@email.com',
-    openScore: 714,
+    openScore: 71.4,
     riskLevel: 'Low',
     monthlyIncome: 7200,
     monthlySpend: 4900,
@@ -492,7 +347,7 @@ const lenderApplications = [
     id: '6',
     name: 'Robert Lee',
     email: 'robert.lee@email.com',
-    openScore: 598,
+    openScore: 59.8,
     riskLevel: 'Medium',
     monthlyIncome: 6100,
     monthlySpend: 5400,
@@ -2298,9 +2153,7 @@ const CreditScore = ({ user, onLogout, onBackToDashboard, onNavigateToSimulator 
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center py-8 mb-6">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Credit Score</h1>
-            <p className="text-xl text-gray-600">
-              AI-powered credit assessment based on your financial data
-            </p>
+
           </div>
 
           {creditScore && (
@@ -3271,7 +3124,7 @@ function LoginPage({ userType, setUserType, loginWithGoogle, loginAsBanker, bank
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const names = ["Sarah", "Michael", "Emma", "James", "Olivia", "David"];
+  const names = ["Sarah", "Michael", "Emma", "James", "Olivia", "David", "Ryan", "Kumanan", "Aadya"];
 
   // Typing animation effect
   useEffect(() => {

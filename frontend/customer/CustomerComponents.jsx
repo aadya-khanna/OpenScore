@@ -1010,9 +1010,6 @@ const CreditScore = ({ user, onLogout, onBackToDashboard, onNavigateToSimulator 
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center py-8 mb-6">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Credit Score</h1>
-            <p className="text-xl text-gray-600">
-              AI-powered credit assessment based on your financial data
-            </p>
           </div>
 
           {creditScore && (
@@ -1952,7 +1949,6 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
                 <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
                 <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
               </svg>
-              <span>AI-Powered Credit Analysis</span>
             </div>
             <h1 className="text-4xl font-bold text-gray-900">Connect Your Financial Data</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -2068,9 +2064,9 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
 
           {/* Load Sandbox Data Button */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold mb-2">Load Test Data</h3>
+            <h3 className="text-lg font-semibold mb-2"> Import your finances</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Load sandbox test data to simulate your financial profile
+              Import data to simulate your financial profile
             </p>
             <button
               onClick={loadSandboxData}
@@ -2095,7 +2091,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" x2="12" y1="15" y2="3"></line>
                   </svg>
-                  Load Sandbox Data
+                  Load Finances
                 </>
               )}
             </button>
