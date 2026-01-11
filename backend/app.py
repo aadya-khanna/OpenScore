@@ -98,7 +98,7 @@ def root():
         "GET /api/transactions": "Get stored transactions (auth required)",
         "GET /api/balances": "Get stored balances (auth required)",
         "GET /api/income": "Get stored income (auth required)",
-        "POST /api/score/calculate": "Calculate score (auth required) - Placeholder",
+        "GET /api/score/calculate": "Calculate credit score (auth required)",
         "GET /api/lender/list": "List lenders (auth required) - Placeholder"
     }
     

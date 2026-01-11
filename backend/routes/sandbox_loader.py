@@ -2,6 +2,7 @@
 import json
 import logging
 from datetime import datetime
+from pathlib import Path
 from flask import Blueprint, jsonify, g
 from auth import require_auth
 from db import get_db
@@ -40,14 +41,21 @@ def load_sandbox():
         
         db = get_db()
         
+        # Determine file path
+        backend_dir = Path(__file__).parent.parent
+        file_path = Path(Config.SANDBOX_JSON_PATH)
+        if not file_path.is_absolute():
+            file_path = backend_dir / file_path
+        file_path = file_path.resolve()
+        
         # Load JSON file
         try:
-            payload = load_json_file(Config.SANDBOX_JSON_PATH)
+            payload = load_json_file(str(file_path))
         except FileNotFoundError:
             return jsonify({
                 "error": {
                     "code": "file_not_found",
-                    "message": f"Sandbox JSON file not found at: {Config.SANDBOX_JSON_PATH}"
+                    "message": f"Sandbox JSON file not found at: {file_path}"
                 }
             }), 404
         except json.JSONDecodeError as e:
@@ -62,14 +70,6 @@ def load_sandbox():
         sanitized_payload = sanitize_payload(payload)
         
         # Store raw snapshot (sanitized)
-        from pathlib import Path
-        
-        backend_dir = Path(__file__).parent.parent
-        file_path = Path(Config.SANDBOX_JSON_PATH)
-        if not file_path.is_absolute():
-            file_path = backend_dir / file_path
-        file_path = file_path.resolve()
-        
         snapshot_doc = {
             'user_id': user_id,
             'source': 'local_file',
@@ -81,64 +81,6 @@ def load_sandbox():
         
         # Upsert data from payload
         counts = upsert_from_payload(db, user_id, payload)
-        
-        # Debug: Display users from MongoDB (print to terminal)
-        print("=" * 60)
-        print("DEBUG: Fetching users from MongoDB")
-        print("=" * 60)
-        users_list = list(db.users.find({}))
-        print(f"Total users in database: {len(users_list)}")
-        for user in users_list:
-            # Convert MongoDB ObjectId to string if present
-            user_dict = dict(user)
-            if '_id' in user_dict:
-                user_dict['_id'] = str(user_dict['_id'])
-            print(f"User: {user_dict}")
-        
-        # Debug: Display accounts for this user
-        print("=" * 60)
-        print(f"DEBUG: Fetching accounts for user_id: {user_id}")
-        print("=" * 60)
-        accounts_list = list(db.accounts.find({"user_id": user_id}))
-        print(f"Total accounts for user: {len(accounts_list)}")
-        for acc in accounts_list:
-            acc_dict = dict(acc)
-            if '_id' in acc_dict:
-                acc_dict['_id'] = str(acc_dict['_id'])
-            print(f"Account ID: {acc.get('account_id')}")
-            print(f"  Name: {acc.get('name')}")
-            print(f"  Type: {acc.get('type')}")
-            print(f"  Subtype: {acc.get('subtype')}")
-            print(f"  Full doc: {acc_dict}")
-        
-        # Debug: Display transactions count
-        transactions_count = db.transactions.count_documents({"user_id": user_id})
-        print(f"Total transactions for user: {transactions_count}")
-        
-        # Debug: Display sample transactions
-        sample_transactions = list(db.transactions.find({"user_id": user_id}).limit(3))
-        print(f"Sample transactions (first 3):")
-        for txn in sample_transactions:
-            txn_dict = dict(txn)
-            if '_id' in txn_dict:
-                txn_dict['_id'] = str(txn_dict['_id'])
-            print(f"  Transaction: {txn.get('transaction_id')} - {txn.get('name')} - ${txn.get('amount')}")
-        
-        # Debug: Display raw_snapshots count
-        snapshots_count = db.raw_snapshots.count_documents({"user_id": user_id})
-        print(f"Total raw_snapshots for user: {snapshots_count}")
-        
-        # Debug: Display holdings count
-        holdings_count = db.holdings.count_documents({"user_id": user_id})
-        print(f"Total holdings for user: {holdings_count}")
-        
-        # Debug: Display liabilities count
-        liabilities_count = db.liabilities.count_documents({"user_id": user_id})
-        print(f"Total liabilities for user: {liabilities_count}")
-        
-        print("=" * 60)
-        print(f"Summary: accounts={counts['accounts']}, transactions={counts['transactions']}, holdings={counts['holdings']}, liabilities={counts['liabilities']}")
-        print("=" * 60)
         
         # Update user record with email/name from JWT if available
         user_update = {}

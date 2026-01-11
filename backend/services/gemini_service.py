@@ -42,16 +42,19 @@ def generate_summary(payload: dict) -> dict:
         raise ValueError("Gemini API key not configured")
     
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-2.5-flash-lite")
         
-        # Create a prompt from the payload
-        prompt = f"Generate a summary for the following data: {payload}"
+        # Use custom prompt if provided, otherwise generate default
+        if "prompt" in payload:
+            prompt = payload["prompt"]
+        else:
+            prompt = f"Generate a summary for the following data: {payload}"
         
         response = model.generate_content(prompt)
         
         return {
             "summary": response.text,
-            "model": "gemini-pro"
+            "model": "gemini-2.5-flash-lite"
         }
     except Exception as e:
         logger.error(f"Gemini generation failed: {e}")
