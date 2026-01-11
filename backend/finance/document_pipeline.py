@@ -41,11 +41,19 @@ MONEY_RE = re.compile(r"(\(?-?\$?[\d,]+(?:\.\d+)?\)?)")
 
 
 # ---------------------- helpers ----------------------
-def _extract_text(pdf_path: Path) -> str:
+def _extract_text(pdf_source) -> str:
+    """Extract text from a PDF file path or file-like object (BytesIO)."""
     parts: List[str] = []
-    with pdfplumber.open(str(pdf_path)) as pdf:
-        for page in pdf.pages:
-            parts.append(page.extract_text() or "")
+    # Handle both file paths and file-like objects
+    if isinstance(pdf_source, (str, Path)):
+        with pdfplumber.open(str(pdf_source)) as pdf:
+            for page in pdf.pages:
+                parts.append(page.extract_text() or "")
+    else:
+        # File-like object (BytesIO from upload)
+        with pdfplumber.open(pdf_source) as pdf:
+            for page in pdf.pages:
+                parts.append(page.extract_text() or "")
     return "\n".join(parts)
 
 
@@ -305,22 +313,37 @@ def _maybe_export_debug_csvs(income: Dict[str, Any], balance: Dict[str, Any], co
 
 
 # ---------------------- public API ----------------------
-def get_document_display_values() -> Dict[str, float]:
+def get_document_display_values(
+    income_source=None,
+    balance_source=None
+) -> Dict[str, float]:
     """
-    Returns exactly what you asked for:
+    Returns document-derived scores:
 
     - doc_cash_flow_volatility (0-100)
     - doc_strength_profitability (0-100) = average of:
         profitability_trend_score and balance_sheet_strength_score
-      (keeps it on a 0-100 scale so it’s easy to show in UI)
+      (keeps it on a 0-100 scale so it's easy to show in UI)
+    
+    Args:
+        income_source: Path or file-like object for income PDF. 
+                      If None, uses default INCOME_PDF path.
+        balance_source: Path or file-like object for balance PDF.
+                       If None, uses default BALANCE_PDF path.
     """
-    if not INCOME_PDF.exists():
-        raise FileNotFoundError(f"Missing income PDF: {INCOME_PDF}")
-    if not BALANCE_PDF.exists():
-        raise FileNotFoundError(f"Missing balance PDF: {BALANCE_PDF}")
+    # Use provided sources or fall back to default paths
+    if income_source is None:
+        if not INCOME_PDF.exists():
+            raise FileNotFoundError(f"Missing income PDF: {INCOME_PDF}")
+        income_source = INCOME_PDF
+    
+    if balance_source is None:
+        if not BALANCE_PDF.exists():
+            raise FileNotFoundError(f"Missing balance PDF: {BALANCE_PDF}")
+        balance_source = BALANCE_PDF
 
-    income_text = _extract_text(INCOME_PDF)
-    balance_text = _extract_text(BALANCE_PDF)
+    income_text = _extract_text(income_source)
+    balance_text = _extract_text(balance_source)
 
     income = _extract_income_metrics(income_text)
     balance = _extract_balance_metrics(balance_text)
@@ -338,3 +361,20 @@ def get_document_display_values() -> Dict[str, float]:
         "profitability_trend_score": comps["profitability_trend_score"],
         "balance_sheet_strength_score": comps["balance_sheet_strength_score"],
     }
+
+
+def process_uploaded_documents(income_file, balance_file) -> Dict[str, float]:
+    """
+    Process uploaded PDF files and return document scores.
+    
+    Args:
+        income_file: File-like object (BytesIO) for income statement PDF
+        balance_file: File-like object (BytesIO) for balance sheet PDF
+    
+    Returns:
+        Dictionary with document-derived scores
+    """
+    return get_document_display_values(
+        income_source=income_file,
+        balance_source=balance_file
+    )

@@ -1,5 +1,6 @@
 """MongoDB client and database access."""
 import logging
+import certifi
 from pymongo import MongoClient
 from pymongo.database import Database
 from config import Config
@@ -19,7 +20,8 @@ def get_client() -> MongoClient:
     global _client
     if _client is None:
         try:
-            _client = MongoClient(Config.MONGODB_URI)
+            # Use certifi for SSL certificates to fix MongoDB Atlas SSL handshake issues
+            _client = MongoClient(Config.MONGODB_URI, tlsCAFile=certifi.where())
             # Test connection
             _client.admin.command("ping")
             logger.info("MongoDB client connected successfully")

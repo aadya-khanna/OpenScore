@@ -436,7 +436,7 @@ def calculate_credit_score(
         alternative_income: Placeholder for future calculation (currently unused, 
             alternative income score is derived from document pipeline)
         education_score: Education/licenses score 0-100 (default: 75)
-    
+        
     Returns:
         Dict with credit_score (0-100) and breakdown of components
     """
@@ -486,9 +486,11 @@ def calculate_credit_score(
                 "score": round(alternative_income_score, 2),
                 "weight": 30,
                 "weighted_contribution": round(alternative_income_score * 0.30, 2),
-                # keep the old key name "amount" even though it's now computed from docs,
-                # so the response format matches what you had before:
-                "amount": round(alternative_income_score, 2)
+                "source": "documents",
+                "components": {
+                    "balance_sheet_strength": round(balance_sheet_strength, 2),
+                    "profitability_trend": round(profitability_trend, 2)
+                }
             },
             "education_licenses": {
                 "score": round(education_licenses_score, 2),

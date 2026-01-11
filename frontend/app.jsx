@@ -43,6 +43,41 @@ const apiCall = async (endpoint, method = 'GET', token, body = null) => {
   }
 };
 
+// Multipart upload helper (for PDF uploads)
+async function uploadFiles(path, files, token, extraFields = {}) {
+  const formData = new FormData();
+
+  // IMPORTANT: backend should read this as request.files.getlist("files")
+  for (const f of files) formData.append("files", f);
+
+  // Extra fields if you want (doc type, user id, etc.)
+  for (const [k, v] of Object.entries(extraFields)) {
+    if (v !== undefined && v !== null) formData.append(k, String(v));
+  }
+
+  const headers = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers, // DO NOT set Content-Type manually for FormData
+    body: formData,
+  });
+
+  if (!res.ok) {
+    let msg = `Upload failed (${res.status})`;
+    try {
+      const data = await res.json();
+      msg = data?.error || data?.message || msg;
+    } catch {
+      // ignore
+    }
+    throw new Error(msg);
+  }
+
+  return res.json().catch(() => ({}));
+}
+
 // DataSourceCard Component for Customer Dashboard
 const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
   const fileInputRef = useRef(null);
@@ -1218,11 +1253,6 @@ const CreditScore = ({ user, onLogout, onBackToDashboard, onNavigateToSimulator 
                             style={{ width: `${value.score}%` }}
                           />
                         </div>
-                        {value.amount !== undefined && (
-                          <p className="text-sm text-gray-600 mt-1">
-                            Income Amount: ${value.amount.toLocaleString()}
-                          </p>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -2027,18 +2057,95 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
     }
   };
 
-  const handleFileUpload = (sourceId, files) => {
-    const newFiles = Array.from(files).map(file => ({
-      sourceId,
-      name: file.name,
-      size: file.size,
-      type: file.type
-    }));
-    setUploadedFiles([...uploadedFiles, ...newFiles]);
-    if (!connectedSources.includes(sourceId)) {
-      setConnectedSources([...connectedSources, sourceId]);
+  const handleFileUpload = async (type, files) => {
+    const token = getAccessToken();
+    if (!token) {
+      setDataError("No access token available");
+      return;
     }
-  };
+  
+    // Convert FileList -> Array<File>
+    const fileArray = Array.from(files || []);
+    if (fileArray.length === 0) return;
+  
+    // Optimistic UI: show as "uploading" immediately
+    const pending = fileArray.map((file) => ({
+      name: file.name,
+      type,
+      size: file.size,
+      uploadedAt: new Date().toISOString(),
+      status: "uploading",
+    }));
+  
+    setUploadedFiles((prev) => [...pending, ...prev]);
+    setDataError(null);
+  
+    try {
+      // For document uploads, we need both income_pdf and balance_pdf
+      // Check if we have 2 PDF files
+      const pdfFiles = fileArray.filter(f => f.name.toLowerCase().endsWith('.pdf'));
+      
+      if (pdfFiles.length >= 2) {
+        // Assume first is income, second is balance (or detect by name)
+        const incomeFile = pdfFiles.find(f => f.name.toLowerCase().includes('income')) || pdfFiles[0];
+        const balanceFile = pdfFiles.find(f => f.name.toLowerCase().includes('balance')) || pdfFiles[1];
+        
+        const formData = new FormData();
+        formData.append('income_pdf', incomeFile);
+        formData.append('balance_pdf', balanceFile);
+        
+        const res = await fetch(`${API_BASE_URL}/api/documents/upload`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || `Upload failed (${res.status})`);
+        }
+        
+        const resp = await res.json();
+        
+        // Store document scores if returned
+        if (resp.scores) {
+          console.log('Document scores:', resp.scores);
+          // You can store these in state if needed
+        }
+        
+        // Mark uploaded in UI
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.status === "uploading" && fileArray.some((x) => x.name === f.name)
+              ? { ...f, status: "uploaded", server: resp }
+              : f
+          )
+        );
+      } else {
+        // Single file or non-PDF - store locally for now
+        setDataError("Please upload both income.pdf and balance.pdf files together");
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.status === "uploading" ? { ...f, status: "pending", note: "Need both income and balance PDFs" } : f
+          )
+        );
+      }
+  
+    } catch (err) {
+      setDataError(err?.message || "Upload failed");
+  
+      // Mark failed in UI
+      setUploadedFiles((prev) =>
+        prev.map((f) =>
+          f.status === "uploading" && fileArray.some((x) => x.name === f.name)
+            ? { ...f, status: "failed" }
+            : f
+        )
+      );
+    }
+  };  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">

@@ -14,6 +14,7 @@ from routes.score import bp as score_bp
 from routes.lender import bp as lender_bp
 from routes.data import bp as data_bp
 from routes.sandbox_loader import bp as sandbox_loader_bp
+from routes.documents import documents_bp
 
 # Configure logging
 logging.basicConfig(
@@ -80,6 +81,7 @@ app.register_blueprint(score_bp)
 app.register_blueprint(lender_bp)
 app.register_blueprint(data_bp)
 app.register_blueprint(sandbox_loader_bp)
+app.register_blueprint(documents_bp)
 
 
 @app.route("/", methods=["GET"])
@@ -99,7 +101,9 @@ def root():
         "GET /api/balances": "Get stored balances (auth required)",
         "GET /api/income": "Get stored income (auth required)",
         "GET /api/score/calculate": "Calculate credit score (auth required)",
-        "GET /api/lender/list": "List lenders (auth required) - Placeholder"
+        "GET /api/lender/list": "List lenders (auth required) - Placeholder",
+        "POST /api/documents/upload": "Upload income & balance PDFs for scoring (auth required)",
+        "GET /api/documents/scores": "Get document scores from default PDFs (auth required)"
     }
     
     endpoints = {
