@@ -43,43 +43,8 @@ const apiCall = async (endpoint, method = 'GET', token, body = null) => {
   }
 };
 
-// Multipart upload helper (for PDF uploads)
-async function uploadFiles(path, files, token, extraFields = {}) {
-  const formData = new FormData();
-
-  // IMPORTANT: backend should read this as request.files.getlist("files")
-  for (const f of files) formData.append("files", f);
-
-  // Extra fields if you want (doc type, user id, etc.)
-  for (const [k, v] of Object.entries(extraFields)) {
-    if (v !== undefined && v !== null) formData.append(k, String(v));
-  }
-
-  const headers = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    method: "POST",
-    headers, // DO NOT set Content-Type manually for FormData
-    body: formData,
-  });
-
-  if (!res.ok) {
-    let msg = `Upload failed (${res.status})`;
-    try {
-      const data = await res.json();
-      msg = data?.error || data?.message || msg;
-    } catch {
-      // ignore
-    }
-    throw new Error(msg);
-  }
-
-  return res.json().catch(() => ({}));
-}
-
 // DataSourceCard Component for Customer Dashboard
-const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
+const DataSourceCard = ({ source, isConnected, onConnect, onUpload, onModalOpen }) => {
   const fileInputRef = useRef(null);
 
   return (
@@ -156,6 +121,33 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
             </>
           )}
         </button>
+      ) : source.type === 'modal' ? (
+        <button
+          onClick={onModalOpen}
+          className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+            isConnected
+              ? 'bg-green-100 text-green-700'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+        >
+          {isConnected ? (
+            <>
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>Added</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+              <span>Add Credentials</span>
+            </>
+          )}
+        </button>
       ) : (
         <>
           <input
@@ -199,164 +191,1256 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
   );
 };
 
-// Banker Dashboard Component
-const BankerDashboard = ({ user, onLogout }) => {
-  const [customers] = useState([
-    { id: 1, name: 'John Smith', email: 'john@example.com', score: 720, status: 'Approved', applications: 3 },
-    { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', score: 680, status: 'Pending', applications: 1 },
-    { id: 3, name: 'Michael Brown', email: 'michael@example.com', score: 750, status: 'Approved', applications: 5 },
-    { id: 4, name: 'Emily Davis', email: 'emily@example.com', score: 650, status: 'Review', applications: 2 },
-    { id: 5, name: 'David Wilson', email: 'david@example.com', score: 695, status: 'Pending', applications: 1 },
-    { id: 6, name: 'Lisa Anderson', email: 'lisa@example.com', score: 730, status: 'Approved', applications: 4 },
-  ]);
+// Lender Mock Data
+const lenderApplications = [
+  {
+    id: '1',
+    name: 'Sarah Chen',
+    email: 'sarah.chen@email.com',
+    openScore: 782,
+    riskLevel: 'Low',
+    monthlyIncome: 8500,
+    monthlySpend: 4200,
+    cashFlow: 4300,
+    status: 'In Review',
+    requestedAmount: 25000,
+    loanPurpose: 'Home Improvement',
+    confidenceScore: 94,
+    flags: ['Consistent Income', 'Low Debt-to-Income'],
+    positiveFactors: [
+      'Steady income for 24+ months',
+      'Rent paid on time for 18 months',
+      'Healthy savings buffer (3.2x monthly expenses)',
+      'Diverse income sources',
+    ],
+    riskFactors: [
+      'Slight increase in discretionary spending',
+    ],
+    accountBalance: 13500,
+    incomeHistory: [
+      { month: 'Jan', income: 8200, spending: 4100 },
+      { month: 'Feb', income: 8300, spending: 4000 },
+      { month: 'Mar', income: 8500, spending: 4300 },
+      { month: 'Apr', income: 8400, spending: 4200 },
+      { month: 'May', income: 8600, spending: 4400 },
+      { month: 'Jun', income: 8500, spending: 4200 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 1800 },
+      { category: 'Food', amount: 650 },
+      { category: 'Transport', amount: 400 },
+      { category: 'Utilities', amount: 250 },
+      { category: 'Entertainment', amount: 300 },
+      { category: 'Other', amount: 800 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: 11200 },
+      { month: 'Feb', balance: 11500 },
+      { month: 'Mar', balance: 12100 },
+      { month: 'Apr', balance: 12800 },
+      { month: 'May', balance: 13200 },
+      { month: 'Jun', balance: 13500 },
+    ],
+    notes: [
+      {
+        author: 'Mike Johnson',
+        timestamp: '2026-01-11 09:30 AM',
+        content: 'Initial review completed. Strong financial profile with consistent income and responsible spending habits.',
+      },
+      {
+        author: 'Lisa Wong',
+        timestamp: '2026-01-10 02:15 PM',
+        content: 'Verified bank statements. All documentation checks out.',
+      },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Marcus Williams',
+    email: 'marcus.w@email.com',
+    openScore: 623,
+    riskLevel: 'Medium',
+    monthlyIncome: 5200,
+    monthlySpend: 4800,
+    cashFlow: 400,
+    status: 'Submitted',
+    requestedAmount: 15000,
+    loanPurpose: 'Debt Consolidation',
+    confidenceScore: 78,
+    flags: ['Income Volatility', 'Low Savings'],
+    positiveFactors: [
+      'Regular employment history',
+      'No recent overdrafts',
+    ],
+    riskFactors: [
+      'High debt-to-income ratio (92%)',
+      'Limited savings buffer',
+      'Variable monthly income',
+      'Recent increase in spending',
+    ],
+    accountBalance: 850,
+    incomeHistory: [
+      { month: 'Jan', income: 4800, spending: 4500 },
+      { month: 'Feb', income: 5100, spending: 4700 },
+      { month: 'Mar', income: 5400, spending: 4900 },
+      { month: 'Apr', income: 4900, spending: 4600 },
+      { month: 'May', income: 5300, spending: 4850 },
+      { month: 'Jun', income: 5200, spending: 4800 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 1600 },
+      { category: 'Food', amount: 800 },
+      { category: 'Transport', amount: 550 },
+      { category: 'Utilities', amount: 300 },
+      { category: 'Entertainment', amount: 450 },
+      { category: 'Other', amount: 1100 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: 550 },
+      { month: 'Feb', balance: 650 },
+      { month: 'Mar', balance: 1100 },
+      { month: 'Apr', balance: 800 },
+      { month: 'May', balance: 950 },
+      { month: 'Jun', balance: 850 },
+    ],
+    notes: [
+      {
+        author: 'Sarah Martinez',
+        timestamp: '2026-01-11 08:00 AM',
+        content: 'Application received. Flagged for detailed cash flow analysis.',
+      },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Emily Rodriguez',
+    email: 'emily.r@email.com',
+    openScore: 845,
+    riskLevel: 'Low',
+    monthlyIncome: 12000,
+    monthlySpend: 5100,
+    cashFlow: 6900,
+    status: 'Approved',
+    requestedAmount: 50000,
+    loanPurpose: 'Business Expansion',
+    confidenceScore: 97,
+    flags: ['Excellent Cash Flow'],
+    positiveFactors: [
+      'Very high income stability',
+      'Excellent savings (6x monthly expenses)',
+      'Strong payment history',
+      'Multiple verified income sources',
+      'Professional account management',
+    ],
+    riskFactors: [],
+    accountBalance: 32000,
+    incomeHistory: [
+      { month: 'Jan', income: 11800, spending: 5000 },
+      { month: 'Feb', income: 12100, spending: 5200 },
+      { month: 'Mar', income: 11900, spending: 5100 },
+      { month: 'Apr', income: 12200, spending: 5000 },
+      { month: 'May', income: 12000, spending: 5150 },
+      { month: 'Jun', income: 12000, spending: 5100 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 2200 },
+      { category: 'Food', amount: 700 },
+      { category: 'Transport', amount: 450 },
+      { category: 'Utilities', amount: 350 },
+      { category: 'Entertainment', amount: 600 },
+      { category: 'Other', amount: 800 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: 28000 },
+      { month: 'Feb', balance: 29000 },
+      { month: 'Mar', balance: 29800 },
+      { month: 'Apr', balance: 30500 },
+      { month: 'May', balance: 31200 },
+      { month: 'Jun', balance: 32000 },
+    ],
+    notes: [
+      {
+        author: 'David Park',
+        timestamp: '2026-01-10 04:45 PM',
+        content: 'Application approved. Exceptional financial profile with strong business case.',
+      },
+      {
+        author: 'Mike Johnson',
+        timestamp: '2026-01-10 11:20 AM',
+        content: 'Reviewed business plan and financial projections. Very solid proposal.',
+      },
+    ],
+  },
+  {
+    id: '4',
+    name: 'James Thompson',
+    email: 'j.thompson@email.com',
+    openScore: 456,
+    riskLevel: 'High',
+    monthlyIncome: 3800,
+    monthlySpend: 4100,
+    cashFlow: -300,
+    status: 'Rejected',
+    requestedAmount: 10000,
+    loanPurpose: 'Personal Loan',
+    confidenceScore: 62,
+    flags: ['Overdrafts', 'Negative Cash Flow'],
+    positiveFactors: [
+      'Recent employment (3 months)',
+    ],
+    riskFactors: [
+      'Negative cash flow',
+      'Multiple overdrafts in past 3 months',
+      'High spending-to-income ratio (108%)',
+      'Minimal savings',
+      'Short employment history',
+    ],
+    accountBalance: 120,
+    incomeHistory: [
+      { month: 'Jan', income: 3500, spending: 4000 },
+      { month: 'Feb', income: 3700, spending: 4200 },
+      { month: 'Mar', income: 3900, spending: 4100 },
+      { month: 'Apr', income: 3800, spending: 4150 },
+      { month: 'May', income: 3750, spending: 4050 },
+      { month: 'Jun', income: 3800, spending: 4100 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 1400 },
+      { category: 'Food', amount: 950 },
+      { category: 'Transport', amount: 600 },
+      { category: 'Utilities', amount: 280 },
+      { category: 'Entertainment', amount: 520 },
+      { category: 'Other', amount: 350 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: -150 },
+      { month: 'Feb', balance: 50 },
+      { month: 'Mar', balance: 200 },
+      { month: 'Apr', balance: 80 },
+      { month: 'May', balance: 150 },
+      { month: 'Jun', balance: 120 },
+    ],
+    notes: [
+      {
+        author: 'Lisa Wong',
+        timestamp: '2026-01-09 03:30 PM',
+        content: 'Application rejected due to negative cash flow and insufficient savings buffer.',
+      },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Priya Patel',
+    email: 'priya.patel@email.com',
+    openScore: 714,
+    riskLevel: 'Low',
+    monthlyIncome: 7200,
+    monthlySpend: 4900,
+    cashFlow: 2300,
+    status: 'In Review',
+    requestedAmount: 30000,
+    loanPurpose: 'Education',
+    confidenceScore: 89,
+    flags: ['Stable Income'],
+    positiveFactors: [
+      'Consistent income growth',
+      'Good savings habit (2.8x monthly expenses)',
+      'All bills paid on time',
+      'Low credit utilization',
+    ],
+    riskFactors: [
+      'Student loan payments starting soon',
+    ],
+    accountBalance: 13700,
+    incomeHistory: [
+      { month: 'Jan', income: 6800, spending: 4700 },
+      { month: 'Feb', income: 7000, spending: 4800 },
+      { month: 'Mar', income: 7100, spending: 4850 },
+      { month: 'Apr', income: 7200, spending: 4900 },
+      { month: 'May', income: 7150, spending: 4950 },
+      { month: 'Jun', income: 7200, spending: 4900 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 1900 },
+      { category: 'Food', amount: 720 },
+      { category: 'Transport', amount: 380 },
+      { category: 'Utilities', amount: 300 },
+      { category: 'Entertainment', amount: 400 },
+      { category: 'Other', amount: 1200 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: 11500 },
+      { month: 'Feb', balance: 12000 },
+      { month: 'Mar', balance: 12600 },
+      { month: 'Apr', balance: 13000 },
+      { month: 'May', balance: 13400 },
+      { month: 'Jun', balance: 13700 },
+    ],
+    notes: [
+      {
+        author: 'Sarah Martinez',
+        timestamp: '2026-01-11 10:15 AM',
+        content: 'Strong candidate. Awaiting verification of educational institution enrollment.',
+      },
+    ],
+  },
+  {
+    id: '6',
+    name: 'Robert Lee',
+    email: 'robert.lee@email.com',
+    openScore: 598,
+    riskLevel: 'Medium',
+    monthlyIncome: 6100,
+    monthlySpend: 5400,
+    cashFlow: 700,
+    status: 'Submitted',
+    requestedAmount: 20000,
+    loanPurpose: 'Auto Loan',
+    confidenceScore: 73,
+    flags: ['Income Volatility'],
+    positiveFactors: [
+      'Long employment history (5+ years)',
+      'Rent paid consistently',
+    ],
+    riskFactors: [
+      'Income varies month-to-month',
+      'Spending close to income (89%)',
+      'Limited emergency fund',
+    ],
+    accountBalance: 2400,
+    incomeHistory: [
+      { month: 'Jan', income: 5800, spending: 5200 },
+      { month: 'Feb', income: 6200, spending: 5500 },
+      { month: 'Mar', income: 5900, spending: 5300 },
+      { month: 'Apr', income: 6300, spending: 5600 },
+      { month: 'May', income: 6000, spending: 5350 },
+      { month: 'Jun', income: 6100, spending: 5400 },
+    ],
+    spendingByCategory: [
+      { category: 'Housing', amount: 2000 },
+      { category: 'Food', amount: 850 },
+      { category: 'Transport', amount: 700 },
+      { category: 'Utilities', amount: 320 },
+      { category: 'Entertainment', amount: 530 },
+      { category: 'Other', amount: 1000 },
+    ],
+    balanceHistory: [
+      { month: 'Jan', balance: 2000 },
+      { month: 'Feb', balance: 2200 },
+      { month: 'Mar', balance: 2100 },
+      { month: 'Apr', balance: 2350 },
+      { month: 'May', balance: 2300 },
+      { month: 'Jun', balance: 2400 },
+    ],
+    notes: [],
+  },
+];
 
-  const [stats] = useState({
-    totalCustomers: 156,
-    pendingReviews: 12,
-    approvedToday: 8,
-    avgScore: 695
-  });
+// Lender KPI Card Component
+const LenderKPICard = ({ icon, title, value, trend }) => {
+  return (
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+              {icon}
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 mb-1">{title}</p>
+          <p className="text-3xl font-semibold text-gray-900">{value}</p>
+        </div>
+      </div>
+      
+      {trend && (
+        <div className="mt-4 flex items-center gap-1">
+          {trend.direction === 'up' ? (
+            <svg className="w-4 h-4 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 text-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+              <polyline points="17 18 23 18 23 12"></polyline>
+            </svg>
+          )}
+          <span className={`text-sm font-medium ${trend.direction === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+            {trend.value}
+          </span>
+          <span className="text-sm text-gray-500">vs last week</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Lender Sidebar Component
+const LenderSidebar = ({ isOpen, onClose }) => {
+  const menuItems = [
+    { icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', label: 'Dashboard', active: true },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-                </svg>
-              </div>
-              <span className="text-xl font-bold text-gray-900">OpenScore</span>
-              <span className="px-2 py-1 bg-indigo-600 text-white rounded text-xs font-semibold uppercase">BANKER</span>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-200 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg lg:hidden"
+        >
+          <svg className="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav className="p-4 space-y-1">
+          {menuItems.map((item) => (
+            <button
+              key={item.label}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                item.active
+                  ? 'bg-indigo-50 text-indigo-600 font-medium'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d={item.icon}></path>
+              </svg>
+              <span className="text-sm">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Dino Bank branding */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+          <div className="flex items-center gap-3 px-3 py-2 bg-gray-50 rounded-lg">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-lg">🦕</span>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg">
-                {user.picture && (
-                  <img src={user.picture} alt="User" className="w-8 h-8 rounded-full border-2 border-blue-500" />
-                )}
-                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
-              </div>
-              <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
-                Logout
-              </button>
+            <div>
+              <p className="text-sm font-medium text-gray-900">Dino Bank</p>
+              <p className="text-xs text-gray-500">Powered by OpenScore</p>
             </div>
           </div>
         </div>
-      </header>
+      </aside>
+    </>
+  );
+};
 
-      <main className="py-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center py-8 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Banker Dashboard</h1>
-            <p className="text-xl text-gray-600">
-              Review customer applications and credit scores
-            </p>
+// Lender Top Navigation Component
+const LenderTopNav = ({ onMenuClick, onLogout }) => {
+  return (
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-40">
+      <div className="h-full px-4 flex items-center justify-between">
+        {/* Left section */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onMenuClick}
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">OS</span>
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="font-semibold text-gray-900">OpenScore</h1>
+              <p className="text-xs text-gray-500">Lender Dashboard</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Center - Search */}
+        <div className="flex-1 max-w-md mx-4 hidden md:block">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search applicants..."
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        {/* Right - User menu */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
+            <div className="hidden sm:block text-right">
+              <p className="text-sm font-medium text-gray-900">Dino Bank Admin</p>
+              <p className="text-xs text-gray-500">admin@dinobank.com</p>
+            </div>
+            <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+          </div>
+          <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+// Lender Application Detail Component
+const LenderApplicationDetail = ({ applicationId, onBack }) => {
+  const application = lenderApplications.find(a => a.id === applicationId);
+  const chartRefs = useRef({});
+
+  useEffect(() => {
+    if (!application) return;
+
+    // Income vs Spending Chart
+    const incomeCtx = document.getElementById('lenderIncomeChart');
+    if (incomeCtx && application.incomeHistory) {
+      if (chartRefs.current.income) {
+        chartRefs.current.income.destroy();
+      }
+      chartRefs.current.income = new Chart(incomeCtx, {
+        type: 'line',
+        data: {
+          labels: application.incomeHistory.map(h => h.month),
+          datasets: [
+            {
+              label: 'Income',
+              data: application.incomeHistory.map(h => h.income),
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              tension: 0.3,
+              fill: false,
+            },
+            {
+              label: 'Spending',
+              data: application.incomeHistory.map(h => h.spending),
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              tension: 0.3,
+              fill: false,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    // Spending by Category Chart
+    const spendingCtx = document.getElementById('lenderSpendingChart');
+    if (spendingCtx && application.spendingByCategory) {
+      if (chartRefs.current.spending) {
+        chartRefs.current.spending.destroy();
+      }
+      chartRefs.current.spending = new Chart(spendingCtx, {
+        type: 'bar',
+        data: {
+          labels: application.spendingByCategory.map(c => c.category),
+          datasets: [{
+            label: 'Spending',
+            data: application.spendingByCategory.map(c => c.amount),
+            backgroundColor: '#6366f1',
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // Balance History Chart
+    const balanceCtx = document.getElementById('lenderBalanceChart');
+    if (balanceCtx && application.balanceHistory) {
+      if (chartRefs.current.balance) {
+        chartRefs.current.balance.destroy();
+      }
+      chartRefs.current.balance = new Chart(balanceCtx, {
+        type: 'line',
+        data: {
+          labels: application.balanceHistory.map(h => h.month),
+          datasets: [{
+            label: 'Balance',
+            data: application.balanceHistory.map(h => h.balance),
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.2)',
+            tension: 0.3,
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    return () => {
+      Object.values(chartRefs.current).forEach(chart => {
+        if (chart) chart.destroy();
+      });
+      chartRefs.current = {};
+    };
+  }, [application]);
+
+  if (!application) {
+    return <div>Application not found</div>;
+  }
+
+  const getRiskBadgeColor = (risk) => {
+    switch (risk) {
+      case 'Low': return 'bg-green-50 text-green-700 border-green-200';
+      case 'Medium': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      case 'High': return 'bg-red-50 text-red-700 border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+      >
+        <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span className="text-sm font-medium">Back to Dashboard</span>
+      </button>
+
+      {/* Top Summary Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+          <div className="flex-1">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-semibold text-gray-900 mb-1">{application.name}</h1>
+                <p className="text-gray-600">{application.email}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Total Customers</span>
-                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center lg:text-left">
+              <p className="text-sm text-gray-500 mb-1">OpenScore</p>
+              <p className="text-3xl font-bold text-indigo-600">{application.openScore}</p>
+            </div>
+            <div className="text-center lg:text-left">
+              <p className="text-sm text-gray-500 mb-1">Risk Level</p>
+              <span className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium border ${getRiskBadgeColor(application.riskLevel)}`}>
+                {application.riskLevel}
+              </span>
+            </div>
+            <div className="text-center lg:text-left">
+              <p className="text-sm text-gray-500 mb-1">Confidence</p>
+              <p className="text-2xl font-semibold text-gray-900">{application.confidenceScore}%</p>
+            </div>
+            <div className="text-center lg:text-left">
+              <p className="text-sm text-gray-500 mb-1">Key Flags</p>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {application.flags.map((flag, idx) => (
+                  <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700">
+                    {flag}
+                  </span>
+                ))}
               </div>
-              <div className="text-3xl font-bold text-gray-900">{stats.totalCustomers}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Financial Overview */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Financial Overview</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                  <p className="text-sm font-medium text-green-900">Monthly Income</p>
+                </div>
+                <p className="text-2xl font-bold text-green-900">{formatCurrency(application.monthlyIncome)}</p>
+              </div>
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-orange-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  <p className="text-sm font-medium text-orange-900">Monthly Spending</p>
+                </div>
+                <p className="text-2xl font-bold text-orange-900">{formatCurrency(application.monthlySpend)}</p>
+              </div>
+              <div className={`bg-gradient-to-br rounded-lg p-4 border ${
+                application.cashFlow >= 0 
+                  ? 'from-blue-50 to-blue-100 border-blue-200' 
+                  : 'from-red-50 to-red-100 border-red-200'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className={`w-5 h-5 ${application.cashFlow >= 0 ? 'text-blue-600' : 'text-red-600'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    <path d="M12 8v8"></path>
+                    <path d="M8 12h8"></path>
+                  </svg>
+                  <p className={`text-sm font-medium ${application.cashFlow >= 0 ? 'text-blue-900' : 'text-red-900'}`}>
+                    Net Cash Flow
+                  </p>
+                </div>
+                <p className={`text-2xl font-bold ${application.cashFlow >= 0 ? 'text-blue-900' : 'text-red-900'}`}>
+                  {formatCurrency(application.cashFlow)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Charts */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Income vs Spending Trend</h2>
+            <div className="h-64">
+              <canvas id="lenderIncomeChart"></canvas>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Spending by Category</h2>
+              <div className="h-56">
+                <canvas id="lenderSpendingChart"></canvas>
+              </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Pending Reviews</span>
-                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Balance History</h2>
+              <div className="h-56">
+                <canvas id="lenderBalanceChart"></canvas>
               </div>
-              <div className="text-3xl font-bold text-gray-900">{stats.pendingReviews}</div>
+            </div>
+          </div>
+
+          {/* Risk Breakdown */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Risk Assessment</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <h3 className="font-medium text-gray-900">Positive Factors</h3>
+                </div>
+                <ul className="space-y-2">
+                  {application.positiveFactors.map((factor, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                      <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 flex-shrink-0" />
+                      <span>{factor}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  <h3 className="font-medium text-gray-900">Risk Factors</h3>
+                </div>
+                {application.riskFactors.length > 0 ? (
+                  <ul className="space-y-2">
+                    {application.riskFactors.map((factor, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1.5 flex-shrink-0" />
+                        <span>{factor}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-500">No significant risk factors identified</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Notes Timeline */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes Timeline</h2>
+            {application.notes.length > 0 ? (
+              <div className="space-y-4">
+                {application.notes.map((note, idx) => (
+                  <div key={idx} className="border-l-2 border-indigo-200 pl-4 py-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-sm font-medium text-gray-900">{note.author}</p>
+                      <span className="text-xs text-gray-500">•</span>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <svg className="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        {note.timestamp}
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-700">{note.content}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">No notes yet</p>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar - Decision Panel */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-20">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Loan Request</h2>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Requested Amount</p>
+                <p className="text-2xl font-bold text-gray-900">{formatCurrency(application.requestedAmount)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Purpose</p>
+                <p className="text-gray-900">{application.loanPurpose}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Current Status</p>
+                <span className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium border ${
+                  application.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-200' :
+                  application.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                  application.status === 'In Review' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                  'bg-blue-50 text-blue-700 border-blue-200'
+                }`}>
+                  {application.status}
+                </span>
+              </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Approved Today</span>
-                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
+            <div className="space-y-3 mb-6">
+              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
-              </div>
-              <div className="text-3xl font-bold text-gray-900">{stats.approvedToday}</div>
+                Approve Application
+              </button>
+              <button className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors">
+                Reject Application
+              </button>
+              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 px-4 rounded-lg font-medium transition-colors">
+                Request More Info
+              </button>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Average Score</span>
-                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2">
-                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-                </svg>
-              </div>
-              <div className="text-3xl font-bold text-gray-900">{stats.avgScore}</div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Customer Applications</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Customer</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Email</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Credit Score</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Applications</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.map((customer) => (
-                    <tr key={customer.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-4">
-                        <div className="font-medium text-gray-900">{customer.name}</div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="text-sm text-gray-600">{customer.email}</div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-900">{customer.score}</span>
-                          <div className={`w-2 h-2 rounded-full ${
-                            customer.score >= 700 ? 'bg-green-500' :
-                            customer.score >= 650 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}></div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          customer.status.toLowerCase() === 'approved' ? 'bg-green-100 text-green-700' :
-                          customer.status.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-blue-100 text-blue-700'
-                        }`}>
-                          {customer.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">{customer.applications}</td>
-                      <td className="py-4 px-4">
-                        <button className="text-blue-600 font-medium text-sm hover:text-blue-800 transition-colors">View Details</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                Decision Notes
+              </label>
+              <textarea
+                id="notes"
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                placeholder="Add notes about your decision..."
+              />
             </div>
           </div>
         </div>
-      </main>
+      </div>
+    </div>
+  );
+};
+
+// Lender Queue Dashboard Component
+const LenderQueueDashboard = ({ onViewApplication }) => {
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState('desc');
+  
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+  
+  const sortedApplications = [...lenderApplications].sort((a, b) => {
+    if (!sortField) return 0;
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+    const modifier = sortDirection === 'asc' ? 1 : -1;
+    if (typeof aVal === 'number') {
+      return (aVal - bVal) * modifier;
+    }
+    return String(aVal).localeCompare(String(bVal)) * modifier;
+  });
+  
+  const applications = sortedApplications;
+  
+  const totalApplications = applications.length;
+  const pendingReviews = applications.filter(a => a.status === 'In Review' || a.status === 'Submitted').length;
+  const approvedToday = applications.filter(a => a.status === 'Approved').length;
+  const averageScore = Math.round(applications.reduce((sum, a) => sum + a.openScore, 0) / applications.length);
+
+  const getRiskColor = (risk) => {
+    switch (risk) {
+      case 'Low': return 'bg-green-500';
+      case 'Medium': return 'bg-yellow-500';
+      case 'High': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getRiskBadgeColor = (risk) => {
+    switch (risk) {
+      case 'Low': return 'bg-green-50 text-green-700 border-green-200';
+      case 'Medium': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      case 'High': return 'bg-red-50 text-red-700 border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case 'Submitted': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'In Review': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'Approved': return 'bg-green-50 text-green-700 border-green-200';
+      case 'Rejected': return 'bg-red-50 text-red-700 border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <LenderKPICard
+          icon={<svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>}
+          title="Total Applications"
+          value={totalApplications.toString()}
+          trend={{ direction: 'up', value: '+12%' }}
+        />
+        <LenderKPICard
+          icon={<svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>}
+          title="Pending Reviews"
+          value={pendingReviews.toString()}
+          trend={{ direction: 'down', value: '-8%' }}
+        />
+        <LenderKPICard
+          icon={<svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>}
+          title="Approved Today"
+          value={approvedToday.toString()}
+          trend={{ direction: 'up', value: '+23%' }}
+        />
+        <LenderKPICard
+          icon={<svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>}
+          title="Average OpenScore"
+          value={averageScore.toString()}
+          trend={{ direction: 'up', value: '+5%' }}
+        />
+      </div>
+
+      {/* Application Queue Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="p-6 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-900">Application Queue</h2>
+          <p className="text-sm text-gray-500 mt-1">Review and process borrower applications</p>
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  Applicant
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  <button onClick={() => handleSort('openScore')} className="flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                    OpenScore
+                    <svg className={`w-4 h-4 ${sortField === 'openScore' ? 'text-indigo-600' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {sortField === 'openScore' && sortDirection === 'asc' ? (
+                        <path d="M18 15l-6-6-6 6"/>
+                      ) : sortField === 'openScore' && sortDirection === 'desc' ? (
+                        <path d="M6 9l6 6 6-6"/>
+                      ) : (
+                        <><path d="M8 9l4-4 4 4"/><path d="M16 15l-4 4-4-4"/></>
+                      )}
+                    </svg>
+                  </button>
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  Risk Level
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  <button onClick={() => handleSort('monthlyIncome')} className="flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                    Monthly Income
+                    <svg className={`w-4 h-4 ${sortField === 'monthlyIncome' ? 'text-indigo-600' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {sortField === 'monthlyIncome' && sortDirection === 'asc' ? (
+                        <path d="M18 15l-6-6-6 6"/>
+                      ) : sortField === 'monthlyIncome' && sortDirection === 'desc' ? (
+                        <path d="M6 9l6 6 6-6"/>
+                      ) : (
+                        <><path d="M8 9l4-4 4 4"/><path d="M16 15l-4 4-4-4"/></>
+                      )}
+                    </svg>
+                  </button>
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  <button onClick={() => handleSort('monthlySpend')} className="flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                    Monthly Spend
+                    <svg className={`w-4 h-4 ${sortField === 'monthlySpend' ? 'text-indigo-600' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {sortField === 'monthlySpend' && sortDirection === 'asc' ? (
+                        <path d="M18 15l-6-6-6 6"/>
+                      ) : sortField === 'monthlySpend' && sortDirection === 'desc' ? (
+                        <path d="M6 9l6 6 6-6"/>
+                      ) : (
+                        <><path d="M8 9l4-4 4 4"/><path d="M16 15l-4 4-4-4"/></>
+                      )}
+                    </svg>
+                  </button>
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  <button onClick={() => handleSort('cashFlow')} className="flex items-center gap-1 hover:text-indigo-600 transition-colors">
+                    Cash Flow
+                    <svg className={`w-4 h-4 ${sortField === 'cashFlow' ? 'text-indigo-600' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {sortField === 'cashFlow' && sortDirection === 'asc' ? (
+                        <path d="M18 15l-6-6-6 6"/>
+                      ) : sortField === 'cashFlow' && sortDirection === 'desc' ? (
+                        <path d="M6 9l6 6 6-6"/>
+                      ) : (
+                        <><path d="M8 9l4-4 4 4"/><path d="M16 15l-4 4-4-4"/></>
+                      )}
+                    </svg>
+                  </button>
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="text-left text-xs font-medium text-gray-600 px-6 py-3 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {applications.map((app) => (
+                <tr key={app.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div>
+                      <p className="font-medium text-gray-900">{app.name}</p>
+                      <p className="text-sm text-gray-500">{app.email}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${getRiskColor(app.riskLevel)}`} />
+                      <span className="text-lg font-semibold text-gray-900">{app.openScore}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getRiskBadgeColor(app.riskLevel)}`}>
+                      {app.riskLevel}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-gray-900">
+                    {formatCurrency(app.monthlyIncome)}
+                  </td>
+                  <td className="px-6 py-4 text-gray-900">
+                    {formatCurrency(app.monthlySpend)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={app.cashFlow >= 0 ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                      {formatCurrency(app.cashFlow)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getStatusBadgeColor(app.status)}`}>
+                      {app.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => onViewApplication(app.id)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="lg:hidden divide-y divide-gray-100">
+          {applications.map((app) => (
+            <div key={app.id} className="p-4 hover:bg-gray-50 transition-colors">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-medium text-gray-900">{app.name}</p>
+                  <p className="text-sm text-gray-500">{app.email}</p>
+                </div>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getStatusBadgeColor(app.status)}`}>
+                  {app.status}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">OpenScore</p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${getRiskColor(app.riskLevel)}`} />
+                    <span className="text-lg font-semibold text-gray-900">{app.openScore}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Risk Level</p>
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getRiskBadgeColor(app.riskLevel)}`}>
+                    {app.riskLevel}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Monthly Income</p>
+                  <p className="font-medium text-gray-900">{formatCurrency(app.monthlyIncome)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Cash Flow</p>
+                  <p className={app.cashFlow >= 0 ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                    {formatCurrency(app.cashFlow)}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => onViewApplication(app.id)}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg text-sm font-medium transition-colors"
+              >
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                View Details
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Banker Dashboard Component (New Lender Dashboard)
+const BankerDashboard = ({ user, onLogout }) => {
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleViewApplication = (id) => {
+    setSelectedApplicationId(id);
+    setCurrentView('detail');
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView('dashboard');
+    setSelectedApplicationId(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <LenderTopNav onMenuClick={() => setSidebarOpen(!sidebarOpen)} onLogout={onLogout} />
+      <LenderSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      
+      <div className="lg:ml-64 pt-16">
+        <main className="p-4 md:p-6 lg:p-8">
+          {currentView === 'dashboard' ? (
+            <LenderQueueDashboard onViewApplication={handleViewApplication} />
+          ) : (
+            <LenderApplicationDetail 
+              applicationId={selectedApplicationId} 
+              onBack={handleBackToDashboard}
+            />
+          )}
+        </main>
+      </div>
     </div>
   );
 };
@@ -914,8 +1998,10 @@ const CreditScore = ({ user, onLogout, onBackToDashboard, onNavigateToSimulator 
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching credit score from /api/score/calculate...');
-        const scoreData = await apiCall('/api/score/calculate', 'GET', token);
+        // Get education score from localStorage
+        const educationScore = localStorage.getItem('educationScore') || 75;
+        console.log('Fetching credit score from /api/score/calculate with educationScore:', educationScore);
+        const scoreData = await apiCall(`/api/score/calculate?education_score=${educationScore}`, 'GET', token);
         console.log('Credit score data received:', scoreData);
         setCreditScore(scoreData);
       } catch (err) {
@@ -1253,6 +2339,11 @@ const CreditScore = ({ user, onLogout, onBackToDashboard, onNavigateToSimulator 
                             style={{ width: `${value.score}%` }}
                           />
                         </div>
+                        {value.amount !== undefined && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            Income Amount: ${value.amount.toLocaleString()}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -1748,7 +2839,6 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
             <div className="space-y-4">
               {sliders.slice(0, 2).map((slider) => {
                 const colors = colorClasses[slider.color];
-                const contribution = (slider.value * slider.weight / 100).toFixed(1);
                 
                 return (
                   <div
@@ -1761,11 +2851,9 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900 text-sm">{slider.label}</h3>
-                        <p className="text-xs text-gray-500">{slider.weight}% weight</p>
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-bold text-gray-900">{Math.round(slider.value)}</div>
-                        <div className="text-xs text-gray-500">+{contribution} pts</div>
                       </div>
                     </div>
                     
@@ -1840,7 +2928,7 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
                   return (
                     <div key={slider.id} className="flex items-center gap-1">
                       <div className={`w-2 h-2 rounded ${colors.bg}`}></div>
-                      <span className="text-xs text-gray-500">{slider.weight}%</span>
+                      <span className="text-xs text-gray-500">{slider.label}</span>
                     </div>
                   );
                 })}
@@ -1851,7 +2939,6 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
             <div className="space-y-4">
               {sliders.slice(2, 4).map((slider) => {
                 const colors = colorClasses[slider.color];
-                const contribution = (slider.value * slider.weight / 100).toFixed(1);
                 
                 return (
                   <div
@@ -1864,11 +2951,9 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900 text-sm">{slider.label}</h3>
-                        <p className="text-xs text-gray-500">{slider.weight}% weight</p>
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-bold text-gray-900">{Math.round(slider.value)}</div>
-                        <div className="text-xs text-gray-500">+{contribution} pts</div>
                       </div>
                     </div>
                     
@@ -1895,24 +2980,20 @@ const CreditScoreSimulator = ({ user, onLogout, onBackToCreditScore, initialBrea
 
           {/* Legend */}
           <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">How the Score is Calculated</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Score Factors</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {sliders.map((slider) => {
                 const colors = colorClasses[slider.color];
                 return (
                   <div key={slider.id} className="flex items-center gap-2">
                     <div className={`w-4 h-4 rounded ${colors.bg}`}></div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-700">{slider.label}</div>
-                      <div className="text-xs text-gray-500">{slider.weight}%</div>
-                    </div>
+                    <div className="text-sm font-medium text-gray-700">{slider.label}</div>
                   </div>
                 );
               })}
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Your credit score is calculated by weighting each factor according to its importance. 
-              Improving areas with higher weights will have a greater impact on your overall score.
+              Adjust the sliders above to see how different factors affect your overall credit score.
             </p>
           </div>
         </div>
@@ -1929,38 +3010,37 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
   const [summary, setSummary] = useState(null);
   const [dataLoading, setDataLoading] = useState(false);
   const [dataError, setDataError] = useState(null);
+  
+  // Education credentials state
+  const [showEducationModal, setShowEducationModal] = useState(false);
+  const [educationData, setEducationData] = useState(() => {
+    const saved = localStorage.getItem('educationCredentials');
+    return saved ? JSON.parse(saved) : {
+      highSchool: false,
+      associates: false,
+      bachelors: false,
+      masters: false,
+      doctorate: false,
+      certifications: 0
+    };
+  });
 
   // Get access token from URL hash or sessionStorage
   const getAccessToken = () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:326',message:'getAccessToken called',data:{hasHash:!!window.location.hash,hashLength:window.location.hash.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
 
     const hash = window.location.hash;
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:331',message:'Hash check',data:{hashExists:!!hash,hashSubstring:hash?hash.substring(0,50):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
 
     if (hash) {
       const params = new URLSearchParams(hash.substring(1));
       const token = params.get('access_token');
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:336',message:'Token from hash',data:{tokenFound:!!token,tokenLength:token?token.length:0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
 
       if (token) {
         sessionStorage.setItem('access_token', token);
-        // #region agent log
-        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:340',message:'Token stored in sessionStorage',data:{stored:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         return token;
       }
     }
     // Try to get from sessionStorage if available
     const storedToken = sessionStorage.getItem('access_token');
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:346',message:'Token from sessionStorage',data:{tokenFound:!!storedToken,tokenLength:storedToken?storedToken.length:0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     return storedToken;
   };
 
@@ -2041,13 +3121,13 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
       emoji: '💼'
     },
     {
-      id: 'public',
-      name: 'Public Records (Optional)',
-      iconPath: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline>',
-      type: 'upload',
-      provider: 'Upload Documents',
-      description: 'Education credentials, property ownership, professional licenses',
-      emoji: '📋'
+      id: 'education',
+      name: 'Education Credentials',
+      iconPath: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path>',
+      type: 'modal',
+      provider: 'Add Credentials',
+      description: 'Degrees (high school to doctorate) and professional certifications',
+      emoji: '🎓'
     }
   ];
 
@@ -2057,95 +3137,45 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
     }
   };
 
-  const handleFileUpload = async (type, files) => {
-    const token = getAccessToken();
-    if (!token) {
-      setDataError("No access token available");
-      return;
-    }
-  
-    // Convert FileList -> Array<File>
-    const fileArray = Array.from(files || []);
-    if (fileArray.length === 0) return;
-  
-    // Optimistic UI: show as "uploading" immediately
-    const pending = fileArray.map((file) => ({
+  const handleFileUpload = (sourceId, files) => {
+    const newFiles = Array.from(files).map(file => ({
+      sourceId,
       name: file.name,
-      type,
       size: file.size,
-      uploadedAt: new Date().toISOString(),
-      status: "uploading",
+      type: file.type
     }));
-  
-    setUploadedFiles((prev) => [...pending, ...prev]);
-    setDataError(null);
-  
-    try {
-      // For document uploads, we need both income_pdf and balance_pdf
-      // Check if we have 2 PDF files
-      const pdfFiles = fileArray.filter(f => f.name.toLowerCase().endsWith('.pdf'));
-      
-      if (pdfFiles.length >= 2) {
-        // Assume first is income, second is balance (or detect by name)
-        const incomeFile = pdfFiles.find(f => f.name.toLowerCase().includes('income')) || pdfFiles[0];
-        const balanceFile = pdfFiles.find(f => f.name.toLowerCase().includes('balance')) || pdfFiles[1];
-        
-        const formData = new FormData();
-        formData.append('income_pdf', incomeFile);
-        formData.append('balance_pdf', balanceFile);
-        
-        const res = await fetch(`${API_BASE_URL}/api/documents/upload`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: formData
-        });
-        
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || `Upload failed (${res.status})`);
-        }
-        
-        const resp = await res.json();
-        
-        // Store document scores if returned
-        if (resp.scores) {
-          console.log('Document scores:', resp.scores);
-          // You can store these in state if needed
-        }
-        
-        // Mark uploaded in UI
-        setUploadedFiles((prev) =>
-          prev.map((f) =>
-            f.status === "uploading" && fileArray.some((x) => x.name === f.name)
-              ? { ...f, status: "uploaded", server: resp }
-              : f
-          )
-        );
-      } else {
-        // Single file or non-PDF - store locally for now
-        setDataError("Please upload both income.pdf and balance.pdf files together");
-        setUploadedFiles((prev) =>
-          prev.map((f) =>
-            f.status === "uploading" ? { ...f, status: "pending", note: "Need both income and balance PDFs" } : f
-          )
-        );
-      }
-  
-    } catch (err) {
-      setDataError(err?.message || "Upload failed");
-  
-      // Mark failed in UI
-      setUploadedFiles((prev) =>
-        prev.map((f) =>
-          f.status === "uploading" && fileArray.some((x) => x.name === f.name)
-            ? { ...f, status: "failed" }
-            : f
-        )
-      );
+    setUploadedFiles([...uploadedFiles, ...newFiles]);
+    if (!connectedSources.includes(sourceId)) {
+      setConnectedSources([...connectedSources, sourceId]);
     }
-  };  
+  };
+
+  // Calculate education score: 30 per degree, 20 per certification, cap at 100
+  const calculateEducationScore = (data) => {
+    let score = 0;
+    if (data.highSchool) score += 30;
+    if (data.associates) score += 30;
+    if (data.bachelors) score += 30;
+    if (data.masters) score += 30;
+    if (data.doctorate) score += 30;
+    score += (data.certifications || 0) * 20;
+    return Math.min(score, 100);
+  };
+
+  const saveEducationData = (data) => {
+    setEducationData(data);
+    localStorage.setItem('educationCredentials', JSON.stringify(data));
+    localStorage.setItem('educationScore', calculateEducationScore(data));
+    if (!connectedSources.includes('education')) {
+      setConnectedSources([...connectedSources, 'education']);
+    }
+    setShowEducationModal(false);
+  };
+
+  const getEducationScore = () => {
+    const saved = localStorage.getItem('educationScore');
+    return saved ? parseInt(saved) : calculateEducationScore(educationData);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -2219,9 +3249,91 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
                 isConnected={connectedSources.includes(source.id)}
                 onConnect={() => connectSource(source.id)}
                 onUpload={(files) => handleFileUpload(source.id, files)}
+                onModalOpen={source.id === 'education' ? () => setShowEducationModal(true) : undefined}
               />
             ))}
           </div>
+
+          {/* Education Credentials Modal */}
+          {showEducationModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-gray-900">Education Credentials</h2>
+                  <button
+                    onClick={() => setShowEducationModal(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Degrees Section */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Highest Education Level</h3>
+                    <p className="text-xs text-gray-500 mb-3">Select all degrees you have earned</p>
+                    <div className="space-y-2">
+                      {[
+                        { key: 'highSchool', label: 'High School Diploma / GED' },
+                        { key: 'associates', label: "Associate's Degree" },
+                        { key: 'bachelors', label: "Bachelor's Degree" },
+                        { key: 'masters', label: "Master's Degree" },
+                        { key: 'doctorate', label: 'Doctorate / PhD' }
+                      ].map(({ key, label }) => (
+                        <label key={key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={educationData[key]}
+                            onChange={(e) => setEducationData({ ...educationData, [key]: e.target.checked })}
+                            className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                          <span className="text-gray-700">{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Certifications Section */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Professional Certifications</h3>
+                    <p className="text-xs text-gray-500 mb-3">How many professional certifications do you have?</p>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => setEducationData({ ...educationData, certifications: Math.max(0, educationData.certifications - 1) })}
+                        className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </button>
+                      <span className="text-2xl font-bold text-gray-900 w-12 text-center">{educationData.certifications}</span>
+                      <button
+                        onClick={() => setEducationData({ ...educationData, certifications: educationData.certifications + 1 })}
+                        className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Save Button */}
+                  <button
+                    onClick={() => saveEducationData(educationData)}
+                    className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                  >
+                    Save Credentials
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Load Sandbox Data Button */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -2366,13 +3478,7 @@ function App() {
       const storedUserType = sessionStorage.getItem('userType');
 
       if (accessToken && idToken) {
-        // #region agent log
-        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:721',message:'Storing access token on login',data:{tokenLength:accessToken.length,hasToken:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         sessionStorage.setItem('access_token', accessToken);
-        // #region agent log
-        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:725',message:'Access token stored in sessionStorage',data:{stored:true,verifyStored:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         fetchUserInfo(accessToken, storedUserType || 'customer');
         window.history.replaceState({}, document.title, window.location.pathname);
       }
@@ -2416,7 +3522,6 @@ function App() {
   const loginAsBanker = (e) => {
     e.preventDefault();
     setBankerLoginError('');
-    
     // Simple hardcoded auth for hackathon
     if (bankerId === 'dinobank' && bankerPassword === 'dinobank123') {
       setUser({ name: 'Dino Bank', email: 'admin@dinobank.com', picture: null });
@@ -2428,9 +3533,6 @@ function App() {
   };
 
   const logout = () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:862',message:'Logout called, clearing token',data:{hasTokenBefore:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     setUser(null);
     setUserType('customer');
     setBankerId('');
@@ -2438,9 +3540,6 @@ function App() {
     sessionStorage.removeItem('userType');
     sessionStorage.removeItem('access_token');
     sessionStorage.removeItem('banker_auth');
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:867',message:'Token removed from sessionStorage',data:{hasTokenAfter:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
 
     const logoutUrl = `https://${AUTH0_DOMAIN}/v2/logout?` +
       `client_id=${AUTH0_CLIENT_ID}&` +

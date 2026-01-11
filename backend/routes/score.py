@@ -64,6 +64,10 @@ def calculate_score():
             for liab in liabilities["liabilities"]:
                 liab.pop("_id", None)
         
+        # Get education_score from query parameter (from frontend localStorage)
+        education_score = request.args.get('education_score', 75.0, type=float)
+        logger.info(f"Education score from frontend: {education_score}")
+        
         # Calculate credit score using scoring_service (does NOT use Gemini)
         logger.info("Calculating credit score...")
         score_result = calculate_credit_score(
@@ -72,7 +76,7 @@ def calculate_score():
             investments=investments,
             liabilities=liabilities,
             alternative_income=50000.0,  # Default value - could be made configurable
-            education_score=75.0  # Default value - could be made configurable
+            education_score=education_score  # From frontend localStorage via query param
         )
         logger.info(f"Credit score calculated: {score_result.get('credit_score')}")
         

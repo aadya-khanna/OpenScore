@@ -14,7 +14,6 @@ from routes.score import bp as score_bp
 from routes.lender import bp as lender_bp
 from routes.data import bp as data_bp
 from routes.sandbox_loader import bp as sandbox_loader_bp
-from routes.documents import documents_bp
 
 # Configure logging
 logging.basicConfig(
@@ -48,24 +47,7 @@ def ensure_indexes():
     try:
         db = get_db()
         
-        # Legacy indexes (for existing Plaid integration)
-        # Transactions: unique index on (userId, transaction_id)
-        db.transactions.create_index([("userId", 1), ("transaction_id", 1)], unique=True)
-        logger.info("Created index on transactions (userId, transaction_id)")
-        
-        # Balances: unique index on (userId, account_id)
-        db.balances.create_index([("userId", 1), ("account_id", 1)], unique=True)
-        logger.info("Created index on balances (userId, account_id)")
-        
-        # Plaid items: unique index on userId
-        db.plaid_items.create_index([("userId", 1)], unique=True)
-        logger.info("Created index on plaid_items (userId)")
-        
-        # Income: index on userId
-        db.income.create_index([("userId", 1)])
-        logger.info("Created index on income (userId)")
-        
-        # New indexes for sandbox storage (best-effort, won't fail if already exists)
+        # Indexes for sandbox storage (using user_id field)
         from services.sandbox_storage_service import ensure_indexes as ensure_sandbox_indexes
         ensure_sandbox_indexes(db)
         
@@ -81,7 +63,6 @@ app.register_blueprint(score_bp)
 app.register_blueprint(lender_bp)
 app.register_blueprint(data_bp)
 app.register_blueprint(sandbox_loader_bp)
-app.register_blueprint(documents_bp)
 
 
 @app.route("/", methods=["GET"])
@@ -101,9 +82,7 @@ def root():
         "GET /api/balances": "Get stored balances (auth required)",
         "GET /api/income": "Get stored income (auth required)",
         "GET /api/score/calculate": "Calculate credit score (auth required)",
-        "GET /api/lender/list": "List lenders (auth required) - Placeholder",
-        "POST /api/documents/upload": "Upload income & balance PDFs for scoring (auth required)",
-        "GET /api/documents/scores": "Get document scores from default PDFs (auth required)"
+        "GET /api/lender/list": "List lenders (auth required) - Placeholder"
     }
     
     endpoints = {
