@@ -3453,12 +3453,534 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
   );
 };
 
+// Landing Page Component
+function LandingPage({ onGetStarted, onLogIn }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
+  return (
+    <div className="h-screen bg-white overflow-hidden flex flex-col">
+      {/* Top Banner */}
+      <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 text-white py-2.5 px-4 text-center text-sm flex items-center justify-center gap-2 shadow-sm relative">
+        <span className="animate-pulse">🚀</span>
+        <span className="font-medium">Session 2026 • Early-bird registration now open</span>
+        <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+
+      {/* Navigation Bar */}
+      <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/30 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2.5 group cursor-pointer">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                <div className="w-2.5 h-2.5 bg-white rounded-full" />
+              </div>
+              <span className="text-xl font-semibold text-gray-900 tracking-tight">OpenScore</span>
+            </div>
+
+            {/* Nav Links */}
+            <nav className="hidden md:flex items-center gap-1">
+              {["Features", "Accounts", "Company", "Insight"].map((item) => (
+                <a
+                  key={item}
+                  href="#"
+                  className="text-sm text-gray-600 hover:text-gray-900 px-4 py-2 rounded-full hover:bg-gray-50 transition-all duration-200"
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          {/* Right Side Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onLogIn}
+              className="text-sm text-gray-600 hover:text-gray-900 rounded-full px-5 py-2 hover:bg-gray-50 transition-colors"
+            >
+              Login
+            </button>
+            <button
+              onClick={onGetStarted}
+              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-full px-6 py-2 text-sm shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 flex items-center gap-1"
+            >
+              Sign Up
+              <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-6 py-16 md:py-20 flex-1 flex items-center overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
+          {/* Left Content */}
+          <div className="space-y-6">
+            <div
+              className={`inline-flex items-center gap-2 bg-blue-50/80 backdrop-blur-sm border border-blue-100 text-blue-600 font-medium text-xs tracking-wide uppercase px-4 py-2 rounded-full shadow-sm transition-all duration-700 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+            >
+              <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2v20M2 12h20" />
+                <path d="M12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6z" />
+              </svg>
+              Try it now
+            </div>
+
+            <h1
+              className={`text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.1] tracking-tight transition-all duration-700 delay-100 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+            >
+              Take control of your{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent italic pr-2">
+                credit score
+              </span>
+            </h1>
+
+            <p
+              className={`text-gray-600 text-base md:text-lg max-w-md leading-relaxed transition-all duration-700 delay-200 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+            >
+              From tracking your credit health to building a stronger financial future, OpenScore helps you understand,
+              monitor, and improve your credit score.
+            </p>
+
+            <div
+              className={`flex flex-wrap items-center gap-6 pt-4 transition-all duration-700 delay-300 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+            >
+              <button
+                onClick={onGetStarted}
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-full px-8 py-6 text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02] transition-all duration-300"
+              >
+                Get Started Now
+              </button>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex -space-x-1.5">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 border-2 border-white" />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 border-2 border-white" />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 border-2 border-white" />
+                </div>
+                <span>10k+ users</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Cards Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Credit Score Card */}
+            <div
+              className={`relative overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-3xl p-6 flex flex-col justify-center row-span-1 shadow-xl shadow-blue-500/20 transition-all duration-700 delay-200 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/30 ${
+                isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16" />
+              <div className="relative">
+                <div className="text-white/70 text-xs mb-2 flex items-center gap-2">
+                  <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" x2="12" y1="20" y2="10"></line>
+                    <line x1="18" x2="18" y1="20" y2="4"></line>
+                    <line x1="6" x2="6" y1="20" y2="16"></line>
+                  </svg>
+                  Your Score
+                </div>
+                <div className="text-5xl font-bold text-white tracking-tight">750</div>
+                <div className="text-emerald-300 text-xs mt-3 flex items-center gap-1.5 font-medium">
+                  <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  +23 this month
+                </div>
+              </div>
+            </div>
+
+            {/* Score Factors Card */}
+            <div
+              className={`bg-gradient-to-br from-gray-50 to-blue-50/50 rounded-3xl p-6 flex flex-col items-center justify-center border border-gray-100/80 shadow-lg shadow-gray-200/50 transition-all duration-700 delay-300 hover:scale-[1.02] hover:shadow-xl ${
+                isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
+            >
+              <span className="text-4xl font-bold text-gray-900 tracking-tight">12+</span>
+              <span className="text-gray-600 text-sm mt-1">Score Factors</span>
+              <div className="mt-3 p-2.5 bg-blue-100/50 rounded-2xl">
+                <svg className="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="M9 12l2 2 4-4"></path>
+                </svg>
+              </div>
+            </div>
+
+            {/* Users Improving Card */}
+            <div
+              className={`relative overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 rounded-3xl p-6 text-white shadow-xl shadow-gray-900/30 transition-all duration-700 delay-400 hover:scale-[1.02] hover:shadow-2xl ${
+                isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
+            >
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl -ml-8 -mb-8" />
+              <div className="relative">
+                <div className="flex gap-1.5 mb-3">
+                  <div className="w-2.5 h-2.5 bg-blue-400/50 rotate-45 rounded-sm" />
+                  <div className="w-2.5 h-2.5 bg-blue-400/50 rotate-45 rounded-sm" />
+                </div>
+                <p className="text-gray-400 mb-3 text-sm">Users Improving</p>
+                <div className="flex items-center">
+                  <div className="flex -space-x-2">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 border-2 border-gray-900 ring-2 ring-gray-800" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 border-2 border-gray-900 ring-2 ring-gray-800" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 border-2 border-gray-900 ring-2 ring-gray-800" />
+                  </div>
+                  <div className="ml-2 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg className="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Score Growth Card */}
+            <div
+              className={`bg-gradient-to-br from-white to-gray-50 rounded-3xl p-6 border border-gray-100/80 shadow-lg shadow-gray-200/50 transition-all duration-700 delay-500 hover:scale-[1.02] hover:shadow-xl ${
+                isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-3xl font-bold text-gray-900 tracking-tight">+84.3%</span>
+                <div className="p-1.5 bg-emerald-100 rounded-lg">
+                  <svg className="h-4 w-4 text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <svg viewBox="0 0 100 40" className="w-full h-16 mt-2">
+                <defs>
+                  <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="rgb(59, 130, 246)" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="rgb(59, 130, 246)" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0 35 Q20 30 30 25 T50 20 T70 15 T90 10 L100 8 L100 40 L0 40 Z"
+                  fill="url(#chartGradient)"
+                  className={`transition-opacity duration-1000 delay-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                />
+                <path
+                  d="M0 35 Q20 30 30 25 T50 20 T70 15 T90 10 L100 8"
+                  fill="none"
+                  stroke="rgb(59, 130, 246)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  style={{
+                    strokeDasharray: 150,
+                    strokeDashoffset: isLoaded ? 0 : 150,
+                    transition: "stroke-dashoffset 1.5s ease-out 0.7s",
+                  }}
+                />
+                {isLoaded && (
+                  <>
+                    <circle cx="0" cy="35" r="3" fill="rgb(59, 130, 246)" className="animate-pulse" style={{ animationDelay: "0.8s" }} />
+                    <circle cx="30" cy="25" r="3" fill="rgb(59, 130, 246)" className="animate-pulse" style={{ animationDelay: "1s" }} />
+                    <circle cx="50" cy="20" r="3" fill="rgb(59, 130, 246)" className="animate-pulse" style={{ animationDelay: "1.2s" }} />
+                    <circle cx="70" cy="15" r="3" fill="rgb(59, 130, 246)" className="animate-pulse" style={{ animationDelay: "1.4s" }} />
+                    <circle cx="100" cy="8" r="3" fill="rgb(59, 130, 246)" className="animate-pulse" style={{ animationDelay: "1.6s" }} />
+                  </>
+                )}
+              </svg>
+              <p className="text-gray-600 text-sm mt-2">Avg. Score Growth</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// Login Page Component with Animations
+function LoginPage({ userType, setUserType, loginWithGoogle, loginAsBanker, bankerId, setBankerId, bankerPassword, setBankerPassword, bankerLoginError }) {
+  const [displayedName, setDisplayedName] = useState("");
+  const [nameIndex, setNameIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const names = ["Sarah", "Michael", "Emma", "James", "Olivia", "David"];
+
+  // Typing animation effect
+  useEffect(() => {
+    const currentName = names[nameIndex];
+    const typingSpeed = isDeleting ? 50 : 100;
+    const pauseTime = isDeleting ? 500 : 2000;
+
+    if (!isDeleting && charIndex === currentName.length) {
+      const timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setNameIndex((prev) => (prev + 1) % names.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
+      setDisplayedName(currentName.substring(0, charIndex + (isDeleting ? -1 : 1)));
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, nameIndex]);
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Left Panel - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md space-y-6">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <svg className="w-8 h-8 text-gray-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
+              <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
+            </svg>
+            <span className="text-xl font-semibold text-gray-900">OpenScore</span>
+          </div>
+
+          {/* Welcome Text with Typing Animation */}
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Welcome back,
+              <br />
+              <span className="inline-flex items-baseline text-blue-600">
+                {displayedName}
+                <span className="inline-block w-0.5 h-7 bg-blue-600 ml-1 animate-pulse" />
+              </span>
+              !
+            </h1>
+            <p className="text-sm text-gray-500">
+              We are glad to see you again!
+              <br />
+              Please, select your role and sign in
+            </p>
+          </div>
+
+          {/* Role Selection */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Select your role</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setUserType('customer')}
+                className={`h-16 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 transition-all ${
+                  userType === 'customer'
+                    ? 'bg-gray-900 border-gray-900 text-white'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span className="text-sm font-medium">Customer</span>
+              </button>
+              <button
+                onClick={() => setUserType('banker')}
+                className={`h-16 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 transition-all ${
+                  userType === 'banker'
+                    ? 'bg-gray-900 border-gray-900 text-white'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                  <line x1="2" x2="22" y1="10" y2="10"></line>
+                </svg>
+                <span className="text-sm font-medium">Banker</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Google Login for Customers */}
+          {userType === 'customer' && (
+            <button
+              onClick={loginWithGoogle}
+              className="w-full h-11 flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Log in with Google</span>
+            </button>
+          )}
+
+          {/* Banker Login Form */}
+          {userType === 'banker' && (
+            <form onSubmit={loginAsBanker} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">
+                  Lender ID <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={bankerId}
+                  onChange={(e) => setBankerId(e.target.value)}
+                  placeholder="Enter your lender ID"
+                  className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  value={bankerPassword}
+                  onChange={(e) => setBankerPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+              {bankerLoginError && (
+                <p className="text-red-500 text-sm">{bankerLoginError}</p>
+              )}
+              <button
+                type="submit"
+                className="w-full h-10 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-all"
+              >
+                Login
+              </button>
+            </form>
+          )}
+
+          {/* Sign up link */}
+          <p className="text-center text-sm text-gray-500">
+            Don't have an account?{' '}
+            <button className="text-gray-900 hover:underline font-medium">Sign up</button>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Panel - Static Showcase */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-500 p-8 items-center justify-center relative overflow-hidden">
+        <div className="w-full max-w-lg space-y-6">
+          {/* Profile Card */}
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 transform hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center">
+                <span className="text-2xl">👤</span>
+              </div>
+              <div>
+                <p className="text-white font-semibold">Anonymous User</p>
+                <p className="text-white/80 text-sm">OpenScore Member</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Card */}
+          <div className="bg-white rounded-2xl p-6 shadow-lg transform hover:scale-105 transition-transform">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" x2="12" y1="20" y2="10"></line>
+                  <line x1="18" x2="18" y1="20" y2="4"></line>
+                  <line x1="6" x2="6" y1="20" y2="14"></line>
+                </svg>
+                <span className="text-sm text-gray-500">Credit Score Trend</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-3xl font-bold text-gray-900">+84.32%</span>
+              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                <svg className="w-4 h-4 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                  <polyline points="17 6 23 6 23 12"></polyline>
+                </svg>
+              </div>
+            </div>
+            {/* Credit Score Line Chart */}
+            <div className="relative h-32">
+              <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
+                {/* Grid lines */}
+                <line x1="0" y1="80" x2="300" y2="80" stroke="#e5e7eb" strokeWidth="0.5" />
+                <line x1="0" y1="60" x2="300" y2="60" stroke="#e5e7eb" strokeWidth="0.5" />
+                <line x1="0" y1="40" x2="300" y2="40" stroke="#e5e7eb" strokeWidth="0.5" />
+                <line x1="0" y1="20" x2="300" y2="20" stroke="#e5e7eb" strokeWidth="0.5" />
+                {/* Credit score line - increasing trend */}
+                <polyline
+                  points="20,70 60,65 100,55 140,45 180,35 220,30 260,25 280,20"
+                  fill="none"
+                  stroke="#3b82f6"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                {/* Gradient fill under the line */}
+                <defs>
+                  <linearGradient id="creditGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
+                  </linearGradient>
+                </defs>
+                <polygon
+                  points="20,70 60,65 100,55 140,45 180,35 220,30 260,25 280,20 280,100 20,100"
+                  fill="url(#creditGradient)"
+                />
+                {/* Data points */}
+                {[
+                  { x: 20, y: 70 },
+                  { x: 60, y: 65 },
+                  { x: 100, y: 55 },
+                  { x: 140, y: 45 },
+                  { x: 180, y: 35 },
+                  { x: 220, y: 30 },
+                  { x: 260, y: 25 },
+                  { x: 280, y: 20 }
+                ].map((point, i) => (
+                  <circle
+                    key={i}
+                    cx={point.x}
+                    cy={point.y}
+                    r="3"
+                    fill="#3b82f6"
+                    className="hover:r-4 transition-all"
+                  />
+                ))}
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating decorations */}
+        <div className="absolute top-20 right-20 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-32 left-16 w-24 h-24 bg-cyan-300/20 rounded-full blur-lg animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+    </div>
+  );
+}
+
 // Main App Component
 function App() {
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState('customer');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard', 'graphs', 'creditScore', or 'simulator'
+  const [showLandingPage, setShowLandingPage] = useState(true); // Show landing page by default
   
   // Banker login state
   const [bankerId, setBankerId] = useState('');
@@ -3537,6 +4059,7 @@ function App() {
     setUserType('customer');
     setBankerId('');
     setBankerPassword('');
+    setShowLandingPage(true); // Reset to landing page on logout
     sessionStorage.removeItem('userType');
     sessionStorage.removeItem('access_token');
     sessionStorage.removeItem('banker_auth');
@@ -3557,111 +4080,27 @@ function App() {
   }
 
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-                <svg className="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-                </svg>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">OpenScore</span>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome</h1>
-            <p className="text-gray-600">Sign in to access your dashboard</p>
-          </div>
-
-          <div className="flex gap-4 mb-6">
-            <button
-              className={`flex-1 p-4 border-2 rounded-lg transition-all flex flex-col items-center gap-2 ${
-                userType === 'customer'
-                  ? 'bg-indigo-600 border-indigo-600 text-white'
-                  : 'bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
-              }`}
-              onClick={() => setUserType('customer')}
-            >
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                userType === 'customer' ? 'bg-white bg-opacity-20' : 'bg-gray-100'
-              }`}>
-                <svg className={`w-6 h-6 ${userType === 'customer' ? 'text-white' : 'text-gray-600'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <span className="font-semibold text-sm">Customer</span>
-            </button>
-
-            <button
-              className={`flex-1 p-4 border-2 rounded-lg transition-all flex flex-col items-center gap-2 ${
-                userType === 'banker'
-                  ? 'bg-indigo-600 border-indigo-600 text-white'
-                  : 'bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
-              }`}
-              onClick={() => setUserType('banker')}
-            >
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                userType === 'banker' ? 'bg-white bg-opacity-20' : 'bg-gray-100'
-              }`}>
-                <svg className={`w-6 h-6 ${userType === 'banker' ? 'text-white' : 'text-gray-600'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect width="20" height="14" x="2" y="5" rx="2"></rect>
-                  <line x1="2" x2="22" y1="10" y2="10"></line>
-                </svg>
-              </div>
-              <span className="font-semibold text-sm">Banker</span>
-            </button>
-          </div>
-
-          {userType === 'banker' ? (
-            <form onSubmit={loginAsBanker} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lender ID</label>
-                <input
-                  type="text"
-                  value={bankerId}
-                  onChange={(e) => setBankerId(e.target.value)}
-                  placeholder="Enter lender ID"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input
-                  type="password"
-                  value={bankerPassword}
-                  onChange={(e) => setBankerPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-                  required
-                />
-              </div>
-              {bankerLoginError && (
-                <p className="text-red-500 text-sm">{bankerLoginError}</p>
-              )}
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-indigo-700 transition-all duration-200"
-              >
-                Login as Lender
-              </button>
-            </form>
-          ) : (
-            <button onClick={loginWithGoogle} className="w-full bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm">
-              <svg className="w-6 h-6" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-              Continue with Google
-            </button>
-          )}
-        </div>
-      </div>
-    );
+    // Show landing page first, then login page when user clicks Get Started or Log In
+    if (showLandingPage) {
+      return (
+        <LandingPage 
+          onGetStarted={() => setShowLandingPage(false)}
+          onLogIn={() => setShowLandingPage(false)}
+        />
+      );
+    }
+    
+    return <LoginPage 
+      userType={userType} 
+      setUserType={setUserType}
+      loginWithGoogle={loginWithGoogle}
+      loginAsBanker={loginAsBanker}
+      bankerId={bankerId}
+      setBankerId={setBankerId}
+      bankerPassword={bankerPassword}
+      setBankerPassword={setBankerPassword}
+      bankerLoginError={bankerLoginError}
+    />;
   }
 
   if (userType === 'banker') {
