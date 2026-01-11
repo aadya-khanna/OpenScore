@@ -48,7 +48,7 @@ const DataSourceCard = ({ source, isConnected, onConnect, onUpload, onModalOpen 
   const fileInputRef = useRef(null);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
           <div className={`p-3 rounded-xl ${isConnected ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -3178,61 +3178,59 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-                </svg>
-              </div>
-              <span className="text-xl font-bold text-gray-900">OpenScore</span>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">OS</span>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                <span>Secure & FCRA Compliant</span>
-              </div>
-              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg">
-                {user.picture && (
-                  <img src={user.picture} alt="User" className="w-8 h-8 rounded-full border-2 border-blue-500" />
-                )}
-                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
-              </div>
-              <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
-                Logout
-              </button>
+            <div className="hidden sm:block">
+              <h1 className="font-semibold text-gray-900">OpenScore</h1>
+              <p className="text-xs text-gray-500">Customer Dashboard</p>
             </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                <p className="text-xs text-gray-500">{user.email}</p>
+              </div>
+              {user.picture ? (
+                <img src={user.picture} alt="User" className="w-9 h-9 rounded-full" />
+              ) : (
+                <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+              )}
+            </div>
+            <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+              Logout
+            </button>
           </div>
         </div>
       </header>
 
-      <main className="py-8">
-        <div className="max-w-6xl mx-auto px-6 space-y-6">
-          <div className="text-center space-y-4 py-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-700 text-sm font-medium">
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-              </svg>
-              <span>AI-Powered Credit Analysis</span>
+      <main className="p-4 md:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Connect Your Financial Data</h2>
+              <p className="text-sm text-gray-500 mt-1">Link your accounts or upload documents to get your comprehensive credit score</p>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900">Connect Your Financial Data</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Link your accounts or upload documents to get your comprehensive credit score
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {user.picture && (
-                <img src={user.picture} alt="User" className="w-14 h-14 rounded-full border-3 border-blue-500" />
+            <div className="p-6 flex items-center gap-4">
+              {user.picture ? (
+                <img src={user.picture} alt="User" className="w-12 h-12 rounded-full" />
+              ) : (
+                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
               )}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
@@ -3241,23 +3239,31 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {dataSources.map(source => (
-              <DataSourceCard
-                key={source.id}
-                source={source}
-                isConnected={connectedSources.includes(source.id)}
-                onConnect={() => connectSource(source.id)}
-                onUpload={(files) => handleFileUpload(source.id, files)}
-                onModalOpen={source.id === 'education' ? () => setShowEducationModal(true) : undefined}
-              />
-            ))}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Data Sources</h2>
+              <p className="text-sm text-gray-500 mt-1">Connect your financial accounts and upload documents</p>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {dataSources.map(source => (
+                  <DataSourceCard
+                    key={source.id}
+                    source={source}
+                    isConnected={connectedSources.includes(source.id)}
+                    onConnect={() => connectSource(source.id)}
+                    onUpload={(files) => handleFileUpload(source.id, files)}
+                    onModalOpen={source.id === 'education' ? () => setShowEducationModal(true) : undefined}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Education Credentials Modal */}
           {showEducationModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+              <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-gray-900">Education Credentials</h2>
                   <button
@@ -3326,7 +3332,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
                   {/* Save Button */}
                   <button
                     onClick={() => saveEducationData(educationData)}
-                    className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                    className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                   >
                     Save Credentials
                   </button>
@@ -3336,7 +3342,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
           )}
 
           {/* Load Sandbox Data Button */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-lg font-semibold mb-2">Load Test Data</h3>
             <p className="text-sm text-gray-600 mb-4">
               Load sandbox test data to simulate your financial profile
@@ -3376,7 +3382,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
           </div>
 
           {uploadedFiles.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
@@ -3411,7 +3417,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
           {/* View Credit Score Button */}
           <div className="mt-6">
             {accounts.length === 0 && transactions.length === 0 ? (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <svg className="w-6 h-6 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -3425,7 +3431,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
                 </p>
                 <button
                   disabled
-                  className="w-full py-4 bg-gray-300 text-gray-500 rounded-xl font-semibold text-lg cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-gray-200 text-gray-500 rounded-lg font-medium cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -3437,7 +3443,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
             ) : (
               <button
                 onClick={onNavigateToCreditScore}
-                className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold text-lg hover:from-green-700 hover:to-emerald-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -3478,8 +3484,8 @@ function LandingPage({ onGetStarted, onLogIn }) {
           {/* Logo */}
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2.5 group cursor-pointer">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
-                <div className="w-2.5 h-2.5 bg-white rounded-full" />
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                <span className="text-white font-bold text-xl">os</span>
               </div>
               <span className="text-xl font-semibold text-gray-900 tracking-tight">OpenScore</span>
             </div>
@@ -3751,10 +3757,9 @@ function LoginPage({ userType, setUserType, loginWithGoogle, loginAsBanker, bank
         <div className="w-full max-w-md space-y-6">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <svg className="w-8 h-8 text-gray-900" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-              <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-            </svg>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <span className="text-white font-bold text-lg">os</span>
+            </div>
             <span className="text-xl font-semibold text-gray-900">OpenScore</span>
           </div>
 
