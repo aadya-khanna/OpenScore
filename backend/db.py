@@ -52,4 +52,3 @@ def get_collection(name: str):
     """
     db = get_db()
     return db[name]
-

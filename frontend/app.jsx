@@ -2347,6 +2347,11 @@ function App() {
   const [userType, setUserType] = useState('customer');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard', 'graphs', 'creditScore', or 'simulator'
+  
+  // Banker login state
+  const [bankerId, setBankerId] = useState('');
+  const [bankerPassword, setBankerPassword] = useState('');
+  const [bankerLoginError, setBankerLoginError] = useState('');
 
   const AUTH0_DOMAIN = AUTH0_CONFIG.domain;
   const AUTH0_CLIENT_ID = AUTH0_CONFIG.clientId;
@@ -2408,14 +2413,31 @@ function App() {
     window.location.href = authUrl;
   };
 
+  const loginAsBanker = (e) => {
+    e.preventDefault();
+    setBankerLoginError('');
+    
+    // Simple hardcoded auth for hackathon
+    if (bankerId === 'dinobank' && bankerPassword === 'dinobank123') {
+      setUser({ name: 'Dino Bank', email: 'admin@dinobank.com', picture: null });
+      setUserType('banker');
+      sessionStorage.setItem('banker_auth', 'true');
+    } else {
+      setBankerLoginError('Invalid ID or password');
+    }
+  };
+
   const logout = () => {
     // #region agent log
     fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:862',message:'Logout called, clearing token',data:{hasTokenBefore:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
     // #endregion
     setUser(null);
     setUserType('customer');
+    setBankerId('');
+    setBankerPassword('');
     sessionStorage.removeItem('userType');
     sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('banker_auth');
     // #region agent log
     fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:867',message:'Token removed from sessionStorage',data:{hasTokenAfter:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
     // #endregion
@@ -2493,15 +2515,51 @@ function App() {
             </button>
           </div>
 
-          <button onClick={loginWithGoogle} className="w-full bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm">
-            <svg className="w-6 h-6" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-          </button>
+          {userType === 'banker' ? (
+            <form onSubmit={loginAsBanker} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lender ID</label>
+                <input
+                  type="text"
+                  value={bankerId}
+                  onChange={(e) => setBankerId(e.target.value)}
+                  placeholder="Enter lender ID"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  value={bankerPassword}
+                  onChange={(e) => setBankerPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                  required
+                />
+              </div>
+              {bankerLoginError && (
+                <p className="text-red-500 text-sm">{bankerLoginError}</p>
+              )}
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-indigo-700 transition-all duration-200"
+              >
+                Login as Lender
+              </button>
+            </form>
+          ) : (
+            <button onClick={loginWithGoogle} className="w-full bg-white border-2 border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm">
+              <svg className="w-6 h-6" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Continue with Google
+            </button>
+          )}
         </div>
       </div>
     );

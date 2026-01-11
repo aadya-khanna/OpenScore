@@ -293,6 +293,175 @@ curl -X GET http://localhost:5000/api/data/summary \
 - `POST /api/score/calculate` - Calculate score (requires auth, placeholder)
 - `GET /api/lender/list` - List lenders (requires auth, placeholder)
 
+### Lender Dashboard Endpoints (X-Lender-Token required)
+
+**Authentication:** These endpoints use a separate authentication system. Use `POST /api/lender/login` to get a session token, then include it in the `X-Lender-Token` header.
+
+- `POST /api/lender/login` - Lender login (no auth, returns token)
+- `POST /api/lender/logout` - Lender logout
+- `GET /api/lender/session` - Get current lender session info
+- `POST /api/lender/applications/create` - Create loan application
+- `GET /api/lender/applications` - List applications (query: status?, limit?)
+- `GET /api/lender/applications/<id>` - Get application detail with risk snapshot
+- `POST /api/lender/applications/<id>/decision` - Record decision (approve/reject/etc)
+- `POST /api/lender/applications/<id>/notes` - Add note to application
+- `POST /api/lender/applications/<id>/recompute` - Recompute risk snapshot
+
+## Lender Authentication
+
+The lender dashboard uses a simple password-based authentication system separate from Auth0.
+
+### Environment Variable
+
+Set `LENDER_PASSWORD` in your `.env` file:
+```
+LENDER_PASSWORD=dinobank123
+```
+
+Default password is `dinobank123` if not set.
+
+### Lender API Examples
+
+#### 1. Login to get a session token
+
+```bash
+curl -X POST http://localhost:5000/api/lender/login \
+  -H "Content-Type: application/json" \
+  -d '{"password": "dinobank123"}'
+```
+
+**Response:**
+```json
+{
+  "ok": true,
+  "token": "abc123...",
+  "lender": {
+    "lender_id": "dinobank",
+    "lender_name": "Dino Bank"
+  },
+  "expires_at": "2024-01-02T12:00:00.000000"
+}
+```
+
+Save the `token` value for subsequent requests.
+
+#### 2. Create an application
+
+```bash
+export LENDER_TOKEN="your_token_here"
+
+curl -X POST http://localhost:5000/api/lender/applications/create \
+  -H "X-Lender-Token: $LENDER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "auth0|1234567890",
+    "requested_amount": 5000,
+    "purpose": "personal loan"
+  }'
+```
+
+**Response:**
+```json
+{
+  "ok": true,
+  "application_id": "uuid-here"
+}
+```
+
+#### 3. List applications
+
+```bash
+# All applications
+curl -X GET "http://localhost:5000/api/lender/applications" \
+  -H "X-Lender-Token: $LENDER_TOKEN"
+
+# Filter by status
+curl -X GET "http://localhost:5000/api/lender/applications?status=submitted&limit=20" \
+  -H "X-Lender-Token: $LENDER_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "ok": true,
+  "applications": [
+    {
+      "application_id": "uuid",
+      "user_id": "auth0|...",
+      "status": "submitted",
+      "openscore": 720,
+      "risk_level": "low",
+      "confidence": "high",
+      "metrics": {
+        "monthly_income": 5000,
+        "monthly_spend": 3000,
+        "net_cashflow": 2000
+      },
+      "flags": [
+        {"code": "CONSISTENT_RENT", "severity": "low", "message": "..."}
+      ],
+      "created_at": "2024-01-01T12:00:00"
+    }
+  ],
+  "count": 1
+}
+```
+
+#### 4. Get application detail
+
+```bash
+curl -X GET "http://localhost:5000/api/lender/applications/APPLICATION_ID" \
+  -H "X-Lender-Token: $LENDER_TOKEN"
+```
+
+**Response includes:**
+- Full application details
+- Risk snapshot (openscore, metrics, flags, explain)
+- Chart-ready aggregates (monthly income/spend, top categories, recent transactions)
+- Notes and decision history
+- User info (if available)
+
+#### 5. Record a decision
+
+```bash
+curl -X POST "http://localhost:5000/api/lender/applications/APPLICATION_ID/decision" \
+  -H "X-Lender-Token: $LENDER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "approve",
+    "reason_codes": ["GOOD_INCOME", "LOW_RISK"],
+    "note": "Strong financial profile"
+  }'
+```
+
+Valid actions: `approve`, `reject`, `request_info`, `set_review`
+
+**Response:**
+```json
+{
+  "ok": true,
+  "status": "approved"
+}
+```
+
+#### 6. Add a note
+
+```bash
+curl -X POST "http://localhost:5000/api/lender/applications/APPLICATION_ID/notes" \
+  -H "X-Lender-Token: $LENDER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"body": "Called applicant, verified employment"}'
+```
+
+#### 7. Recompute risk snapshot
+
+```bash
+curl -X POST "http://localhost:5000/api/lender/applications/APPLICATION_ID/recompute" \
+  -H "X-Lender-Token: $LENDER_TOKEN"
+```
+
+Returns the updated snapshot with fresh metrics computed from latest user data.
+
 ## Project Structure
 
 ```
@@ -300,18 +469,23 @@ backend/
 ├── app.py                 # Flask application and main endpoints
 ├── config.py             # Configuration management
 ├── auth.py               # Auth0 JWT verification middleware
-├── db.py                 # MongoDB client
+├── db.py                 # MongoDB client and indexes
 ├── routes/                # API route blueprints
-│   ├── plaid.py
-│   ├── data.py
-│   ├── score.py
-│   ├── lender.py
-│   └── sandbox_loader.py
+│   ├── plaid.py          # Plaid integration endpoints
+│   ├── data.py           # User data retrieval endpoints
+│   ├── score.py          # Credit score endpoints
+│   ├── lender.py         # Lender placeholder (Auth0)
+│   ├── lender_auth.py    # Lender login/logout endpoints
+│   ├── lender_api.py     # Lender application management
+│   └── sandbox_loader.py # Sandbox data loading
 ├── services/             # Business logic services
-│   ├── plaid_service.py
-│   ├── gemini_service.py
-│   ├── scoring_service.py
-│   └── sandbox_storage_service.py
+│   ├── plaid_service.py          # Plaid API integration
+│   ├── gemini_service.py         # Google Gemini AI
+│   ├── scoring_service.py        # User credit score calculation
+│   ├── sandbox_storage_service.py # Sandbox data persistence
+│   ├── lender_auth_service.py    # Lender session management
+│   ├── lender_scoring_service.py # Risk scoring for lenders
+│   └── lender_store_service.py   # Lender MongoDB operations
 ├── requirements.txt      # Python dependencies
 ├── .env.example         # Environment variable template
 └── README.md            # This file
