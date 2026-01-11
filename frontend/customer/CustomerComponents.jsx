@@ -1910,14 +1910,12 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
-                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-                </svg>
+      
+            <div className="flex items-center gap-2.5 group cursor-pointer">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                <span className="text-white font-bold text-xl">os</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">OpenScore</span>
+              <span className="text-xl font-semibold text-gray-900 tracking-tight">OpenScore</span>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -1945,10 +1943,7 @@ const CustomerDashboard = ({ user, onLogout, onNavigateToCreditScore }) => {
         <div className="max-w-6xl mx-auto px-6 space-y-6">
           <div className="text-center space-y-4 py-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full text-blue-700 text-sm font-medium">
-              <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
-                <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
-              </svg>
+              
             </div>
             <h1 className="text-4xl font-bold text-gray-900">Connect Your Financial Data</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
