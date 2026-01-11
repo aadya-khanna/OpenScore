@@ -5,27 +5,27 @@ const apiCall = async (endpoint, method = 'GET', token, body = null) => {
   const headers = {
     'Content-Type': 'application/json',
   };
-  
+
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  
+
   const options = {
     method,
     headers,
   };
-  
+
   if (body) {
     options.body = JSON.stringify(body);
   }
-  
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-  
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error?.message || 'API request failed');
   }
-  
+
   return await response.json();
 };
 
@@ -312,8 +312,404 @@ const BankerDashboard = ({ user, onLogout }) => {
   );
 };
 
+// Financial Graphs Component
+const FinancialGraphs = ({ user, onLogout, onBackToDashboard }) => {
+  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const chartRefs = useRef({});
+
+  // Get access token from URL hash or sessionStorage
+  const getAccessToken = () => {
+    const hash = window.location.hash;
+    if (hash) {
+      const params = new URLSearchParams(hash.substring(1));
+      const token = params.get('access_token');
+      if (token) {
+        sessionStorage.setItem('access_token', token);
+        return token;
+      }
+    }
+    return sessionStorage.getItem('access_token');
+  };
+
+  // Fetch all data
+  const fetchAllData = async (token) => {
+    try {
+      const accountsData = await apiCall('/api/data/accounts', 'GET', token);
+      setAccounts(accountsData);
+
+      const transactionsData = await apiCall('/api/data/transactions?limit=500', 'GET', token);
+      setTransactions(transactionsData);
+
+      const summaryData = await apiCall('/api/data/summary', 'GET', token);
+      setSummary(summaryData);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token && user) {
+      fetchAllData(token);
+    }
+  }, [user]);
+
+  // Create charts when data is available
+  useEffect(() => {
+    if (loading || !accounts.length || !transactions.length) return;
+
+    // Account Balances Pie Chart
+    const accountsCtx = document.getElementById('accountsChart');
+    if (accountsCtx) {
+      if (chartRefs.current.accounts) {
+        chartRefs.current.accounts.destroy();
+      }
+      const accountLabels = accounts.map(acc => acc.name || 'Unknown');
+      const accountBalances = accounts.map(acc => Math.abs(acc.balances?.current || 0));
+
+      chartRefs.current.accounts = new Chart(accountsCtx, {
+        type: 'doughnut',
+        data: {
+          labels: accountLabels,
+          datasets: [{
+            data: accountBalances,
+            backgroundColor: [
+              'rgba(59, 130, 246, 0.8)',
+              'rgba(16, 185, 129, 0.8)',
+              'rgba(245, 158, 11, 0.8)',
+              'rgba(239, 68, 68, 0.8)',
+              'rgba(139, 92, 246, 0.8)',
+              'rgba(236, 72, 153, 0.8)',
+              'rgba(20, 184, 166, 0.8)',
+              'rgba(251, 146, 60, 0.8)',
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Account Balances Distribution',
+              font: { size: 16, weight: 'bold' }
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    // Spending by Category Bar Chart
+    const categoriesCtx = document.getElementById('categoriesChart');
+    if (categoriesCtx && summary?.topCategories) {
+      if (chartRefs.current.categories) {
+        chartRefs.current.categories.destroy();
+      }
+      const categoryData = summary.topCategories.slice(0, 10);
+      const categoryLabels = categoryData.map(cat => cat.category || 'Unknown');
+      const categorySpend = categoryData.map(cat => Math.abs(cat.spend || 0));
+
+      chartRefs.current.categories = new Chart(categoriesCtx, {
+        type: 'bar',
+        data: {
+          labels: categoryLabels,
+          datasets: [{
+            label: 'Spending ($)',
+            data: categorySpend,
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top Spending Categories',
+              font: { size: 16, weight: 'bold' }
+            },
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Transaction Trends Over Time (Line Chart)
+    const trendsCtx = document.getElementById('trendsChart');
+    if (trendsCtx && transactions.length > 0) {
+      if (chartRefs.current.trends) {
+        chartRefs.current.trends.destroy();
+      }
+
+      // Group transactions by date
+      const transactionsByDate = {};
+      transactions.forEach(txn => {
+        const date = txn.date || txn.authorized_date;
+        if (date) {
+          if (!transactionsByDate[date]) {
+            transactionsByDate[date] = { income: 0, expenses: 0 };
+          }
+          const amount = Math.abs(txn.amount || 0);
+          if (txn.amount > 0) {
+            transactionsByDate[date].income += amount;
+          } else {
+            transactionsByDate[date].expenses += amount;
+          }
+        }
+      });
+
+      const sortedDates = Object.keys(transactionsByDate).sort();
+      const expenseData = sortedDates.map(date => Math.abs(transactionsByDate[date].expenses));
+
+      chartRefs.current.trends = new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+          labels: sortedDates,
+          datasets: [{
+            label: 'Daily Expenses',
+            data: expenseData,
+            borderColor: 'rgba(239, 68, 68, 1)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Expense Trends Over Time',
+              font: { size: 16, weight: 'bold' }
+            },
+            legend: {
+              display: true
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Spending by Account (Bar Chart)
+    const accountSpendingCtx = document.getElementById('accountSpendingChart');
+    if (accountSpendingCtx && transactions.length > 0) {
+      if (chartRefs.current.accountSpending) {
+        chartRefs.current.accountSpending.destroy();
+      }
+
+      // Calculate spending by account
+      const spendingByAccount = {};
+      transactions.forEach(txn => {
+        const accountId = txn.account_id;
+        if (accountId && txn.amount < 0) {
+          if (!spendingByAccount[accountId]) {
+            spendingByAccount[accountId] = 0;
+          }
+          spendingByAccount[accountId] += Math.abs(txn.amount);
+        }
+      });
+
+      // Match account IDs to account names
+      const accountMap = {};
+      accounts.forEach(acc => {
+        accountMap[acc.account_id] = acc.name || 'Unknown Account';
+      });
+
+      const accountSpendingLabels = Object.keys(spendingByAccount).map(id => accountMap[id] || id);
+      const accountSpendingData = Object.values(spendingByAccount);
+
+      chartRefs.current.accountSpending = new Chart(accountSpendingCtx, {
+        type: 'bar',
+        data: {
+          labels: accountSpendingLabels,
+          datasets: [{
+            label: 'Total Spending ($)',
+            data: accountSpendingData,
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Spending by Account',
+              font: { size: 16, weight: 'bold' }
+            },
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Cleanup function
+    return () => {
+      Object.values(chartRefs.current).forEach(chart => {
+        if (chart) chart.destroy();
+      });
+    };
+  }, [accounts, transactions, summary, loading]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="text-indigo-600 text-xl">Loading financial data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-md">
+          <div className="text-red-600 mb-4">Error loading data: {error}</div>
+          <button
+            onClick={onBackToDashboard}
+            className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg">
+                <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a10 10 0 1 0 10 10H12V2Z"></path>
+                  <path d="M12 12V2a10 10 0 0 1 10 10H12Z"></path>
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900">OpenScore</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={onBackToDashboard}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm font-medium hover:bg-gray-600 transition-colors flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                Back to Dashboard
+              </button>
+              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg">
+                {user.picture && (
+                  <img src={user.picture} alt="User" className="w-8 h-8 rounded-full border-2 border-blue-500" />
+                )}
+                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+              </div>
+              <button onClick={onLogout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="py-8">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center py-8 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Financial Analytics</h1>
+            <p className="text-xl text-gray-600">
+              Visual insights into your financial data
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Account Balances Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="h-80">
+                <canvas id="accountsChart"></canvas>
+              </div>
+            </div>
+
+            {/* Spending by Category Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="h-80">
+                <canvas id="categoriesChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Transaction Trends Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="h-80">
+                <canvas id="trendsChart"></canvas>
+              </div>
+            </div>
+
+            {/* Spending by Account Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="h-80">
+                <canvas id="accountSpendingChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
 // Customer Dashboard Component
-const CustomerDashboard = ({ user, onLogout }) => {
+const CustomerDashboard = ({ user, onLogout, onNavigateToGraphs }) => {
   const [connectedSources, setConnectedSources] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -321,25 +717,25 @@ const CustomerDashboard = ({ user, onLogout }) => {
   const [summary, setSummary] = useState(null);
   const [dataLoading, setDataLoading] = useState(false);
   const [dataError, setDataError] = useState(null);
-  
+
   // Get access token from URL hash or sessionStorage
   const getAccessToken = () => {
     // #region agent log
     fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:326',message:'getAccessToken called',data:{hasHash:!!window.location.hash,hashLength:window.location.hash.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
     // #endregion
-    
+
     const hash = window.location.hash;
     // #region agent log
     fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:331',message:'Hash check',data:{hashExists:!!hash,hashSubstring:hash?hash.substring(0,50):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
     // #endregion
-    
+
     if (hash) {
       const params = new URLSearchParams(hash.substring(1));
       const token = params.get('access_token');
       // #region agent log
       fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:336',message:'Token from hash',data:{tokenFound:!!token,tokenLength:token?token.length:0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
       // #endregion
-      
+
       if (token) {
         sessionStorage.setItem('access_token', token);
         // #region agent log
@@ -355,7 +751,7 @@ const CustomerDashboard = ({ user, onLogout }) => {
     // #endregion
     return storedToken;
   };
-  
+
   // Load sandbox data
   const loadSandboxData = async () => {
     const token = getAccessToken();
@@ -363,17 +759,17 @@ const CustomerDashboard = ({ user, onLogout }) => {
       setDataError('No access token available');
       return;
     }
-    
+
     setDataLoading(true);
     setDataError(null);
-    
+
     try {
       const result = await apiCall('/api/sandbox/load', 'POST', token);
       console.log('Sandbox data loaded:', result);
-      
+
       // After loading, fetch the actual data
       await fetchAllData(token);
-      
+
       if (!connectedSources.includes('plaid')) {
         setConnectedSources([...connectedSources, 'plaid']);
       }
@@ -384,18 +780,18 @@ const CustomerDashboard = ({ user, onLogout }) => {
       setDataLoading(false);
     }
   };
-  
+
   // Fetch all data from MongoDB
   const fetchAllData = async (token) => {
     try {
       // Fetch accounts
       const accountsData = await apiCall('/api/data/accounts', 'GET', token);
       setAccounts(accountsData);
-      
+
       // Fetch transactions
       const transactionsData = await apiCall('/api/data/transactions?limit=50', 'GET', token);
       setTransactions(transactionsData);
-      
+
       // Fetch summary
       const summaryData = await apiCall('/api/data/summary', 'GET', token);
       setSummary(summaryData);
@@ -404,7 +800,7 @@ const CustomerDashboard = ({ user, onLogout }) => {
       setDataError(err.message);
     }
   };
-  
+
   // Load data on component mount
   useEffect(() => {
     // #region agent log
@@ -526,14 +922,29 @@ const CustomerDashboard = ({ user, onLogout }) => {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center gap-4">
-            {user.picture && (
-              <img src={user.picture} alt="User" className="w-14 h-14 rounded-full border-3 border-blue-500" />
-            )}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-              <p className="text-sm text-gray-600">{user.email}</p>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {user.picture && (
+                <img src={user.picture} alt="User" className="w-14 h-14 rounded-full border-3 border-blue-500" />
+              )}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-sm text-gray-600">{user.email}</p>
+              </div>
             </div>
+            {onNavigateToGraphs && (
+              <button
+                onClick={onNavigateToGraphs}
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center gap-2 shadow-sm"
+              >
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                View Financial Graphs
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -730,6 +1141,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState('customer');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard' or 'graphs'
 
   const AUTH0_DOMAIN = AUTH0_CONFIG.domain;
   const AUTH0_CLIENT_ID = AUTH0_CONFIG.clientId;
@@ -888,10 +1300,27 @@ function App() {
     );
   }
 
-  return userType === 'banker' ? (
-    <BankerDashboard user={user} onLogout={logout} />
-  ) : (
-    <CustomerDashboard user={user} onLogout={logout} />
+  if (userType === 'banker') {
+    return <BankerDashboard user={user} onLogout={logout} />;
+  }
+
+  // Customer view with routing
+  if (currentPage === 'graphs') {
+    return (
+      <FinancialGraphs
+        user={user}
+        onLogout={logout}
+        onBackToDashboard={() => setCurrentPage('dashboard')}
+      />
+    );
+  }
+
+  return (
+    <CustomerDashboard
+      user={user}
+      onLogout={logout}
+      onNavigateToGraphs={() => setCurrentPage('graphs')}
+    />
   );
 }
 
