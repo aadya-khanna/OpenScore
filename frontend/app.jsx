@@ -1,5 +1,34 @@
 const { useState, useRef, useEffect } = React;
 
+// API helper function
+const apiCall = async (endpoint, method = 'GET', token, body = null) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const options = {
+    method,
+    headers,
+  };
+  
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+  
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'API request failed');
+  }
+  
+  return await response.json();
+};
+
 // DataSourceCard Component for Customer Dashboard
 const DataSourceCard = ({ source, isConnected, onConnect, onUpload }) => {
   const fileInputRef = useRef(null);
@@ -287,6 +316,108 @@ const BankerDashboard = ({ user, onLogout }) => {
 const CustomerDashboard = ({ user, onLogout }) => {
   const [connectedSources, setConnectedSources] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataError, setDataError] = useState(null);
+  
+  // Get access token from URL hash or sessionStorage
+  const getAccessToken = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:326',message:'getAccessToken called',data:{hasHash:!!window.location.hash,hashLength:window.location.hash.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
+    
+    const hash = window.location.hash;
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:331',message:'Hash check',data:{hashExists:!!hash,hashSubstring:hash?hash.substring(0,50):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+    
+    if (hash) {
+      const params = new URLSearchParams(hash.substring(1));
+      const token = params.get('access_token');
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:336',message:'Token from hash',data:{tokenFound:!!token,tokenLength:token?token.length:0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      
+      if (token) {
+        sessionStorage.setItem('access_token', token);
+        // #region agent log
+        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:340',message:'Token stored in sessionStorage',data:{stored:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+        return token;
+      }
+    }
+    // Try to get from sessionStorage if available
+    const storedToken = sessionStorage.getItem('access_token');
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:346',message:'Token from sessionStorage',data:{tokenFound:!!storedToken,tokenLength:storedToken?storedToken.length:0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
+    return storedToken;
+  };
+  
+  // Load sandbox data
+  const loadSandboxData = async () => {
+    const token = getAccessToken();
+    if (!token) {
+      setDataError('No access token available');
+      return;
+    }
+    
+    setDataLoading(true);
+    setDataError(null);
+    
+    try {
+      const result = await apiCall('/api/sandbox/load', 'POST', token);
+      console.log('Sandbox data loaded:', result);
+      
+      // After loading, fetch the actual data
+      await fetchAllData(token);
+      
+      if (!connectedSources.includes('plaid')) {
+        setConnectedSources([...connectedSources, 'plaid']);
+      }
+    } catch (err) {
+      console.error('Error loading sandbox data:', err);
+      setDataError(err.message);
+    } finally {
+      setDataLoading(false);
+    }
+  };
+  
+  // Fetch all data from MongoDB
+  const fetchAllData = async (token) => {
+    try {
+      // Fetch accounts
+      const accountsData = await apiCall('/api/data/accounts', 'GET', token);
+      setAccounts(accountsData);
+      
+      // Fetch transactions
+      const transactionsData = await apiCall('/api/data/transactions?limit=50', 'GET', token);
+      setTransactions(transactionsData);
+      
+      // Fetch summary
+      const summaryData = await apiCall('/api/data/summary', 'GET', token);
+      setSummary(summaryData);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setDataError(err.message);
+    }
+  };
+  
+  // Load data on component mount
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:392',message:'useEffect triggered',data:{hasUser:!!user,userEmail:user?.email},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
+    const token = getAccessToken();
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:396',message:'Token check in useEffect',data:{hasToken:!!token,tokenLength:token?token.length:0,hasUser:!!user,willFetch:!!(token&&user)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
+    if (token && user) {
+      fetchAllData(token);
+    }
+  }, [user]);
 
   const dataSources = [
     {
@@ -417,6 +548,113 @@ const CustomerDashboard = ({ user, onLogout }) => {
             ))}
           </div>
 
+          {/* Load Sandbox Data Button */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold mb-2">Load Test Data</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Load sandbox test data from MongoDB (for development/testing)
+            </p>
+            <button
+              onClick={loadSandboxData}
+              disabled={dataLoading}
+              className={`w-full py-2 rounded-lg font-medium ${
+                dataLoading
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {dataLoading ? 'Loading...' : 'Load Sandbox Data'}
+            </button>
+            {dataError && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {dataError}
+              </div>
+            )}
+          </div>
+
+          {/* Display Accounts */}
+          {accounts.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold mb-4">Your Accounts</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {accounts.map((account) => (
+                  <div key={account.account_id} className="border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold">{account.name}</h3>
+                    <p className="text-sm text-gray-600">{account.type} • {account.subtype}</p>
+                    {account.balances?.current !== undefined && (
+                      <p className="text-lg font-bold mt-2">
+                        ${account.balances.current.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Display Summary */}
+          {summary && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold mb-4">Financial Summary</h2>
+              {summary.totals?.current_balance !== undefined && (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600">Total Balance</p>
+                  <p className="text-3xl font-bold">
+                    ${summary.totals.current_balance.toLocaleString()}
+                  </p>
+                </div>
+              )}
+              {summary.topCategories && summary.topCategories.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-2">Top Spending Categories</h3>
+                  <div className="space-y-2">
+                    {summary.topCategories.map((cat, idx) => (
+                      <div key={idx} className="flex justify-between items-center">
+                        <span>{cat.category || 'Unknown'}</span>
+                        <span className="font-semibold">${cat.spend?.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Display Recent Transactions */}
+          {transactions.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold mb-4">Recent Transactions</h2>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {transactions.slice(0, 10).map((txn) => (
+                      <tr key={txn.transaction_id}>
+                        <td className="px-4 py-3 text-sm">{txn.date}</td>
+                        <td className="px-4 py-3 text-sm">{txn.name}</td>
+                        <td className={`px-4 py-3 text-sm font-medium ${
+                          txn.amount < 0 ? 'text-red-600' : 'text-green-600'
+                        }`}>
+                          ${Math.abs(txn.amount).toLocaleString()}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-500">
+                          {Array.isArray(txn.category) ? txn.category.join(', ') : txn.category || 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-gray-900">Data Sources Connected</span>
@@ -506,6 +744,13 @@ function App() {
       const storedUserType = sessionStorage.getItem('userType');
 
       if (accessToken && idToken) {
+        // #region agent log
+        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:721',message:'Storing access token on login',data:{tokenLength:accessToken.length,hasToken:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+        sessionStorage.setItem('access_token', accessToken);
+        // #region agent log
+        fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:725',message:'Access token stored in sessionStorage',data:{stored:true,verifyStored:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
         fetchUserInfo(accessToken, storedUserType || 'customer');
         window.history.replaceState({}, document.title, window.location.pathname);
       }
@@ -540,15 +785,23 @@ function App() {
       `connection=google-oauth2&` +
       `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
       `scope=openid profile email&` +
+      `audience=${encodeURIComponent(AUTH0_AUDIENCE)}&` +
       `nonce=${Math.random().toString(36).substring(7)}`;
 
     window.location.href = authUrl;
   };
 
   const logout = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:862',message:'Logout called, clearing token',data:{hasTokenBefore:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     setUser(null);
     setUserType('customer');
     sessionStorage.removeItem('userType');
+    sessionStorage.removeItem('access_token');
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/8dfa98f0-80c4-47da-830b-a723723dba69',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.jsx:867',message:'Token removed from sessionStorage',data:{hasTokenAfter:!!sessionStorage.getItem('access_token')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
 
     const logoutUrl = `https://${AUTH0_DOMAIN}/v2/logout?` +
       `client_id=${AUTH0_CLIENT_ID}&` +

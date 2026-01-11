@@ -28,6 +28,8 @@ Flask backend for OpenScore hackathon project with Auth0 JWT authentication, Mon
    - MongoDB Atlas connection string
    - Plaid client ID and secret
    - Google Gemini API key
+   - SANDBOX_JSON_PATH (optional, defaults to "../sandbox_output.json")
+   - DATA_ENCRYPTION_KEY (optional, for encrypting access tokens)
 
 3. **Run the application:**
    ```bash
@@ -197,6 +199,61 @@ curl -X GET http://localhost:5000/api/income \
   -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
 ```
 
+### Testing Sandbox Data Loading
+
+Load sandbox data from a local JSON file:
+
+```bash
+curl -X POST http://localhost:5000/api/sandbox/load \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+```
+
+**Expected response:**
+```json
+{
+  "ok": true,
+  "fileLoaded": true,
+  "counts": {
+    "accounts": 10,
+    "transactions": 100,
+    "holdings": 5,
+    "liabilities": 3
+  },
+  "storedAccessToken": true
+}
+```
+
+This endpoint:
+- Reads the JSON file from `SANDBOX_JSON_PATH` (defaults to `../sandbox_output.json` relative to backend/)
+- Parses and sanitizes the payload (removes access_token/public_token)
+- Stores data in MongoDB collections: accounts, transactions, holdings, liabilities
+- Stores a sanitized snapshot in raw_snapshots collection
+- Returns counts of stored records
+
+After loading, you can retrieve data using the new data endpoints:
+
+```bash
+# Get accounts
+curl -X GET http://localhost:5000/api/data/accounts \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+
+# Get transactions (limit 50)
+curl -X GET http://localhost:5000/api/data/transactions?limit=50 \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+
+# Get holdings
+curl -X GET http://localhost:5000/api/data/holdings \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+
+# Get liabilities
+curl -X GET http://localhost:5000/api/data/liabilities \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+
+# Get summary statistics
+curl -X GET http://localhost:5000/api/data/summary \
+  -H "Authorization: Bearer YOUR_AUTH0_ACCESS_TOKEN"
+```
+
 ### Important Notes
 
 - **Authentication**: All `/api/*` endpoints require an `Authorization: Bearer <token>` header with a valid Auth0 JWT token.
@@ -222,6 +279,16 @@ curl -X GET http://localhost:5000/api/income \
 - `GET /api/balances` - Get latest account balances (requires auth)
 - `GET /api/income` - Get latest income snapshot (requires auth)
 
+### Sandbox Data Loading
+- `POST /api/sandbox/load` - Load sandbox JSON file and persist to MongoDB (requires auth)
+
+### New Data Endpoints
+- `GET /api/data/accounts` - Get accounts for current user (requires auth)
+- `GET /api/data/transactions?limit=50` - Get transactions with limit (requires auth)
+- `GET /api/data/holdings` - Get holdings for current user (requires auth)
+- `GET /api/data/liabilities` - Get liabilities for current user (requires auth)
+- `GET /api/data/summary` - Get aggregate summary statistics (requires auth)
+
 ### Other
 - `POST /api/score/calculate` - Calculate score (requires auth, placeholder)
 - `GET /api/lender/list` - List lenders (requires auth, placeholder)
@@ -238,11 +305,13 @@ backend/
 │   ├── plaid.py
 │   ├── data.py
 │   ├── score.py
-│   └── lender.py
+│   ├── lender.py
+│   └── sandbox_loader.py
 ├── services/             # Business logic services
 │   ├── plaid_service.py
 │   ├── gemini_service.py
-│   └── scoring_service.py
+│   ├── scoring_service.py
+│   └── sandbox_storage_service.py
 ├── requirements.txt      # Python dependencies
 ├── .env.example         # Environment variable template
 └── README.md            # This file

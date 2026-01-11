@@ -137,16 +137,52 @@ def get_rsa_key(token: str) -> Dict:
     Returns:
         RSA public key dictionary
     """
+    import json
+    import os
+    from datetime import datetime
+    log_path = "/Users/aadya/Desktop/OpenScore/.cursor/debug.log"
+    
     try:
         unverified_header = jwt.get_unverified_header(token)
+        # #region agent log
+        try:
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            with open(log_path, "a") as f:
+                log_data = {"sessionId":"debug-session","runId":"get-rsa-key","hypothesisId":"F","location":"auth.py:141","message":"Token header decoded","data":{"kid":unverified_header.get("kid"),"alg":unverified_header.get("alg")},"timestamp":int(datetime.now().timestamp()*1000)}
+                f.write(json.dumps(log_data) + "\n")
+                f.flush()
+        except: pass
+        # #endregion
     except Exception as e:
+        # #region agent log
+        try:
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            with open(log_path, "a") as f:
+                log_data = {"sessionId":"debug-session","runId":"get-rsa-key","hypothesisId":"F","location":"auth.py:145","message":"Failed to decode token header","data":{"error":str(e)},"timestamp":int(datetime.now().timestamp()*1000)}
+                f.write(json.dumps(log_data) + "\n")
+                f.flush()
+        except: pass
+        # #endregion
         raise ValueError(f"Invalid token header: {e}")
     
     jwks = get_jwks()
+    # #region agent log
+    try:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        with open(log_path, "a") as f:
+            jwks_keys = jwks.get("keys", [])
+            jwks_kids = [k.get("kid") for k in jwks_keys]
+            log_data = {"sessionId":"debug-session","runId":"get-rsa-key","hypothesisId":"F","location":"auth.py:155","message":"JWKS retrieved","data":{"numKeys":len(jwks_keys),"jwksKids":jwks_kids,"tokenKid":unverified_header.get("kid")},"timestamp":int(datetime.now().timestamp()*1000)}
+            f.write(json.dumps(log_data) + "\n")
+            f.flush()
+    except: pass
+    # #endregion
+    
     rsa_key = {}
+    token_kid = unverified_header.get("kid")
     
     for key in jwks.get("keys", []):
-        if key["kid"] == unverified_header.get("kid"):
+        if key["kid"] == token_kid:
             rsa_key = {
                 "kty": key["kty"],
                 "kid": key["kid"],
@@ -154,9 +190,27 @@ def get_rsa_key(token: str) -> Dict:
                 "n": key["n"],
                 "e": key["e"]
             }
+            # #region agent log
+            try:
+                os.makedirs(os.path.dirname(log_path), exist_ok=True)
+                with open(log_path, "a") as f:
+                    log_data = {"sessionId":"debug-session","runId":"get-rsa-key","hypothesisId":"F","location":"auth.py:165","message":"Matching key found","data":{"kid":key["kid"]},"timestamp":int(datetime.now().timestamp()*1000)}
+                    f.write(json.dumps(log_data) + "\n")
+                    f.flush()
+            except: pass
+            # #endregion
             break
     
     if not rsa_key:
+        # #region agent log
+        try:
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            with open(log_path, "a") as f:
+                log_data = {"sessionId":"debug-session","runId":"get-rsa-key","hypothesisId":"F","location":"auth.py:172","message":"ERROR: No matching key found","data":{"tokenKid":token_kid,"jwksKids":[k.get("kid") for k in jwks.get("keys", [])]},"timestamp":int(datetime.now().timestamp()*1000)}
+                f.write(json.dumps(log_data) + "\n")
+                f.flush()
+        except: pass
+        # #endregion
         raise ValueError("Unable to find appropriate key")
     
     return rsa_key

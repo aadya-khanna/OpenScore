@@ -47,6 +47,12 @@ class Config:
     # Gemini
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     
+    # Sandbox data loading
+    SANDBOX_JSON_PATH: str = os.getenv("SANDBOX_JSON_PATH", "sandbox_output.json")
+    
+    # Data encryption (Fernet key for encrypting access tokens)
+    DATA_ENCRYPTION_KEY: str = os.getenv("DATA_ENCRYPTION_KEY", "")
+    
     @classmethod
     def validate(cls) -> None:
         """Validate that required configuration is present."""

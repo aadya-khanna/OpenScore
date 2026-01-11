@@ -13,6 +13,7 @@ from routes.plaid import bp as plaid_bp
 from routes.score import bp as score_bp
 from routes.lender import bp as lender_bp
 from routes.data import bp as data_bp
+from routes.sandbox_loader import bp as sandbox_loader_bp
 
 # Configure logging
 logging.basicConfig(
@@ -46,6 +47,7 @@ def ensure_indexes():
     try:
         db = get_db()
         
+        # Legacy indexes (for existing Plaid integration)
         # Transactions: unique index on (userId, transaction_id)
         db.transactions.create_index([("userId", 1), ("transaction_id", 1)], unique=True)
         logger.info("Created index on transactions (userId, transaction_id)")
@@ -62,6 +64,10 @@ def ensure_indexes():
         db.income.create_index([("userId", 1)])
         logger.info("Created index on income (userId)")
         
+        # New indexes for sandbox storage (best-effort, won't fail if already exists)
+        from services.sandbox_storage_service import ensure_indexes as ensure_sandbox_indexes
+        ensure_sandbox_indexes(db)
+        
     except Exception as e:
         logger.warning(f"Failed to create MongoDB indexes (non-fatal): {e}")
 
@@ -73,6 +79,7 @@ app.register_blueprint(plaid_bp)
 app.register_blueprint(score_bp)
 app.register_blueprint(lender_bp)
 app.register_blueprint(data_bp)
+app.register_blueprint(sandbox_loader_bp)
 
 
 @app.route("/", methods=["GET"])
